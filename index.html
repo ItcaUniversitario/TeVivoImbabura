@@ -12,111 +12,94 @@
     <link href="https://fonts.googleapis.com/css2?family=Lora&display=swap" rel="stylesheet">
 
     <style>
-      body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    background-color: #2c2c2c;
-    /* Usa min-height para permitir que el contenido crezca */
-    min-height: 100vh; 
-    position: relative;
-    /* Permite el desplazamiento si la altura del mapa lo excede */
-    overflow: auto; 
-}
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #2c2c2c;
+            min-height: 100vh;
+            position: relative;
+            overflow: auto;
+        }
 
-/* El fondo debe cubrir toda la ventana sin límites */
-body::before {
-    content: "";
-    position: fixed; /* Usa fixed para que no se mueva con el scroll */
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: -1;
-    background-image: url('assets/imbaburafondo.png ');
-    background-size: cover;
-    background-position: center;
-    filter: blur(10px) brightness(1);
-    transform: scale(1.05);
-}
+        /* El fondo debe cubrir toda la ventana sin límites */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background-image: url('assets/imbaburafondo.png ');
+            background-size: cover;
+            background-position: center;
+            filter: blur(10px) brightness(1);
+            transform: scale(1.05);
+        }
 
-.dashboard-container {
-    /* El contenedor principal debe tener al menos el alto de la ventana */
-    min-height: 100vh;
-    width: 100%;
-    background-color: transparent;
-    display: flex;
-    flex-direction: column;
-}
+        .dashboard-container {
+            /* El contenedor principal debe tener al menos el alto de la ventana */
+            min-height: 100vh;
+            width: 100%;
+            background-color: transparent;
+            display: flex;
+            flex-direction: column;
+        }
 
-header {
-    background-image: url('assets/banner_tvi.png');
-    background-repeat: no-repeat; /* <-- ¡Asegura que no se repita! */
-    background-position: center;
-    
-    /* ALTURA BASE: Un poco más alta que 50px */
-    height: 70px; 
-    
-    /* CÓMO MOSTRAR LA IMAGEN: Haz que ocupe el 80% del ancho del header */
-    background-size: 80% auto; 
+        header {
+            background-image: url('assets/banner_tvi.png');
+            background-repeat: no-repeat;
+            background-position: center;
+            height: 70px;
+            background-size: 80% auto;
+            padding: 0;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 10px 0;
+            position: relative;
+        }
 
-    padding: 0;
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin: 10px 0;
-    position: relative;
-}
+        @media (min-width: 769px) {
+            /* Para pantallas de escritorio y más grandes */
+            header {
+                height: 120px;
+                background-size: 600px auto;
+            }
 
-@media (min-width: 769px) {
-    /* Para pantallas de escritorio y más grandes */
-    header {
-        height: 120px; /* Aumenta la altura para darle más espacio */
-        
-        /* Aumenta el tamaño para que se vea bien en alta resolución, 
-           o usa 'contain' si prefieres que se vea el banner completo siempre. */
-        background-size: 600px auto; /* Ejemplo: Fija el ancho máximo del banner a 600px */
-        /* O utiliza: background-size: contain; para que la imagen se ajuste completamente */
-    }
+            header .settings-button {
+                top: 50%;
+                transform: translateY(-50%);
+            }
 
-    /* Ajusta los íconos al nuevo tamaño del header */
-    header .settings-button {
-        top: 50%;
-        transform: translateY(-50%);
-    }
-    
-    #game-info-button {
-        top: 50%;
-        transform: translateY(-50%);
-    }
-}
+            #game-info-button {
+                top: 50%;
+                transform: translateY(-50%);
+            }
+        }
 
 
-    header .settings-button {
-    position: absolute;
-    top: 50%; /* Esto centra verticalmente el botón */
-    right: 20px;
-    transform: translateY(-50%);
-}
+        header .settings-button {
+            position: absolute;
+            top: 50%;
+            right: 20px;
+            transform: translateY(-50%);
+        }
 
-/* Y para el botón de info, ajústate al nuevo espacio: */
-#game-info-button {
-    position: absolute;
-    top: 50%;
-    right: 70px; /* Mueve el botón de info más a la izquierda */
-    transform: translateY(-50%);
-}
+        /* Y para el botón de info, ajústate al nuevo espacio: */
+        #game-info-button {
+            position: absolute;
+            top: 50%;
+            right: 70px;
+            transform: translateY(-50%);
+        }
 
 
         header .settings-button svg {
             fill: #FFFFFF;
-            /* --- AUMENTA EL TAMAÑO DE LOS ICONOS DEL HEADER --- */
-
             width: 40px;
-            /* El tamaño original era 22px */
             height: 40px;
-            /* El tamaño original era 22px */
-
         }
 
         /* 4. (Opcional) Cambia el color del hover */
@@ -128,8 +111,94 @@ header {
         main {
             flex-grow: 1;
             position: relative;
-
+            /* Agregamos padding-bottom para evitar que el dado se pegue a la base en móvil */
+            padding-bottom: 90px;
+            display: flex; /* Añadido para el layout de escritorio */
+            justify-content: center; /* Centrar el contenido de mapa/stats */
         }
+
+        /* ************************************************** */
+        /* --- LÓGICA RESPONSIVE PARA ESCRITORIO (769px+) --- */
+        /* ************************************************** */
+        @media (min-width: 769px) {
+            main {
+                /* Quitamos el padding inferior en escritorio ya que el dado no flotará */
+                padding-bottom: 0;
+                display: grid;
+                /* El tablero (map-screen) ocupará 75% del ancho */
+                grid-template-columns: 75% 25%;
+                gap: 0;
+                max-width: 1400px; /* Limita el ancho total para pantallas muy grandes */
+                width: 100%;
+                margin: 0 auto;
+            }
+
+            #map-screen {
+                /* En escritorio, ocupa la columna 1 (75%) */
+                grid-column: 1 / 2;
+                grid-row: 1 / 2;
+                position: relative; /* Lo cambiamos a relative */
+                height: auto; /* Dejamos que el padre maneje la altura */
+                overflow: hidden; /* Mantener la ficha dentro */
+                background-color: transparent; /* Quitamos el color del mapa */
+            }
+
+            #map-zoom-container {
+                /* Aseguramos que el contenedor de zoom llene todo su espacio */
+                width: 100%;
+                height: 100%;
+                position: absolute;
+                top: 0;
+                left: 0;
+            }
+
+            /* El dashboard de stats y dado lo movemos a la columna 2 */
+            #player-stats-sidebar {
+                grid-column: 2 / 3;
+                grid-row: 1 / 2;
+                padding: 15px;
+                background-color: rgba(255, 255, 255, 0.95);
+                border-left: 1px solid #ccc;
+                display: flex;
+                flex-direction: column;
+                gap: 20px;
+                overflow-y: auto;
+            }
+            
+            /* El contenedor de estadísticas ya no es absoluto, solo relativo */
+            #player-stats-container {
+                position: relative;
+                top: auto;
+                left: auto;
+                box-shadow: none;
+                background-color: transparent;
+                padding: 0;
+                width: 100%;
+            }
+
+            /* El dado lo movemos a la barra lateral */
+            #dice-container {
+                position: relative;
+                bottom: auto;
+                left: auto;
+                margin-top: auto; /* Empuja el dado hacia abajo en la sidebar */
+                padding-bottom: 20px;
+                z-index: 50;
+            }
+
+            /* El indicador de turno también debe ser reubicado */
+            .turn-indicator {
+                /* En escritorio, lo movemos al centro-superior del mapa */
+                position: absolute;
+                top: 10px;
+                left: 50%;
+                transform: translateX(-50%);
+            }
+        }
+        /* ************************************************** */
+        /* --- FIN LÓGICA RESPONSIVE PARA ESCRITORIO --- */
+        /* ************************************************** */
+
 
         /* Sistema de Pantallas */
         .screen {
@@ -168,8 +237,18 @@ header {
             padding: 0;
             position: relative;
             background-color: #2e7d32;
+            width: 100%; /* Ocupa todo el espacio en móvil */
+            height: 100%; /* Ocupa todo el espacio en móvil */
         }
-
+        
+        @media (min-width: 769px) {
+             #map-screen {
+                 /* Esto asegura que la pantalla del mapa tome todo el alto disponible en el grid */
+                 min-height: calc(100vh - 140px); /* 100vh menos la altura del header + margen */
+                 background-color: transparent;
+             }
+        }
+        
         #map-image {
             width: 100%;
             height: 100%;
@@ -321,6 +400,18 @@ header {
             perspective: 800px;
             transition: bottom 1s ease-in-out, left 1s ease-in-out, transform 1s ease-in-out, z-index 0s 1s;
         }
+        
+        /* En escritorio, el dado ya no necesita el indicador de posición absoluta/fixed */
+        @media (min-width: 769px) {
+            #dice-container.is-launching {
+                /* Cancelamos la animación de 'launch-dice' en escritorio */
+                animation: none !important; 
+                bottom: auto !important; 
+                left: auto !important; 
+                transform: scale(1) !important;
+                z-index: 50 !important;
+            }
+        }
 
         .dice-scene {
             width: 70px;
@@ -433,51 +524,51 @@ header {
         }
 
         /* --- ESTILO DE FICHA MODIFICADO (CLASE) --- */
-/* ---------------------------------------------------- */
-/* --- ESTILOS RESPONSIVOS PARA LA FICHA (player-ficha-class) --- */
-/* ---------------------------------------------------- */
+        /* ---------------------------------------------------- */
+        /* --- ESTILOS RESPONSIVOS PARA LA FICHA (player-ficha-class) --- */
+        /* ---------------------------------------------------- */
 
-/* ESTILOS BASE (Móvil First, sin Zoom aplicado) */
-.player-ficha-class {
-    position: absolute;
-    width: 45px; /* Base más pequeña para móvil */
-    height: 45px;
-    border-radius: 50%;
-    z-index: 40;
-    display: none;
-    transform: translate(-50%, -50%) scale(1);
-    background-size: 80%;
-    background-repeat: no-repeat;
-    background-position: center;
-    background-color: transparent;
-    transition: top 0.6s linear, left 0.6s linear, box-shadow 0.3s ease, transform 2s ease-in-out; 
-    will-change: top, left, transform, box-shadow;
-}
+        /* ESTILOS BASE (Móvil First, sin Zoom aplicado) */
+        .player-ficha-class {
+            position: absolute;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            z-index: 40;
+            display: none;
+            transform: translate(-50%, -50%) scale(1);
+            background-size: 80%;
+            background-repeat: no-repeat;
+            background-position: center;
+            background-color: transparent;
+            transition: top 0.6s linear, left 0.6s linear, box-shadow 0.3s ease, transform 2s ease-in-out;
+            will-change: top, left, transform, box-shadow;
+        }
 
-/* 1. COMPORTAMIENTO CON ZOOM EN PANTALLAS PEQUEÑAS (Mobile) */
-#map-zoom-container.is-zoomed .player-ficha-class {
-    /* Si el mapa está en zoom y la pantalla es pequeña, la ficha reduce su tamaño */
-    transform: translate(-50%, -50%) scale(0.25); /* Valor reducido, de 0.5 a 0.35 */
-    box-shadow: 0 0 8px 1px rgba(51, 175, 255, 0.7);
-}
+        /* 1. COMPORTAMIENTO CON ZOOM EN PANTALLAS PEQUEÑAS (Mobile) */
+        #map-zoom-container.is-zoomed .player-ficha-class {
+            /* Si el mapa está en zoom y la pantalla es pequeña, la ficha reduce su tamaño */
+            transform: translate(-50%, -50%) scale(0.25);
+            box-shadow: 0 0 8px 1px rgba(51, 175, 255, 0.7);
+        }
 
 
-/* 2. COMPORTAMIENTO CON ZOOM EN PANTALLAS GRANDES (Desktop/Tablet) */
-@media (min-width: 769px) {
-    
-    /* Aumentamos el tamaño base de la ficha para escritorio (sin zoom) */
-    .player-ficha-class {
-        width: 55px; /* 55px base en escritorio */
-        height: 55px;
-    }
+        /* 2. COMPORTAMIENTO CON ZOOM EN PANTALLAS GRANDES (Desktop/Tablet) */
+        @media (min-width: 769px) {
 
-    /* SOBRESCRIBIMOS: Si el mapa está en zoom y la pantalla es grande */
-    #map-zoom-container.is-zoomed .player-ficha-class {
-        /* Usamos el valor que sí funciona bien en monitores grandes */
-        transform: translate(-50%, -50%) scale(0.5); /* <-- Mantenemos 0.5 aquí */
-        box-shadow: 0 0 10px 2px rgba(51, 175, 255, 0.7);
-    }
-}
+            /* Aumentamos el tamaño base de la ficha para escritorio (sin zoom) */
+            .player-ficha-class {
+                width: 55px;
+                height: 55px;
+            }
+
+            /* SOBRESCRIBIMOS: Si el mapa está en zoom y la pantalla es grande */
+            #map-zoom-container.is-zoomed .player-ficha-class {
+                /* Usamos el valor que sí funciona bien en monitores grandes */
+                transform: translate(-50%, -50%) scale(0.5);
+                box-shadow: 0 0 10px 2px rgba(51, 175, 255, 0.7);
+            }
+        }
 
         /* --- ESTILOS DADO --- */
         .dice-cube .dice-face {
@@ -536,6 +627,12 @@ header {
             display: none;
             transition: opacity 0.3s ease;
             animation: pulse 2s infinite;
+            
+            /* En móvil flota sobre el dado */
+            position: absolute; 
+            top: -45px; 
+            left: 50%;
+            transform: translateX(-50%); 
         }
 
         .turn-indicator.visible {
@@ -548,21 +645,22 @@ header {
             text-transform: uppercase;
         }
 
-        /*/----------------------------------------------*/
+        /*/*/
         #map-screen {
             position: relative;
             overflow: hidden;
         }
 
-    #map-zoom-container {
-    position: relative;
-    width: 100%;
-    /* Removimos el max-width: 1000px; para permitir el escalado en pantallas grandes */
-    margin: auto;
-    /* Mantén la relación de aspecto del mapa */
-    aspect-ratio: 10667 / 6000; 
-   
-}
+        #map-zoom-container {
+            position: relative;
+            width: 100%;
+            margin: auto;
+            aspect-ratio: 10667 / 6000;
+            /* Añadido para animación del zoom */
+            transition: transform 2s ease-in-out;
+            transform-origin: center center;
+            /* Ajustado en JS, pero un valor inicial seguro */
+        }
 
         /* --- ESTILOS UNIFICADOS PARA TODOS LOS MODALES --- */
         .modal-backdrop {
@@ -614,15 +712,9 @@ header {
 
         #info-modal-image {
             max-width: 80%;
-            /* <-- Esto la hace más pequeña */
-
-            /* --- ¡ESTAS 3 LÍNEAS LA CENTRAN! --- */
             display: block;
             margin-left: auto;
             margin-right: auto;
-
-            /* --- FIN DE LAS LÍNEAS DE CENTRADO --- */
-
             Height: auto;
             border-radius: 8px;
             margin-bottom: 15px;
@@ -709,6 +801,7 @@ header {
         }
 
         #player-stats-container {
+            /* VUELVE A SER ABSOLUTO en móvil */
             position: absolute;
             top: 10px;
             left: 10px;
@@ -724,6 +817,19 @@ header {
             max-width: calc(100vw - 20px);
             box-sizing: border-box;
             transition: all 0.3s ease;
+        }
+        
+        /* En escritorio se reubica */
+        @media (min-width: 769px) {
+            #player-stats-container {
+                position: relative;
+                top: auto;
+                left: auto;
+                width: 100%;
+                max-width: none;
+                background-color: transparent;
+                box-shadow: none;
+            }
         }
 
         .player-stat-row {
@@ -798,12 +904,13 @@ header {
                 width: auto;
                 padding: 8px;
             }
+
             .player-ficha-class {
-        width: 45px;
-        height: 45px;
-        /* Reducimos la sombra al hacer zoom para ahorrar recursos */
-        box-shadow: none !important; 
-    }
+                width: 45px;
+                height: 45px;
+                /* Reducimos la sombra al hacer zoom para ahorrar recursos */
+                box-shadow: none !important;
+            }
 
             .player-stat-row .player-name {
                 font-size: 1em;
@@ -1122,7 +1229,7 @@ header {
             opacity: 0.9;
         }
 
-        /* ---BOTON INFO  ESTILOS PARA EL BOTÓN CON ÍCONO --- */
+        /* ---BOTON INFO ESTILOS PARA EL BOTÓN CON ÍCONO --- */
 
         #info-modal-close-button {
             display: inline-flex;
@@ -1182,8 +1289,8 @@ header {
             fill: #FFFFFF;
         }
 
-        /* 3. ¡LA SOLUCIÓN! Evita que aparezca el fondo circular gris 
-      al pasar el mouse sobre CUALQUIER botón del header */
+        /* 3. ¡LA SOLUCIÓN! Evita que aparezca el fondo circular gris
+        al pasar el mouse sobre CUALQUIER botón del header */
         header .settings-button:hover {
             background-color: transparent !important;
             /* Anula el estilo base */
@@ -1208,8 +1315,8 @@ header {
             text-align: left;
         }
 
-        /* 2. Resetea los márgenes de todos los elementos de texto 
-      (¡ESTA ES LA CORRECCIÓN CLAVE!) */
+        /* 2. Resetea los márgenes de todos los elementos de texto
+        (¡ESTA ES LA CORRECCIÓN CLAVE!) */
         #game-info-modal h4,
         #game-info-modal p,
         #game-info-modal ul,
@@ -1481,14 +1588,14 @@ header {
     <div class="dashboard-container">
         <header>
             <a href="#" id="game-info-button" class="settings-button" title="Información del Juego">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                                       
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+
                     <path fill-rule="evenodd"
                         d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm8.25-1.06a.75.75 0 01.75.75v3.75a.75.75 0 01-1.5 0V12a.75.75 0 01.75-.75zM10.5 8.25a.75.75 0 000 1.5.75.75 0 000-1.5z"
                         clip-rule="evenodd" />
-                                   
+
                 </svg>
-                            </a>
+            </a>
             <a href="admin.html" target="_blank" class="settings-button" title="Administrador">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
                     <path
@@ -1540,6 +1647,7 @@ header {
                 <div id="zoom-loader-backdrop">
                     <div id="zoom-loader-text">Cargando la ruta...</div>
                 </div>
+                
                 <div id="player-stats-container">
                 </div>
 
@@ -1567,8 +1675,9 @@ header {
                     </div>
                 </div>
             </div>
-
-
+            
+             <div id="player-stats-sidebar" style="display: none;">
+                 </div>
             <div id="player-select-backdrop" class="modal-backdrop">
                 <div id="player-select-modal" class="modal-content">
 
@@ -1694,14 +1803,14 @@ header {
             </div>
 
             <div id="event-modal-backdrop" class="modal-backdrop">
-                    <div id="event-modal" class="modal-content">
-                           
-                                    <h2 id="event-modal-title"></h2>
+                <div id="event-modal" class="modal-content">
 
-                            <p id="event-text"></p>
-                            <div id="event-icon-container"></div>
-                            <button id="event-modal-close-button">Entendido</button>
-                        </div>
+                    <h2 id="event-modal-title"></h2>
+
+                    <p id="event-text"></p>
+                    <div id="event-icon-container"></div>
+                    <button id="event-modal-close-button">Entendido</button>
+                </div>
             </div>
 
             <div id="ficha-modal-backdrop">
@@ -1749,74 +1858,74 @@ header {
                 </div>
             </div>
             <div id="game-info-backdrop" class="modal-backdrop" style="display: none;">
-                            <div id="game-info-modal" class="modal-content">
-                                    <h3 style="text-align: center; color: #0074D9; text-transform: uppercase;">TE VIVO
+                <div id="game-info-modal" class="modal-content">
+                    <h3 style="text-align: center; color: #0074D9; text-transform: uppercase;">TE VIVO
                         IMBABURA</h3>
-                                   
-                                    <h4>Acerca del Juego</h4>
-                                   
-                                    <p>¡Bienvenido a la aventura "Te Vivo Imbabura"! Este juego de tablero interactivo
-                        te invita a recorrer los puntos turísticos más emblemáticos de nuestra provincia.</p>
-                                   
-                                    <h4>¿Cómo Jugar?</h4>
-                                    <ul>
-                                            <li>Elige el número de jugadores y registra tus datos.</li>
-                                            <li>Selecciona tu ficha favorita para representar tu viaje.</li>
-                                            <li>En tu turno, ¡lanza el dado!</li>
-                                                                <li>Tu ficha hará <strong>paradas obligatorias</strong>
-                            en las casillas de "Parada" (puntos de información).</li>
-                                            <li>¡El jugador que llegue a la meta con más puntos gana!</li>
-                                        </ul>
 
-                                    <h4>Simbología del Tablero</h4>
-                                    <table class="info-legend-table">
-                                            <thead>
-                                                    <tr>
-                                                      <th>Casilla</th>
-                                                            <th>Nombre</th>
-                                                            <th>Descripción</th>
-                                                        </tr>
-                                                </thead>
-                                            <tbody>
-                                                    <tr>
+                    <h4>Acerca del Juego</h4>
+
+                    <p>¡Bienvenido a la aventura "Te Vivo Imbabura"! Este juego de tablero interactivo
+                        te invita a recorrer los puntos turísticos más emblemáticos de nuestra provincia.</p>
+
+                    <h4>¿Cómo Jugar?</h4>
+                    <ul>
+                        <li>Elige el número de jugadores y registra tus datos.</li>
+                        <li>Selecciona tu ficha favorita para representar tu viaje.</li>
+                        <li>En tu turno, ¡lanza el dado!</li>
+                        <li>Tu ficha hará <strong>paradas obligatorias</strong>
+                            en las casillas de "Parada" (puntos de información).</li>
+                        <li>¡El jugador que llegue a la meta con más puntos gana!</li>
+                    </ul>
+
+                    <h4>Simbología del Tablero</h4>
+                    <table class="info-legend-table">
+                        <thead>
+                            <tr>
+                                <th>Casilla</th>
+                                <th>Nombre</th>
+                                <th>Descripción</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
                                 <td><img src="assets/descripcion_casillas/punto.png" class="legend-square-icon"></td>
                                 <td><strong>Parada</strong></td>
                                 <td>Recibe información y premios.</td>
                             </tr>
-                                                    <tr>
+                            <tr>
                                 <td><img src="assets/descripcion_casillas/casillasegura.png" class="legend-square-icon">
                                 </td>
                                 <td><strong>Casilla segura</strong></td>
                                 <td>Un punto de descanso. No pasa nada en esta casilla.</td>
                             </tr>
-                                                    <tr>
+                            <tr>
                                 <td><img src="assets/descripcion_casillas/recompensa.png" class="legend-square-icon">
                                 </td>
                                 <td><strong>Datos informativos</strong></td>
                                 <td>Recibe pequeños datos informativos y premios.</td>
                             </tr>
-                                                  <tr>
+                            <tr>
                                 <td><img src="assets/descripcion_casillas/pregunta.png" class="legend-square-icon"></td>
                                 <td><strong>Pregunta</strong></td>
                                 <td>Responde para ganar o perder puntos.</td>
                             </tr>
-                                                    <tr>
+                            <tr>
                                 <td><img src="assets/descripcion_casillas/trampa.png" class="legend-square-icon"></td>
                                 <td><strong>Trampa</strong></td>
                                 <td>¡Cuidado! Una penalización.</td>
                             </tr>
-                                                    <tr>
+                            <tr>
                                 <td><img src="assets/descripcion_casillas/ventaja.png" class="legend-square-icon"></td>
                                 <td><strong>Ventaja</strong></td>
                                 <td>¡Suerte! Un premio o atajo.</td>
                             </tr>
-                                            </tbody>
-                                        </table>
-                                   
-                                    <button id="game-info-close-btn"
+                        </tbody>
+                    </table>
+
+                    <button id="game-info-close-btn"
                         style="display: block; margin: 20px auto 0 auto;">Cerrar</button>
-                                </div>
-                        </div>
+                </div>
+            </div>
             <div id="game-over-backdrop">
                 <div id="game-over-content">
                     <img id="confetti-gif" src="assets/video/gif_finpartida.gif" alt="Confeti" />
@@ -1882,48 +1991,48 @@ header {
                 bannerHeader: "assets/banner_tvi.png"
             },
             path: [
-                { top: '58.13%', left: '71.18%' },     // 0 (Salida)
+                { top: '58.13%', left: '71.18%' },      // 0 (Salida)
                 { top: '59.60%', left: '72.38%' }, //1
                 { top: '60.57%', left: '73.49%' },    // 2
-                { top: '61.96%', left: '74.51%' },     // 3
+                { top: '61.96%', left: '74.51%' },      // 3
                 { top: '63.10%', left: '75.38%' },    // 4
-                { top: '64.29%', left: '76.33%' },     // 5
-                { top: '65.77%', left: '77.35%' },     // 6
-                { top: '66.35%', left: '78.67%' },     // 7
-                { top: '68.04%', left: '79.94%' },     // 8
+                { top: '64.29%', left: '76.33%' },      // 5
+                { top: '65.77%', left: '77.35%' },      // 6
+                { top: '66.35%', left: '78.67%' },      // 7
+                { top: '68.04%', left: '79.94%' },      // 8
                 { top: '70.14%', left: '79.37%' }, // 9
-                { top: '71.41%', left: '78.23%' },     // 10
-                { top: '72.16%', left: '77.08%' },     // 11
-                { top: '73.05%', left: '75.72%' },     // 12
-                { top: '73.67%', left: '74.34%' },     // 13
-                { top: '74.10%', left: '73.19%' },     // 14
-                { top: '74.41%', left: '71.90%' },     // 15
-                { top: '74.56%', left: '70.49%' },     // 16
-                { top: '74.44%', left: '69.04%' },     // 17
-                { top: '73.67%', left: '67.55%' },     // 18
-                { top: '72.20%', left: '66.42%' },     // 19
-                { top: '70.80%', left: '65.39%' },     // 20
-                { top: '69.84%', left: '64.09%' },     // 21
-                { top: '69.41%', left: '62.84%' },     // 22
-                { top: '68.22%', left: '61.64%' },     // 23
-                { top: '65.59%', left: '61.44%' },     // 24
-                { top: '64.28%', left: '62.89%' },     // 25
-                { top: '64.01%', left: '64.22%' },     // 26
-                { top: '62.85%', left: '65.36%' },     // 27
-                { top: '60.68%', left: '65.93%' },     // 28
-                { top: '58.29%', left: '65.78%' },     // 29
-                { top: '56.23%', left: '65.01%' },     // 30
-                { top: '54.18%', left: '64.44%' },     // 31
-                { top: '51.67%', left: '64.07%' },     // 32
-                { top: '49.31%', left: '64.53%' },     // 33
-                { top: '47.88%', left: '65.56%' },     // 34
+                { top: '71.41%', left: '78.23%' },      // 10
+                { top: '72.16%', left: '77.08%' },      // 11
+                { top: '73.05%', left: '75.72%' },      // 12
+                { top: '73.67%', left: '74.34%' },      // 13
+                { top: '74.10%', left: '73.19%' },      // 14
+                { top: '74.41%', left: '71.90%' },      // 15
+                { top: '74.56%', left: '70.49%' },      // 16
+                { top: '74.44%', left: '69.04%' },      // 17
+                { top: '73.67%', left: '67.55%' },      // 18
+                { top: '72.20%', left: '66.42%' },      // 19
+                { top: '70.80%', left: '65.39%' },      // 20
+                { top: '69.84%', left: '64.09%' },      // 21
+                { top: '69.41%', left: '62.84%' },      // 22
+                { top: '68.22%', left: '61.64%' },      // 23
+                { top: '65.59%', left: '61.44%' },      // 24
+                { top: '64.28%', left: '62.89%' },      // 25
+                { top: '64.01%', left: '64.22%' },      // 26
+                { top: '62.85%', left: '65.36%' },      // 27
+                { top: '60.68%', left: '65.93%' },      // 28
+                { top: '58.29%', left: '65.78%' },      // 29
+                { top: '56.23%', left: '65.01%' },      // 30
+                { top: '54.18%', left: '64.44%' },      // 31
+                { top: '51.67%', left: '64.07%' },      // 32
+                { top: '49.31%', left: '64.53%' },      // 33
+                { top: '47.88%', left: '65.56%' },      // 34
                 { top: '46.07%', left: '66.44%' }, // 35
-                { top: '43.75%', left: '67.01%' },     // 36
-                { top: '41.61%', left: '67.09%' },    // 37 
-                { top: '39.05%', left: '66.81%' },   // 38
-                { top: '36.49%', left: '65.96%' },   // 39
-                { top: '34.32%', left: '65.18%' },   // 40
-                { top: '31.62%', left: '64.87%' },  // 41
+                { top: '43.75%', left: '67.01%' },      // 36
+                { top: '41.61%', left: '67.09%' },    // 37
+                { top: '39.05%', left: '66.81%' },    // 38
+                { top: '36.49%', left: '65.96%' },    // 39
+                { top: '34.32%', left: '65.18%' },    // 40
+                { top: '31.62%', left: '64.87%' },    // 41
             ],
             gameData: {
                 // ... (Todos tus datos de gameData van aquí, sin cambios) ...
@@ -2253,42 +2362,44 @@ header {
         const finalScoreDetails = document.getElementById('final-score-details');
         const playAgainButton = document.getElementById('play-again-button');
         const bgMusic = document.getElementById('bg-music');
+        const playerStatsContainer = document.getElementById('player-stats-container');
+        const playerStatsSidebar = document.getElementById('player-stats-sidebar');
 
         // Configurar volumen bajito (10%)
         if (bgMusic) {
             bgMusic.volume = 0.07
-            ;
+                ;
         }
         // --- AGREGA ESTO ---
-const diceSound = document.getElementById('dice-sound');
+        const diceSound = document.getElementById('dice-sound');
 
-// Configuración de volumen (el dado suele necesitar volumen alto)
-if (diceSound) {
-    diceSound.volume = 1.0; 
-}
+        // Configuración de volumen (el dado suele necesitar volumen alto)
+        if (diceSound) {
+            diceSound.volume = 1.0;
+        }
 
         // ¡ESTA LÍNEA ES LA CORRECTA!
         const allPossibleRewards = ['helado', 'arbol', 'poncho', 'canoa', 'algodon'];
         // --- ¡NUEVO! CÓDIGO DE ZONAS DE CÁMARA ---
 
-      // Cerca de la línea 1709 de tu script:
-const CAMERA_ZONES = {
-    'abajo': {
-        origin: '73% 70%',
-        // ELIMINA 'translateZ(0)'
-        transform: 'scale(3.0)' 
-    },
-    'media': {
-        origin: '73% 50%',
-        // ELIMINA 'translateZ(0)'
-        transform: 'scale(3.0)' 
-    },
-    'arriba': {
-        origin: '73% 30%',
-        // ELIMINA 'translateZ(0)'
-        transform: 'scale(3.0)' 
-    }
-};
+        // Cerca de la línea 1709 de tu script:
+        const CAMERA_ZONES = {
+            'abajo': {
+                origin: '73% 70%',
+                // ELIMINA 'translateZ(0)'
+                transform: 'scale(3.0)'
+            },
+            'media': {
+                origin: '73% 50%',
+                // ELIMINA 'translateZ(0)'
+                transform: 'scale(3.0)'
+            },
+            'arriba': {
+                origin: '73% 30%',
+                // ELIMINA 'translateZ(0)'
+                transform: 'scale(3.0)'
+            }
+        };
 
         // Variable para recordar en qué zona estamos
         let currentCameraZone = null;
@@ -2296,6 +2407,27 @@ const CAMERA_ZONES = {
         // ===========================================
         // 5. FUNCIONES DEL JUEGO (¡CORREGIDAS!)
         // ===========================================
+        
+        // --- NUEVA FUNCIÓN PARA GESTIONAR EL LAYOUT DE ESCRITORIO ---
+        function handleDesktopLayout() {
+            const isDesktop = window.matchMedia("(min-width: 769px)").matches;
+            
+            if (isDesktop && mapScreen.classList.contains('active')) {
+                // 1. Mover elementos a la barra lateral
+                playerStatsSidebar.appendChild(playerStatsContainer);
+                playerStatsSidebar.appendChild(diceContainer);
+                playerStatsSidebar.style.display = 'flex';
+                // 2. Mover el indicador de turno de vuelta al mapa
+                mapScreen.appendChild(turnIndicator);
+            } else if (!isDesktop && mapScreen.classList.contains('active')) {
+                // 1. Mover elementos de vuelta a la superposición del mapa
+                mapScreen.appendChild(playerStatsContainer);
+                mapScreen.appendChild(diceContainer);
+                diceContainer.appendChild(turnIndicator);
+                playerStatsSidebar.style.display = 'none';
+            }
+        }
+        // --- FIN NUEVA FUNCIÓN DE LAYOUT ---
 
         // --- FUNCIÓN DE CARGA DE NIVEL (¡CORREGIDA!) ---
         function loadLevel(levelData) {
@@ -2351,7 +2483,7 @@ const CAMERA_ZONES = {
             }
         }
 
-        function showScreen(screenToShow) { document.querySelectorAll('.screen').forEach(s => s.classList.remove('active')); screenToShow.classList.add('active'); }
+        function showScreen(screenToShow) { document.querySelectorAll('.screen').forEach(s => s.classList.remove('active')); screenToShow.classList.add('active'); handleDesktopLayout(); }
 
         function onIntroVideoEnd() {
             if (!gameOver && !hasVideoFinished) {
@@ -2441,7 +2573,7 @@ const CAMERA_ZONES = {
 
                     // --- LÓGICA DE CÁMARA INICIAL (CORREGIDA) ---
                     const startZone = getZoneForPosition(0);
-                    setCameraZone(startZone, true); // <--- ¡CAMBIO REALIZADO!
+                    setCameraZone(startZone, false); // <--- ¡CAMBIO REALIZADO! (false = sin animación en el inicio)
                     mapZoomContainer.classList.add('is-zoomed');
                     isZoomedIn = true;
                     // --- FIN DE LA CORRECCIÓN ---
@@ -2864,9 +2996,9 @@ const CAMERA_ZONES = {
             }
         }
         /**
-                 * Mueve la ficha un solo paso y devuelve una Promise que se resuelve
-                 * cuando la transición CSS termina.
-                 */
+           * Mueve la ficha un solo paso y devuelve una Promise que se resuelve
+           * cuando la transición CSS termina.
+           */
         function moveStepPromise(playerIndex, targetPos) {
             return new Promise(resolve => {
                 const fichaElement = playerFichaElements[playerIndex];
@@ -2989,11 +3121,11 @@ const CAMERA_ZONES = {
         function rollDice() {
             if (!gameActive || isRolling || gameOver) return;
             // --- AGREGA ESTO AQUÍ ---
-    if (diceSound) {
-        diceSound.currentTime = 0; // Reinicia el audio por si se pulsó muy rápido
-        diceSound.play().catch(e => console.log("Error audio dado", e));
-    }
-    // ------------------------
+            if (diceSound) {
+                diceSound.currentTime = 0; // Reinicia el audio por si se pulsó muy rápido
+                diceSound.play().catch(e => console.log("Error audio dado", e));
+            }
+            // ------------------------
             isRolling = true;
             gameActive = false;
             turnIndicator.classList.remove('visible');
@@ -3079,11 +3211,11 @@ const CAMERA_ZONES = {
                 setTimeout(() => {
                     gameOverBackdrop.style.display = 'none';
                     // --- AQUÍ INSERTAMOS LA PAUSA DE LA MÚSICA ---
-        if (bgMusic) {
-            bgMusic.pause();
-            bgMusic.currentTime = 0; // Reinicia para la próxima vez que se inicie el juego
-        }
-        // ----------------------------------------------
+                    if (bgMusic) {
+                        bgMusic.pause();
+                        bgMusic.currentTime = 0; // Reinicia para la próxima vez que se inicie el juego
+                    }
+                    // ----------------------------------------------
 
                     // 4. MUESTRA EL VIDEO y AÑADE EL LISTENER
                     showScreen(videoScreen);
@@ -3213,6 +3345,11 @@ const CAMERA_ZONES = {
             btnLevel2.addEventListener('click', () => alert("Nivel 2 - ¡Próximamente!"));
             btnLevel3.addEventListener('click', () => alert("Nivel 3 - ¡Próximamente!"));
             btnLevel4.addEventListener('click', () => alert("Nivel 4 - ¡Próximamente!"));
+            
+            // --- AÑADIDO: GESTIÓN DE LAYOUT AL INICIO Y AL REDIMENSIONAR ---
+            handleDesktopLayout();
+            window.addEventListener('resize', handleDesktopLayout);
+            // ------------------------------------------------------------------
         });
 
         document.addEventListener("DOMContentLoaded", function () {
@@ -3247,7 +3384,7 @@ const CAMERA_ZONES = {
          */
         function setCameraZone(newZone, animate = true) {
 
-            if (newZone === currentCameraZone) {
+            if (newZone === currentCameraZone && animate) {
                 return; // Ya estamos en esta zona
             }
             console.log(`Cambiando cámara a la zona: ${newZone}`);
@@ -3258,25 +3395,25 @@ const CAMERA_ZONES = {
             // Comprobamos si el mapa YA ESTÁ en modo zoom
             const isAlreadyZoomed = mapZoomContainer.classList.contains('is-zoomed');
 
-          if (animate) {
-        // En lugar de animar transform-origin, lo ajustamos instantáneamente:
-        mapZoomContainer.style.transition = 'none'; // Desactiva la transición
-        mapZoomContainer.style.transformOrigin = zoneData.origin; // Fija el punto de origen
+            if (animate) {
+                // En lugar de animar transform-origin, lo ajustamos instantáneamente:
+                mapZoomContainer.style.transition = 'none'; // Desactiva la transición
+                mapZoomContainer.style.transformOrigin = zoneData.origin; // Fija el punto de origen
 
-        void mapZoomContainer.offsetHeight; // <-- FUERZA EL REFLOW (APLICA EL CAMBIO)
+                void mapZoomContainer.offsetHeight; // <-- FUERZA EL REFLOW (APLICA EL CAMBIO)
 
-        // Ahora, solo animamos la escala
-        mapZoomContainer.style.transition = 'transform 2s ease-in-out';
-        mapZoomContainer.style.transform = zoneData.transform;
-        mapZoomContainer.classList.add('is-zoomed'); // Asegura que esté en modo zoom
-    } else {
-        // Lógica para movimiento no-animado (sin cambios)
-        mapZoomContainer.style.transition = 'none';
-        mapZoomContainer.style.transformOrigin = zoneData.origin;
-        mapZoomContainer.style.transform = zoneData.transform;
-    }
-}
-        
+                // Ahora, solo animamos la escala
+                mapZoomContainer.style.transition = 'transform 2s ease-in-out';
+                mapZoomContainer.style.transform = zoneData.transform;
+                mapZoomContainer.classList.add('is-zoomed'); // Asegura que esté en modo zoom
+            } else {
+                // Lógica para movimiento no-animado (sin cambios)
+                mapZoomContainer.style.transition = 'none';
+                mapZoomContainer.style.transformOrigin = zoneData.origin;
+                mapZoomContainer.style.transform = zoneData.transform;
+            }
+        }
+
 
     </script>
 </body>
