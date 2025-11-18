@@ -3001,52 +3001,56 @@ if (diceSound) {
             setTimeout(() => finalScoreBackdrop.classList.add('visible'), 10);
         }
         // --- REEMPLAZA ESTA FUNCIÓN ---
-        function triggerEndGameSequence() {
-            gameOver = true;
-            gameActive = false;
-            isRolling = false;
-            updateUIForCurrentPlayer(); // Oculta el indicador de turno
-            diceContainer.style.display = 'none'; // Oculta el dado
+     // --- FUNCIÓN triggerEndGameSequence() FINAL ---
+function triggerEndGameSequence() {
+    gameOver = true;
+    gameActive = false;
+    isRolling = false;
+    updateUIForCurrentPlayer(); // Oculta el indicador de turno
+    diceContainer.style.display = 'none'; // Oculta el dado
 
-            // 1. Prepara el overlay de confeti
-            gameOverText.textContent = `¡Has completado la ruta!`;
-            gameOverBackdrop.style.display = 'flex';
-            setTimeout(() => {
-                gameOverBackdrop.classList.add('visible');
-            }, 10);
+    // 1. Prepara el overlay de confeti
+    gameOverText.textContent = `¡Has completado la ruta!`;
+    gameOverBackdrop.style.display = 'flex';
+    setTimeout(() => {
+        gameOverBackdrop.classList.add('visible');
+    }, 10);
 
-            // 2. Espera 4 segundos
-            setTimeout(() => {
-                // 3. Oculta el confeti
-                gameOverBackdrop.classList.remove('visible');
-                setTimeout(() => {
-                    gameOverBackdrop.style.display = 'none';
-
-                    // 4. MUESTRA EL VIDEO y AÑADE EL LISTENER
-                    showScreen(videoScreen);
-                    localVideoPlayer.removeEventListener('ended', onIntroVideoEnd);
-
-                    // ¡ESTA LÍNEA ES LA CONEXIÓN QUE FALTA!
-                    localVideoPlayer.addEventListener('ended', onFinalVideoEnd);
-                    // --- ¡ESTAS SON LAS LÍNEAS NUEVAS! ---
-                    // 1. Busca el elemento <source> dentro de tu video player
-                    const videoSource = localVideoPlayer.querySelector('source');
-
-                    // 2. CAMBIA ESTA RUTA por la de tu video final
-                    videoSource.src = 'assets/video/final_juego.mp4';
-
-                    // 3. Dile al player que cargue el nuevo video
-                    localVideoPlayer.load();
-                    // --- FIN DE LAS LÍNEAS NUEVAS ---
-                    localVideoPlayer.currentTime = 0;
-                    localVideoPlayer.muted = false;
-                    localVideoPlayer.play();
-
-                }, 1000); // Espera a que termine la animación de fade-out
-
-            }, 4000); // Duración del confeti en pantalla
+    // 2. Espera 4 segundos
+    setTimeout(() => {
+        // 3. Oculta el confeti
+        gameOverBackdrop.classList.remove('visible');
+        
+        // --- PAUSA DE LA MÚSICA ---
+        if (bgMusic) {
+            bgMusic.pause();
+            bgMusic.currentTime = 0; // Reinicia para la próxima partida
         }
+        // --------------------------
 
+        setTimeout(() => {
+            gameOverBackdrop.style.display = 'none';
+
+            // 4. MUESTRA EL VIDEO y AÑADE EL LISTENER
+            showScreen(videoScreen);
+            localVideoPlayer.removeEventListener('ended', onIntroVideoEnd);
+            localVideoPlayer.addEventListener('ended', onFinalVideoEnd);
+            
+            const videoSource = localVideoPlayer.querySelector('source');
+            
+            // --- CORRECCIÓN DE LA RUTA DEL VIDEO FINAL (Intentando con MP4 en mayúsculas) ---
+            videoSource.src = 'assets/video/final_juego.MP4';
+            // --------------------------------------------------------------------------------
+
+            localVideoPlayer.load();
+            localVideoPlayer.currentTime = 0;
+            localVideoPlayer.muted = false;
+            localVideoPlayer.play();
+
+        }, 1000); // Espera a que termine la animación de fade-out
+
+    }, 4000); // Duración del confeti en pantalla
+}
         function setupGame(playerCount) {
             numPlayers = playerCount;
             currentPlayerIndex = 0;
