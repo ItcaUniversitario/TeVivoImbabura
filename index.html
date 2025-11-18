@@ -561,9 +561,7 @@ header {
     margin: auto;
     /* Mantén la relación de aspecto del mapa */
     aspect-ratio: 10667 / 6000; 
-    transition: transform 2s ease-in-out, transform-origin 2s ease-in-out;
-    transform-origin: 50% 50%;
-    transform: scale(1);
+   
 }
 
         /* --- ESTILOS UNIFICADOS PARA TODOS LOS MODALES --- */
@@ -2277,15 +2275,18 @@ if (diceSound) {
 const CAMERA_ZONES = {
     'abajo': {
         origin: '73% 70%',
-        transform: 'translateZ(0) scale(3.0)' // REDUCIDO
+        // ELIMINA 'translateZ(0)'
+        transform: 'scale(3.0)' 
     },
     'media': {
         origin: '73% 50%',
-        transform: 'translateZ(0) scale(3.0)' // REDUCIDO
+        // ELIMINA 'translateZ(0)'
+        transform: 'scale(3.0)' 
     },
     'arriba': {
         origin: '73% 30%',
-        transform: 'translateZ(0) scale(3.0)' // REDUCIDO
+        // ELIMINA 'translateZ(0)'
+        transform: 'scale(3.0)' 
     }
 };
 
@@ -2457,7 +2458,7 @@ const CAMERA_ZONES = {
                         isRolling = false;
                         if (diceFace) diceFace.classList.add('dice-ready');
                         updateUIForCurrentPlayer();
-                    }, 2000);
+                    }, 100);
                 }, 100);
 
             } else {
@@ -3257,35 +3258,25 @@ const CAMERA_ZONES = {
             // Comprobamos si el mapa YA ESTÁ en modo zoom
             const isAlreadyZoomed = mapZoomContainer.classList.contains('is-zoomed');
 
-            if (animate) {
-                if (isAlreadyZoomed) {
-                    // --- ESCENARIO 1: YA ESTAMOS "DENTRO" DEL JUEGO ---
-                    // (Moviéndonos de 'abajo' a 'media')
-                    // Aquí SÍ queremos animar el pivote (transform-origin)
-                    mapZoomContainer.style.transition = 'transform 2s ease-in-out, transform-origin 2s ease-in-out';
-                    mapZoomContainer.style.transformOrigin = zoneData.origin;
-                    mapZoomContainer.style.transform = zoneData.transform;
+          if (animate) {
+        // En lugar de animar transform-origin, lo ajustamos instantáneamente:
+        mapZoomContainer.style.transition = 'none'; // Desactiva la transición
+        mapZoomContainer.style.transformOrigin = zoneData.origin; // Fija el punto de origen
 
-                } else {
-                    // --- ESCENARIO 2: ES EL ZOOM INICIAL ---
-                    // (Moviéndonos de 'lejos' a 'abajo')
-                    // Aquí usamos la técnica "anti-deslizamiento"
-                    mapZoomContainer.style.transition = 'none';
-                    mapZoomContainer.style.transformOrigin = zoneData.origin;
-                    void mapZoomContainer.offsetHeight; // Forzar reflow
-                    mapZoomContainer.style.transition = 'transform 2s ease-in-out';
-                    mapZoomContainer.style.transform = zoneData.transform;
-                }
+        void mapZoomContainer.offsetHeight; // <-- FUERZA EL REFLOW (APLICA EL CAMBIO)
 
-            } else {
-                // Lógica para movimiento no-animado (está bien como estaba)
-
-                mapZoomContainer.style.transition = 'none';
-                mapZoomContainer.style.transformOrigin = zoneData.origin;
-                mapZoomContainer.style.transform = zoneData.transform;
-
-            }
-        }
+        // Ahora, solo animamos la escala
+        mapZoomContainer.style.transition = 'transform 2s ease-in-out';
+        mapZoomContainer.style.transform = zoneData.transform;
+        mapZoomContainer.classList.add('is-zoomed'); // Asegura que esté en modo zoom
+    } else {
+        // Lógica para movimiento no-animado (sin cambios)
+        mapZoomContainer.style.transition = 'none';
+        mapZoomContainer.style.transformOrigin = zoneData.origin;
+        mapZoomContainer.style.transform = zoneData.transform;
+    }
+}
+        
 
     </script>
 </body>
