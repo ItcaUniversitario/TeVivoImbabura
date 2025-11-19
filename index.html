@@ -10,6 +10,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Lora&display=swap" rel="stylesheet">
+    
 
     <style>
         body {
@@ -29,7 +30,7 @@
             width: 100%;
             height: 100%;
             z-index: -1;
-            background-image: url('assets/imbaburafondo.png ');
+            background-image: url('assets/imbaburafondo.png');
             background-size: cover;
             background-position: center;
             filter: blur(10px) brightness(1);
@@ -272,129 +273,158 @@
             fill: #060606;
         }
 
-        /* --- ESTILOS DADO 3D --- */
-        #dice-container {
-            position: absolute;
-            bottom: 20px;
-            left: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            background-color: transparent;
-            z-index: 50;
-            perspective: 800px;
-            transition: bottom 1s ease-in-out, left 1s ease-in-out, transform 1s ease-in-out, z-index 0s 1s;
-        }
 
-        .dice-scene {
-            width: 70px;
-            height: 70px;
-            cursor: pointer;
-            transition: transform 0.2s ease;
-            transform-style: preserve-3d;
-        }
+    /* =========================================================================
+// 7. ESTILOS: DADO Y TURNOS (CSS NATIVO) - SIN ANIMACIÓN AL CENTRO
+// ====================================================================== */
 
-        .dice-cube {
-            width: 100%;
-            height: 100%;
-            position: relative;
-            transform-style: preserve-3d;
-            transform: translateZ(-35px);
-            transition: transform 1.5s ease-out;
-        }
+/* El dado permanece anclado en la esquina, sin moverse al centro */
+#dice-container {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: transparent;
+    z-index: 50;
+    perspective: 800px;
+    /* Eliminamos las transiciones de 'bottom' y 'left' */
+    transition: transform 0.2s ease, z-index 0s 1s; 
+}
 
-        .dice-cube .dice-face {
-            position: absolute;
-            width: 70px;
-            height: 70px;
-            box-sizing: border-box;
-            backface-visibility: hidden;
-        }
+.dice-scene {
+    width: 70px; /* Tamaño base del dado */
+    height: 70px;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+    transform-style: preserve-3d;
+}
 
-        #face-1 {
-            transform: rotateY(0deg) translateZ(35px);
-        }
+.dice-cube {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    transform-style: preserve-3d;
+    transform: translateZ(-35px);
+    transition: transform 1.5s ease-out; /* Solo la animación de giro */
+}
 
-        #face-6 {
-            transform: rotateY(180deg) translateZ(35px);
-        }
+.dice-cube .dice-face {
+    position: absolute;
+    width: 70px; 
+    height: 70px;
+    box-sizing: border-box;
+    background-color: #fff;
+    border-radius: 8px;
+    border: 1px solid #333;
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    backface-visibility: hidden;
+    padding: 10px;
+}
 
-        #face-4 {
-            transform: rotateY(90deg) translateZ(35px);
-        }
+/* Posicionamiento 3D (sin cambios, son cruciales para el 3D) */
+#face-1 { transform: rotateY(0deg) translateZ(35px); }
+#face-6 { transform: rotateY(180deg) translateZ(35px); }
+#face-4 { transform: rotateY(90deg) translateZ(35px); }
+#face-3 { transform: rotateY(-90deg) translateZ(35px); }
+#face-2 { transform: rotateX(90deg) translateZ(35px); }
+#face-5 { transform: rotateX(-90deg) translateZ(35px); }
 
-        #face-3 {
-            transform: rotateY(-90deg) translateZ(35px);
-        }
+/* Estilo de los puntos (pips) */
+.pip {
+    display: block;
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background-color: #4CAF50;
+    border-radius: 50%;
+}
 
-        #face-2 {
-            transform: rotateX(90deg) translateZ(35px);
-        }
+/* Distribución de los puntos para cada cara (sin cambios) */
+/* Cara 1 */
+#face-1 .pip { top: 50%; left: 50%; transform: translate(-50%, -50%); }
+/* Cara 2 */
+#face-2 .pip.tl { top: 10px; left: 10px; }
+#face-2 .pip.br { bottom: 10px; right: 10px; }
+/* Cara 3 */
+#face-3 .pip.tl { top: 10px; left: 10px; }
+#face-3 .pip.c { top: 50%; left: 50%; transform: translate(-50%, -50%); }
+#face-3 .pip.br { bottom: 10px; right: 10px; }
+/* Cara 4 */
+#face-4 .pip.tl { top: 10px; left: 10px; }
+#face-4 .pip.tr { top: 10px; right: 10px; }
+#face-4 .pip.bl { bottom: 10px; left: 10px; }
+#face-4 .pip.br { bottom: 10px; right: 10px; }
+/* Cara 5 */
+#face-5 .pip.tl { top: 10px; left: 10px; }
+#face-5 .pip.tr { top: 10px; right: 10px; }
+#face-5 .pip.c { top: 50%; left: 50%; transform: translate(-50%, -50%); }
+#face-5 .pip.bl { bottom: 10px; left: 10px; }
+#face-5 .pip.br { bottom: 10px; right: 10px; }
+/* Cara 6 */
+#face-6 .pip.tl { top: 10px; left: 10px; }
+#face-6 .pip.tr { top: 10px; right: 10px; }
+#face-6 .pip.cl { top: 50%; left: 10px; transform: translateY(-50%); }
+#face-6 .pip.cr { top: 50%; right: 10px; transform: translateY(-50%); }
+#face-6 .pip.bl { bottom: 10px; left: 10px; }
+#face-6 .pip.br { bottom: 10px; right: 10px; }
 
-        #face-5 {
-            transform: rotateX(-90deg) translateZ(35px);
-        }
+/* Animación de Giro (roll-animation) - Mantenida */
+@keyframes roll-animation {
+    0% { transform: translateZ(-35px) rotateX(0deg) rotateY(0deg) rotateZ(0deg); }
+    100% { transform: translateZ(-35px) rotateX(1080deg) rotateY(720deg) rotateZ(1440deg); }
+}
 
-        @keyframes roll-animation {
-            0% {
-                transform: translateZ(-35px) rotateX(0deg) rotateY(0deg) rotateZ(0deg);
-            }
+.dice-cube.is-rolling {
+    animation: roll-animation 1.5s linear;
+}
 
-            100% {
-                transform: translateZ(-35px) rotateX(1080deg) rotateY(720deg) rotateZ(1440deg);
-            }
-        }
+/* Posiciones Finales (Mantenidas) */
+.dice-cube.show-1 { transform: translateZ(-35px) rotateY(0deg); }
+.dice-cube.show-6 { transform: translateZ(-35px) rotateY(-180deg); }
+.dice-cube.show-4 { transform: translateZ(-35px) rotateY(-90deg); }
+.dice-cube.show-3 { transform: translateZ(-35px) rotateY(90deg); }
+.dice-cube.show-2 { transform: translateZ(-35px) rotateX(-90deg); }
+.dice-cube.show-5 { transform: translateZ(-35px) rotateX(90deg); }
 
-        .dice-cube.is-rolling {
-            animation: roll-animation 1.5s linear;
-        }
+/* Animación de Pulso (Mantenida) */
+.dice-scene.dice-ready {
+    animation: pulse 2s infinite;
+}
 
-        .dice-cube.show-1 {
-            transform: translateZ(-35px) rotateY(0deg);
-        }
+/* ELIMINADA: La animación launch-dice y su clase de contenedor */
+/* Eliminamos el @keyframes launch-dice */
+/* Eliminamos la clase #dice-container.is-launching */
 
-        .dice-cube.show-6 {
-            transform: translateZ(-35px) rotateY(-180deg);
-        }
 
-        .dice-cube.show-4 {
-            transform: translateZ(-35px) rotateY(-90deg);
-        }
+/* Media Query para pantallas pequeñas (ajustada para el nuevo translateZ) */
+@media (max-width: 500px) {
 
-        .dice-cube.show-3 {
-            transform: translateZ(-35px) rotateY(90deg);
-        }
+    #dice-container {
+        bottom: 10px; /* Un poco más ajustado en móvil */
+        left: 10px;
+    }
 
-        .dice-cube.show-2 {
-            transform: translateZ(-35px) rotateX(-90deg);
-        }
+    .dice-scene,
+    .dice-cube .dice-face {
+        width: 60px;
+        height: 60px;
+    }
 
-        .dice-cube.show-5 {
-            transform: translateZ(-35px) rotateX(90deg);
-        }
+    .dice-cube {
+        transform: translateZ(-30px); /* Mitad del nuevo tamaño (60/2 = 30) */
+    }
 
-        .dice-scene.dice-ready {
-            animation: pulse 2s infinite;
-        }
+    .pip {
+        width: 8px;
+        height: 8px;
+    }
+}
 
-        @keyframes launch-dice {
-            0% {
-                bottom: 20px;
-                left: 20px;
-                transform: scale(1);
-            }
-
-            100% {
-                bottom: 50%;
-                left: 50%;
-                transform: scale(1.5) translate(-50%, 50%);
-            }
-        }
-
-        #dice-container.is-launching {
-            animation: launch-dice 1.5s ease-in-out forwards;
-            z-index: 100;
-        }
 
         /* --- ESTILO DE FICHA MODIFICADO (CLASE) --- */
         .player-ficha-class {
@@ -404,13 +434,22 @@
             border-radius: 50%;
             z-index: 40;
             display: none;
+
+            /* *** MODIFICACIÓN CRÍTICA AQUÍ *** */
+            /* El valor de 'top' y 'left' se establece en JS como el centro de la casilla */
+            /* Este translate mueve la ficha el -50% de su tamaño para CENTRARLA */
             transform: translate(-50%, -50%) scale(1);
+
+            /* La transición ahora es solo sobre 'transform' (más eficiente) */
+            transition: transform 0.6s linear, box-shadow 0.3s ease;
+
+            /* Indica al navegador que prepare la GPU para estas propiedades */
+            will-change: transform, box-shadow;
+
             background-size: 80%;
             background-repeat: no-repeat;
             background-position: center;
             background-color: transparent;
-            transition: top 0.6s linear, left 0.6s linear, box-shadow 0.3s ease, transform 2s ease-in-out;
-            will-change: top, left, transform, box-shadow;
         }
 
         .player-ficha-class.active-turn {
@@ -726,8 +765,8 @@
         .player-stat-row .player-ficha-icon {
             grid-column: 1 / 2;
             grid-row: 1 / 3;
-            width: 32px;
-            height: 32px;
+            width: 28px;
+            height: 28px;
             object-fit: contain;
             border-radius: 50%;
             background-color: #e9e9e9;
@@ -1416,6 +1455,62 @@
             font-size: 1.1em;
             font-weight: bold;
         }
+
+        /* --- ESTILOS PARA PANTALLAS GRANDES (e.g., Kioscos o Smart TV) --- */
+        @media (min-width: 1400px) {
+
+            /* ... (Mantener los ajustes de dado, encabezado, etc.) ... */
+
+            /* ¡CORRECCIÓN CRÍTICA AQUÍ! Aumentamos el tamaño de la ficha */
+            .player-ficha-class {
+                width: 80px;
+                /* Tamaño más cómodo y visible para 86" */
+                height: 80px;
+                /* Aseguramos que la transición sea solo transform si ya aplicaste el paso 1.1 */
+                transition: transform 0.6s linear, box-shadow 0.3s ease;
+            }
+
+            /* Mantenemos el tamaño del icono de las estadísticas más grande */
+            .player-stat-row .player-ficha-icon {
+                width: 45px;
+                /* Icono más visible en el panel de stats */
+                height: 45px;
+            }
+
+            /* Ajustamos el zoom para que se vea bien cuando hacemos el acercamiento */
+            #map-zoom-container.is-zoomed .player-ficha-class {
+                /* Para una ficha de 80px y un zoom de 5x, usamos scale(0.2) 
+           para que se vea como si fuera de 16px en la vista de zoom. 
+           Asegúrate de que este valor esté presente. */
+                transform: translate(-50%, -50%) scale(0.2);
+            }
+
+        }
+        /* Estilos por defecto (para pantallas medianas/grandes) */
+.ficha-del-jugador {
+    display: flex; /* O grid */
+    flex-direction: row; /* Elementos lado a lado por defecto */
+    width: 350px;
+}
+
+/* --- Media Query para Pantallas Pequeñas (ejemplo: menos de 600px) --- */
+@media (max-width: 600px) {
+    .ficha-del-jugador {
+        /* 1. Usar ancho relativo */
+        width: 95%; /* Ocupa casi todo el ancho disponible */
+        margin: 0 auto; /* Centrar la ficha */
+
+        /* 2. Cambiar la dirección del layout para apilar elementos */
+        flex-direction: column; /* Apila los elementos de la ficha */
+        align-items: stretch; /* Opcional: hace que los elementos internos ocupen todo el ancho */
+    }
+
+    /* Opcional: Reducir padding o font-size si es necesario */
+    .ficha-del-jugador h3, .ficha-del-jugador p {
+        padding: 5px;
+        text-align: center;
+    }
+}
     </style>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
@@ -1497,18 +1592,46 @@
 
                     <div id="dice-face" class="dice-scene">
                         <div id="dice-cube" class="dice-cube">
-                            <div class="dice-face" id="face-1"><img src="assets/dice/face_1.png" alt="Face 1"
-                                    class="dice-image"></div>
-                            <div class="dice-face" id="face-2"><img src="assets/dice/face_2.png" alt="Face 2"
-                                    class="dice-image"></div>
-                            <div class="dice-face" id="face-3"><img src="assets/dice/face_3.png" alt="Face 3"
-                                    class="dice-image"></div>
-                            <div class="dice-face" id="face-4"><img src="assets/dice/face_4.png" alt="Face 4"
-                                    class="dice-image"></div>
-                            <div class="dice-face" id="face-5"><img src="assets/dice/face_5.png" alt="Face 5"
-                                    class="dice-image"></div>
-                            <div class="dice-face" id="face-6"><img src="assets/dice/face_6.png" alt="Face 6"
-                                    class="dice-image"></div>
+
+                            <div class="dice-face" id="face-1">
+                                <span class="pip c"></span>
+                            </div>
+
+                            <div class="dice-face" id="face-2">
+                                <span class="pip tl"></span>
+                                <span class="pip br"></span>
+                            </div>
+
+                            <div class="dice-face" id="face-3">
+                                <span class="pip tl"></span>
+                                <span class="pip c"></span>
+                                <span class="pip br"></span>
+                            </div>
+
+                            <div class="dice-face" id="face-4">
+                                <span class="pip tl"></span>
+                                <span class="pip tr"></span>
+                                <span class="pip bl"></span>
+                                <span class="pip br"></span>
+                            </div>
+
+                            <div class="dice-face" id="face-5">
+                                <span class="pip tl"></span>
+                                <span class="pip tr"></span>
+                                <span class="pip c"></span>
+                                <span class="pip bl"></span>
+                                <span class="pip br"></span>
+                            </div>
+
+                            <div class="dice-face" id="face-6">
+                                <span class="pip tl"></span>
+                                <span class="pip tr"></span>
+                                <span class="pip cl"></span>
+                                <span class="pip cr"></span>
+                                <span class="pip bl"></span>
+                                <span class="pip br"></span>
+                            </div>
+
                         </div>
                     </div>
                 </div>
@@ -2132,7 +2255,7 @@
         // ===========================================
         // 4. ELEMENTOS DEL DOM (SIN CAMBIOS)
         // ===========================================
-        const STEP_DURATION_MS = 1200;
+        const STEP_DURATION_MS = 600;
         const levelSelectBackdrop = document.getElementById('level-select-backdrop');
         const btnLevel1 = document.getElementById('btn-level-1');
         const btnLevel2 = document.getElementById('btn-level-2');
@@ -2203,15 +2326,15 @@
         // Configurar volumen bajito (10%)
         if (bgMusic) {
             bgMusic.volume = 0.07
-            ;
+                ;
         }
         // --- AGREGA ESTO ---
-const diceSound = document.getElementById('dice-sound');
+        const diceSound = document.getElementById('dice-sound');
 
-// Configuración de volumen (el dado suele necesitar volumen alto)
-if (diceSound) {
-    diceSound.volume = 1.0; 
-}
+        // Configuración de volumen (el dado suele necesitar volumen alto)
+        if (diceSound) {
+            diceSound.volume = 1.0;
+        }
 
         // ¡ESTA LÍNEA ES LA CORRECTA!
         const allPossibleRewards = ['helado', 'arbol', 'poncho', 'canoa', 'algodon'];
@@ -2379,29 +2502,31 @@ if (diceSound) {
                 fichaModalBackdrop.style.display = 'none';
                 currentPlayerIndex = 0;
 
-                setTimeout(() => {
+               setTimeout(() => {
                     zoomLoaderBackdrop.classList.add('visible');
 
-                    // --- LÓGICA DE CÁMARA INICIAL (CORREGIDA) ---
-                    const startZone = getZoneForPosition(0);
-                    setCameraZone(startZone, true); // <--- ¡CAMBIO REALIZADO!
-                    mapZoomContainer.classList.add('is-zoomed');
-                    isZoomedIn = true;
-                    // --- FIN DE LA CORRECCIÓN ---
-
-                    updateUIForCurrentPlayer();
-                    setTimeout(() => {
-                        zoomLoaderBackdrop.classList.remove('visible');
-                        gameActive = true;
-                        // --- AGREGA ESTO AQUÍ ---
-                        if (bgMusic) {
-                            bgMusic.play().catch(error => console.log("El navegador pidió interacción previa", error));
-                        }
-                        // ------------------------
-                        isRolling = false;
-                        if (diceFace) diceFace.classList.add('dice-ready');
-                        updateUIForCurrentPlayer();
-                    }, 2000);
+                    // AÑADE ESTA LÓGICA
+                    mapImageEl.onload = () => {
+                        // 1. Aplica el zoom
+                        const startZone = getZoneForPosition(0);
+                        setCameraZone(startZone, true); 
+                        mapZoomContainer.classList.add('is-zoomed');
+                        isZoomedIn = true;
+                        
+                        // 2. Espera 2 segundos (el tiempo de la animación de zoom)
+                        setTimeout(() => {
+                            zoomLoaderBackdrop.classList.remove('visible');
+                            gameActive = true;
+                            // ... resto de tu lógica de inicio de juego ...
+                            if (diceFace) diceFace.classList.add('dice-ready');
+                            updateUIForCurrentPlayer();
+                        }, 2000); 
+                    };
+                    
+                    // Si la imagen ya está cargada (desde antes), llama al handler directamente
+                    if (mapImageEl.complete) {
+                        mapImageEl.onload();
+                    }
                 }, 100);
 
             } else {
@@ -2784,81 +2909,72 @@ if (diceSound) {
                 }
             }, 400); // 400ms es el tiempo de la transición de opacidad del modal
         }
-        /* --- REEMPLAZA TU FUNCIÓN 'movePlayerFicha' CON ESTA --- */
-        function movePlayerFicha(playerIndex, positionIndex, durationMs = STEP_DURATION_MS) { // <-- ¡CAMBIO AQUÍ!
+        function movePlayerFicha(playerIndex, positionIndex, durationMs = STEP_DURATION_MS) {
             if (positionIndex >= 0 && positionIndex < activePath.length) {
                 const fichaElement = playerFichaElements[playerIndex];
                 if (!fichaElement) return;
                 const newPos = activePath[positionIndex];
-                const durationSec = durationMs / 1000;
-                const transitionStyle = (durationMs > 0)
-                    ? `top ${durationSec}s linear, left ${durationSec}s linear`
-                    : 'none';
-                fichaElement.style.transition = transitionStyle;
-                if (durationMs > 0) {
-                    setTimeout(() => {
-                        fichaElement.style.top = newPos.top;
-                        fichaElement.style.left = newPos.left;
-                    }, 10);
-                } else {
-                    fichaElement.style.top = newPos.top;
-                    fichaElement.style.left = newPos.left;
-                }
+
+                // 1. Desactivamos la transición y establecemos la posición base (top/left)
+                fichaElement.style.transition = 'none';
+                fichaElement.style.top = newPos.top;
+                fichaElement.style.left = newPos.left;
+
+                // 2. Aplicamos la escala INVERSA (0.2) si el mapa está en zoom (modo juego)
+                // O scale(1) si no hay zoom (inicio del juego)
+                const scaleValue = mapZoomContainer.classList.contains('is-zoomed') ? '0.2' : '1';
+
+                fichaElement.style.transform = `translate(-50%, -50%) scale(${scaleValue})`;
             }
         }
-        /**
-                 * Mueve la ficha un solo paso y devuelve una Promise que se resuelve
-                 * cuando la transición CSS termina.
-                 */
+
         function moveStepPromise(playerIndex, targetPos) {
             return new Promise(resolve => {
                 const fichaElement = playerFichaElements[playerIndex];
-                // Verifica si la ficha y la posición de destino existen
                 if (!fichaElement || !activePath[targetPos]) {
                     console.warn(`Intento de mover ficha ${playerIndex} a posición inválida ${targetPos}`);
-                    resolve(); // Resuelve inmediatamente si algo está mal
+                    resolve();
                     return;
                 }
 
                 const newPos = activePath[targetPos];
                 const durationSec = STEP_DURATION_MS / 1000;
 
-                // --- Safety Timeout ---
-                // A veces, transitionend no se dispara (si no hay movimiento real, o por bugs del navegador)
-                // Creamos un temporizador que resolverá la promesa si la transición tarda demasiado.
+                // Determina la escala CONSTANTE que la ficha debe mantener durante el juego
+                const targetScale = mapZoomContainer.classList.contains('is-zoomed') ? '0.2' : '1';
+
                 const timeoutId = setTimeout(() => {
                     console.warn(`Timeout de TransitionEnd alcanzado para ficha ${playerIndex} moviéndose a ${targetPos}`);
-                    fichaElement.removeEventListener('transitionend', onTransitionEnd); // Limpia el listener
-                    resolve(); // Resuelve la promesa de todos modos
-                }, STEP_DURATION_MS + 150); // Damos un pequeño margen extra (150ms)
+                    fichaElement.removeEventListener('transitionend', onTransitionEnd);
+                    resolve();
+                }, STEP_DURATION_MS + 150);
 
-                // --- Listener de Fin de Transición ---
                 const onTransitionEnd = (event) => {
-                    // Nos aseguramos de que sea la transición de 'top' o 'left' la que terminó
-                    // y que el evento sea sobre la ficha misma (no un elemento hijo)
-                    if (event.target === fichaElement && (event.propertyName === 'top' || event.propertyName === 'left')) {
-                        clearTimeout(timeoutId); // Cancela el safety timeout
-                        fichaElement.removeEventListener('transitionend', onTransitionEnd); // Limpia el listener
-                        resolve(); // ¡La transición terminó! Resuelve la promesa.
+                    if (event.target === fichaElement && event.propertyName === 'transform') {
+                        clearTimeout(timeoutId);
+                        fichaElement.removeEventListener('transitionend', onTransitionEnd);
+
+                        // Al finalizar, aseguramos la escala correcta
+                        fichaElement.style.transform = `translate(-50%, -50%) scale(${targetScale})`;
+
+                        resolve();
                     }
                 };
 
-                // Adjuntamos el listener ANTES de cambiar los estilos
-                fichaElement.addEventListener('transitionend', onTransitionEnd);
+                // 1. Establece la posición estática (top/left) SIN TRANSICIÓN
+                fichaElement.style.transition = 'none';
+                fichaElement.style.top = newPos.top;
+                fichaElement.style.left = newPos.left;
 
-                // --- Aplicamos los estilos para iniciar la transición ---
-                fichaElement.style.transition = `top ${durationSec}s linear, left ${durationSec}s linear`;
-
-                // Usamos requestAnimationFrame para asegurar que el navegador aplique la transición
-                // antes de que cambiemos las coordenadas, evitando saltos visuales.
+                // 2. Prepara la transición SÓLO para 'transform'
                 requestAnimationFrame(() => {
-                    requestAnimationFrame(() => { // Doble frame para mayor seguridad en algunos navegadores
-                        fichaElement.style.top = newPos.top;
-                        fichaElement.style.left = newPos.left;
-                    });
+                    fichaElement.addEventListener('transitionend', onTransitionEnd);
+                    fichaElement.style.transition = `transform ${durationSec}s linear, box-shadow 0.3s ease`;
+
+                    // 3. APLICA LA ESCALA CORRECTA (targetScale) Y EL TRANSLATE para iniciar la animación
+                    fichaElement.style.transform = `translate(-50%, -50%) scale(${targetScale})`;
                 });
 
-                // Actualizamos la posición LÓGICA inmediatamente
                 playerPositions[playerIndex] = targetPos;
             });
         }
@@ -2930,32 +3046,40 @@ if (diceSound) {
 
 
         function rollDice() {
-            if (!gameActive || isRolling || gameOver) return;
-            // --- AGREGA ESTO AQUÍ ---
+    if (!gameActive || isRolling || gameOver) return;
+
+    // Inicia el sonido del dado
     if (diceSound) {
-        diceSound.currentTime = 0; // Reinicia el audio por si se pulsó muy rápido
+        diceSound.currentTime = 0;
         diceSound.play().catch(e => console.log("Error audio dado", e));
     }
-    // ------------------------
-            isRolling = true;
-            gameActive = false;
-            turnIndicator.classList.remove('visible');
-            diceFace.classList.remove('dice-ready');
-            diceCube.className = 'dice-cube';
-            diceContainer.classList.add('is-launching');
-            diceCube.classList.add('is-rolling');
-            const rollResult = Math.floor(Math.random() * 6) + 1;
-            setTimeout(() => {
-                diceCube.classList.remove('is-rolling');
-                diceCube.classList.add(`show-${rollResult}`);
-                setTimeout(() => {
-                    diceContainer.classList.remove('is-launching');
-                    const startPos = playerPositions[currentPlayerIndex];
-                    animateMovement(currentPlayerIndex, startPos, rollResult);
-                }, 1500);
-            }, 1500);
-        }
 
+    isRolling = true;
+    gameActive = false;
+    turnIndicator.classList.remove('visible');
+    diceFace.classList.remove('dice-ready');
+
+    // Inicia animación de giro (solo la rotación 3D)
+    diceCube.className = 'dice-cube';
+    // DICE-CONTAINER.classList.remove/add('is-launching') ELIMINADO
+    diceCube.classList.add('is-rolling');
+
+    const rollResult = Math.floor(Math.random() * 6) + 1;
+
+    // 1. Termina el giro (1000ms)
+    setTimeout(() => {
+        diceCube.classList.remove('is-rolling');
+        diceCube.classList.add(`show-${rollResult}`);
+
+        // 2. Espera y mueve la ficha (500ms)
+        setTimeout(() => {
+            // diceContainer.classList.remove('is-launching'); <--- ELIMINADO
+            const startPos = playerPositions[currentPlayerIndex];
+            animateMovement(currentPlayerIndex, startPos, rollResult);
+        }, 500);
+
+    }, 1000);
+}
         // --- AÑADE O REEMPLAZA ESTA FUNCIÓN ---
         function onFinalVideoEnd() {
             // 1. Limpiamos el listener del video
@@ -3022,11 +3146,11 @@ if (diceSound) {
                 setTimeout(() => {
                     gameOverBackdrop.style.display = 'none';
                     // --- AQUÍ INSERTAMOS LA PAUSA DE LA MÚSICA ---
-        if (bgMusic) {
-            bgMusic.pause();
-            bgMusic.currentTime = 0; // Reinicia para la próxima vez que se inicie el juego
-        }
-        // ----------------------------------------------
+                    if (bgMusic) {
+                        bgMusic.pause();
+                        bgMusic.currentTime = 0; // Reinicia para la próxima vez que se inicie el juego
+                    }
+                    // ----------------------------------------------
 
                     // 4. MUESTRA EL VIDEO y AÑADE EL LISTENER
                     showScreen(videoScreen);
