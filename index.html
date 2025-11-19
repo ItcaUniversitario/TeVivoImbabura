@@ -12,1506 +12,554 @@
     <link href="https://fonts.googleapis.com/css2?family=Lora&display=swap" rel="stylesheet">
     
 
-    <style>
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background-color: #2c2c2c;
-            height: 100vh;
-            position: relative;
-            overflow: hidden;
-        }
+<style>
+    body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background-color: #2c2c2c;
+        height: 100vh;
+        position: relative;
+        overflow: hidden;
+    }
 
-        body::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-            background-image: url('assets/imbaburafondo.png');
-            background-size: cover;
-            background-position: center;
-            filter: blur(10px) brightness(1);
-            transform: scale(1.05);
-        }
+    body::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -1;
+        background-image: url('assets/imbaburafondo.png');
+        background-size: cover;
+        background-position: center;
+        filter: blur(10px) brightness(1);
+        transform: scale(1.05);
+    }
 
-        .dashboard-container {
-            width: 100%;
-            height: 100%;
-            background-color: transparent;
-            display: flex;
-            flex-direction: column;
+    .dashboard-container {
+        width: 100%;
+        height: 100%;
+        background-color: transparent;
+        display: flex;
+        flex-direction: column;
+    }
 
-        }
+    header {
+        background-image: url('assets/banner_tvi.png');
+        background-repeat: no-repeat;
+        background-position: center;
+        height: 50px;
+        background-size: 50% auto;
+        padding: 0;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin: 10px 0;
+        position: relative;
+        z-index: 100;
+    }
 
-        header {
-            background-image: url('assets/banner_tvi.png');
-            background-repeat: no-repeat;
-            background-position: center;
-            height: 50px;
-            background-size: 50% auto;
+    header .settings-button {
+        position: absolute;
+        top: 50%;
+        right: 20px;
+        transform: translateY(-50%);
+    }
 
-            padding: 0;
-            width: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin: 10px 0;
-            position: relative;
-        }
+    header .settings-button svg {
+        fill: #FFFFFF;
+        width: 40px;
+        height: 40px;
+    }
 
+    header .settings-button:hover svg {
+        fill: #090909;
+    }
+    
+    header .settings-button:hover {
+        background-color: transparent !important;
+    }
+    
+    header .settings-button:focus {
+        outline: none;
+        box-shadow: none;
+    }
 
-        header .settings-button {
-            position: absolute;
-            top: 50%;
+    /* Botón de Info alineado */
+    #game-info-button {
+        position: absolute;
+        top: 50%;
+        right: 70px;
+        transform: translateY(-50%);
+    }
 
-            right: 20px;
+    main {
+        flex-grow: 1;
+        position: relative;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+    }
 
-            transform: translateY(-50%);
-        }
+    /* Sistema de Pantallas */
+    .screen {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0;
+        transition: opacity 0.5s ease-in-out;
+        pointer-events: none;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: white;
+    }
 
+    .screen.active {
+        opacity: 1;
+        pointer-events: auto;
+    }
 
-        header .settings-button svg {
-            fill: #FFFFFF;
-            /* --- AUMENTA EL TAMAÑO DE LOS ICONOS DEL HEADER --- */
+    #video-screen {
+        background-color: black;
+    }
 
-            width: 40px;
-            /* El tamaño original era 22px */
-            height: 40px;
-            /* El tamaño original era 22px */
+    #local-video-player {
+        width: 100%;
+        height: 100%;
+        position: relative;
+        z-index: 5;
+        object-fit: cover;
+    }
 
-        }
+    /* --- CAMBIO 1: EL MAPA AL 80% Y CENTRADO --- */
+    #map-screen {
+        padding: 0;
+        position: relative;
+        background-color: #2e7d32;
+        /* Centramos el contenedor del mapa */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
 
-        /* 4. (Opcional) Cambia el color del hover */
-        header .settings-button:hover svg {
-            fill: #090909;
-        }
+    #map-zoom-container {
+        position: relative;
+        /* Aquí definimos que ocupe el 80% del espacio disponible */
+        width: 80%;
+        height: 80%;
+        
+        /* Eliminamos todas las transformaciones de zoom */
+        transform: none !important;
+        transition: none !important;
+        transform-origin: center center !important;
+        
+        /* Opcional: Sombra para que resalte sobre el fondo */
+        box-shadow: 0 0 20px rgba(0,0,0,0.5);
+        background-color: #2e7d32;
+    }
 
+    #map-image {
+        width: 100%;
+        height: 100%;
+        /* Fill asegura que la imagen llene el 80% exacto para que las coordenadas funcionen */
+        object-fit: fill; 
+    }
 
-        main {
-            flex-grow: 1;
-            position: relative;
+    /* --- CAMBIO 2: LA FICHA (Sin zoom) --- */
+    .player-ficha-class {
+        position: absolute;
+        width: 50px;  /* Tamaño fijo */
+        height: 50px; /* Tamaño fijo */
+        border-radius: 50%;
+        z-index: 40;
+        display: none;
 
-        }
+        /* Solo centramos la ficha en su punto */
+        transform: translate(-50%, -50%);
 
-        /* Sistema de Pantallas */
-        .screen {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            opacity: 0;
-            transition: opacity 0.5s ease-in-out;
-            pointer-events: none;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background-color: white;
-        }
+        transition: top 0.6s linear, left 0.6s linear; 
+        will-change: top, left;
 
-        .screen.active {
-            opacity: 1;
-            pointer-events: auto;
-        }
+        background-size: 80%;
+        background-repeat: no-repeat;
+        background-position: center;
+        background-color: transparent;
+    }
 
-        #video-screen {
-            background-color: black;
-        }
+    .player-ficha-class.active-turn {
+        box-shadow: 0 0 15px 5px #33AFFF;
+        background-color: rgba(255, 255, 255, 0.2);
+    }
 
-        #local-video-player {
-            width: 100%;
-            height: 100%;
-            position: relative;
-            z-index: 5;
-            object-fit: cover;
-        }
+    /* --- ELIMINADO: Reglas de zoom loader y scale --- */
 
-        #map-screen {
-            padding: 0;
-            position: relative;
-            background-color: #2e7d32;
-        }
+    /* MODAL REGISTRO */
+    #registration-modal-backdrop {
+        position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+        z-index: 1000; display: none; justify-content: flex-end; align-items: center;
+        padding: 20px; box-sizing: border-box; background-color: transparent;
+    }
+    #registration-modal::before {
+        content: ""; position: absolute; z-index: -1; inset: -0px;
+        background-image: url('assets/portada_cati_tvi.png');
+        background-size: cover; background-repeat: no-repeat; background-position: center bottom;
+    }
+    #registration-modal h2 {
+        margin-top: 0; margin-bottom: 10px; text-align: center; color: white;
+        font-size: 1.3em; font-weight: 600; text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
+    }
+    #registration-modal label {
+        display: block; margin-bottom: 3px; font-weight: 600; font-size: 0.8em;
+        color: #ffffff; text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
+    }
+    #registration-modal input, #registration-modal select {
+        width: 80%; padding: 6px 10px; margin-bottom: 8px; border: 1px solid #E0E0E0;
+        border-radius: 6px; box-sizing: border-box; background-color: #F7F9F5;
+        font-size: 0.9em; transition: border-color 0.3s, box-shadow 0.3s;
+    }
+    #registration-modal input:focus, #registration-modal select:focus {
+        border-color: #8BC34A; box-shadow: 0 0 0 2px rgba(139, 195, 74, 0.2);
+        outline: none; background-color: #fff;
+    }
+    #registration-modal button {
+        width: 80%; padding: 8px; border: none; border-radius: 6px;
+        background-color: #8BC34A; color: white; font-size: 1em; font-weight: bold;
+        cursor: pointer; margin-top: 5px; transition: background-color 0.3s, transform 0.2s;
+    }
+    #registration-modal button:hover:not(:disabled) { background-color: #7CB342; }
+    #registration-modal button:disabled { background-color: #C5E1A5; cursor: not-allowed; }
+    .modal-header {
+        display: flex; justify-content: space-between; align-items: center;
+        width: 100%; margin-bottom: 15px;
+    }
+    #registration-modal .modal-header h2 { margin: 0; flex-grow: 1; text-align: left; }
 
-        #map-image {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
+    .settings-button {
+        display: inline-block; padding: 5px; line-height: 0; text-decoration: none;
+        border-radius: 50%; transition: background-color 0.3s;
+    }
+    .settings-button svg { width: 22px; height: 22px; fill: #070707; transition: fill 0.3s; }
+    .settings-button:hover { background-color: #e9e9e9; }
+    .settings-button:hover svg { fill: #060606; }
 
-
-        /* === ESTILOS MEJORADOS PARA EL MODAL DE REGISTRO === */
-
-        #registration-modal-backdrop {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 1000;
-            display: none;
-            justify-content: flex-end;
-            align-items: center;
-            padding: 20px;
-            box-sizing: border-box;
-            background-color: transparent;
-        }
-
-
-
-        #registration-modal::before {
-            content: "";
-            position: absolute;
-            z-index: -1;
-            inset: -0px;
-            background-image: url('assets/portada_cati_tvi.png');
-            background-size: cover;
-            background-repeat: no-repeat;
-            background-position: center bottom;
-        }
-
-        #registration-modal h2 {
-            margin-top: 0;
-            margin-bottom: 10px;
-            text-align: center;
-            color: white;
-            font-size: 1.3em;
-            font-weight: 600;
-            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
-        }
-
-        #registration-modal label {
-            display: block;
-            margin-bottom: 3px;
-            font-weight: 600;
-            font-size: 0.8em;
-            color: #ffffff;
-            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
-        }
-
-        #registration-modal input,
-        #registration-modal select {
-            width: 80%;
-            padding: 6px 10px;
-            margin-bottom: 8px;
-            border: 1px solid #E0E0E0;
-            border-radius: 6px;
-            box-sizing: border-box;
-            background-color: #F7F9F5;
-            font-size: 0.9em;
-            transition: border-color 0.3s, box-shadow 0.3s;
-        }
-
-        #registration-modal input:focus,
-        #registration-modal select:focus {
-            border-color: #8BC34A;
-            box-shadow: 0 0 0 2px rgba(139, 195, 74, 0.2);
-            outline: none;
-            background-color: #fff;
-        }
-
-        #registration-modal button {
-            width: 80%;
-            padding: 8px;
-            border: none;
-            border-radius: 6px;
-            background-color: #8BC34A;
-            color: white;
-            font-size: 1em;
-            font-weight: bold;
-            cursor: pointer;
-            margin-top: 5px;
-            transition: background-color 0.3s, transform 0.2s;
-        }
-
-        #registration-modal button:hover:not(:disabled) {
-            background-color: #7CB342;
-        }
-
-        #registration-modal button:disabled {
-            background-color: #C5E1A5;
-            cursor: not-allowed;
-        }
-
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            width: 100%;
-            margin-bottom: 15px;
-        }
-
-        #registration-modal .modal-header h2 {
-            margin: 0;
-            flex-grow: 1;
-            text-align: left;
-        }
-
-        .settings-button {
-            display: inline-block;
-            padding: 5px;
-            line-height: 0;
-            text-decoration: none;
-            border-radius: 50%;
-            transition: background-color 0.3s;
-        }
-
-        .settings-button svg {
-            width: 22px;
-            height: 22px;
-            fill: #070707;
-            transition: fill 0.3s;
-        }
-
-        .settings-button:hover {
-            background-color: #e9e9e9;
-        }
-
-        .settings-button:hover svg {
-            fill: #060606;
-        }
-
-
-    /* =========================================================================
-// 7. ESTILOS: DADO Y TURNOS (CSS NATIVO) - SIN ANIMACIÓN AL CENTRO
-// ====================================================================== */
-
-/* El dado permanece anclado en la esquina, sin moverse al centro */
-#dice-container {
-    position: absolute;
-    bottom: 20px;
-    left: 20px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    background-color: transparent;
-    z-index: 50;
-    perspective: 800px;
-    /* Eliminamos las transiciones de 'bottom' y 'left' */
-    transition: transform 0.2s ease, z-index 0s 1s; 
-}
-
-.dice-scene {
-    width: 70px; /* Tamaño base del dado */
-    height: 70px;
-    cursor: pointer;
-    transition: transform 0.2s ease;
-    transform-style: preserve-3d;
-}
-
-.dice-cube {
-    width: 100%;
-    height: 100%;
-    position: relative;
-    transform-style: preserve-3d;
-    transform: translateZ(-35px);
-    transition: transform 1.5s ease-out; /* Solo la animación de giro */
-}
-
-.dice-cube .dice-face {
-    position: absolute;
-    width: 70px; 
-    height: 70px;
-    box-sizing: border-box;
-    background-color: #fff;
-    border-radius: 8px;
-    border: 1px solid #333;
-    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.1);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    backface-visibility: hidden;
-    padding: 10px;
-}
-
-/* Posicionamiento 3D (sin cambios, son cruciales para el 3D) */
-#face-1 { transform: rotateY(0deg) translateZ(35px); }
-#face-6 { transform: rotateY(180deg) translateZ(35px); }
-#face-4 { transform: rotateY(90deg) translateZ(35px); }
-#face-3 { transform: rotateY(-90deg) translateZ(35px); }
-#face-2 { transform: rotateX(90deg) translateZ(35px); }
-#face-5 { transform: rotateX(-90deg) translateZ(35px); }
-
-/* Estilo de los puntos (pips) */
-.pip {
-    display: block;
-    position: absolute;
-    width: 10px;
-    height: 10px;
-    background-color: #4CAF50;
-    border-radius: 50%;
-}
-
-/* Distribución de los puntos para cada cara (sin cambios) */
-/* Cara 1 */
-#face-1 .pip { top: 50%; left: 50%; transform: translate(-50%, -50%); }
-/* Cara 2 */
-#face-2 .pip.tl { top: 10px; left: 10px; }
-#face-2 .pip.br { bottom: 10px; right: 10px; }
-/* Cara 3 */
-#face-3 .pip.tl { top: 10px; left: 10px; }
-#face-3 .pip.c { top: 50%; left: 50%; transform: translate(-50%, -50%); }
-#face-3 .pip.br { bottom: 10px; right: 10px; }
-/* Cara 4 */
-#face-4 .pip.tl { top: 10px; left: 10px; }
-#face-4 .pip.tr { top: 10px; right: 10px; }
-#face-4 .pip.bl { bottom: 10px; left: 10px; }
-#face-4 .pip.br { bottom: 10px; right: 10px; }
-/* Cara 5 */
-#face-5 .pip.tl { top: 10px; left: 10px; }
-#face-5 .pip.tr { top: 10px; right: 10px; }
-#face-5 .pip.c { top: 50%; left: 50%; transform: translate(-50%, -50%); }
-#face-5 .pip.bl { bottom: 10px; left: 10px; }
-#face-5 .pip.br { bottom: 10px; right: 10px; }
-/* Cara 6 */
-#face-6 .pip.tl { top: 10px; left: 10px; }
-#face-6 .pip.tr { top: 10px; right: 10px; }
-#face-6 .pip.cl { top: 50%; left: 10px; transform: translateY(-50%); }
-#face-6 .pip.cr { top: 50%; right: 10px; transform: translateY(-50%); }
-#face-6 .pip.bl { bottom: 10px; left: 10px; }
-#face-6 .pip.br { bottom: 10px; right: 10px; }
-
-/* Animación de Giro (roll-animation) - Mantenida */
-@keyframes roll-animation {
-    0% { transform: translateZ(-35px) rotateX(0deg) rotateY(0deg) rotateZ(0deg); }
-    100% { transform: translateZ(-35px) rotateX(1080deg) rotateY(720deg) rotateZ(1440deg); }
-}
-
-.dice-cube.is-rolling {
-    animation: roll-animation 1.5s linear;
-}
-
-/* Posiciones Finales (Mantenidas) */
-.dice-cube.show-1 { transform: translateZ(-35px) rotateY(0deg); }
-.dice-cube.show-6 { transform: translateZ(-35px) rotateY(-180deg); }
-.dice-cube.show-4 { transform: translateZ(-35px) rotateY(-90deg); }
-.dice-cube.show-3 { transform: translateZ(-35px) rotateY(90deg); }
-.dice-cube.show-2 { transform: translateZ(-35px) rotateX(-90deg); }
-.dice-cube.show-5 { transform: translateZ(-35px) rotateX(90deg); }
-
-/* Animación de Pulso (Mantenida) */
-.dice-scene.dice-ready {
-    animation: pulse 2s infinite;
-}
-
-/* ELIMINADA: La animación launch-dice y su clase de contenedor */
-/* Eliminamos el @keyframes launch-dice */
-/* Eliminamos la clase #dice-container.is-launching */
-
-
-/* Media Query para pantallas pequeñas (ajustada para el nuevo translateZ) */
-@media (max-width: 500px) {
-
+    /* DADO */
     #dice-container {
-        bottom: 10px; /* Un poco más ajustado en móvil */
-        left: 10px;
+        position: absolute; bottom: 20px; left: 20px; display: flex;
+        flex-direction: column; align-items: center; background-color: transparent;
+        z-index: 50; perspective: 800px; transition: transform 0.2s ease, z-index 0s 1s;
     }
-
-    .dice-scene,
-    .dice-cube .dice-face {
-        width: 60px;
-        height: 60px;
+    .dice-scene {
+        width: 70px; height: 70px; cursor: pointer;
+        transition: transform 0.2s ease; transform-style: preserve-3d;
     }
-
     .dice-cube {
-        transform: translateZ(-30px); /* Mitad del nuevo tamaño (60/2 = 30) */
+        width: 100%; height: 100%; position: relative; transform-style: preserve-3d;
+        transform: translateZ(-35px); transition: transform 1.5s ease-out;
     }
+    .dice-cube .dice-face {
+        position: absolute; width: 70px; height: 70px; box-sizing: border-box;
+        background-color: #fff; border-radius: 8px; border: 1px solid #333;
+        box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.1); display: flex;
+        justify-content: center; align-items: center; backface-visibility: hidden; padding: 10px;
+    }
+    #face-1 { transform: rotateY(0deg) translateZ(35px); }
+    #face-6 { transform: rotateY(180deg) translateZ(35px); }
+    #face-4 { transform: rotateY(90deg) translateZ(35px); }
+    #face-3 { transform: rotateY(-90deg) translateZ(35px); }
+    #face-2 { transform: rotateX(90deg) translateZ(35px); }
+    #face-5 { transform: rotateX(-90deg) translateZ(35px); }
 
     .pip {
-        width: 8px;
-        height: 8px;
+        display: block; position: absolute; width: 10px; height: 10px;
+        background-color: #4CAF50; border-radius: 50%;
     }
-}
-
-
-        /* --- ESTILO DE FICHA MODIFICADO (CLASE) --- */
-        .player-ficha-class {
-            position: absolute;
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            z-index: 40;
-            display: none;
-
-            /* *** MODIFICACIÓN CRÍTICA AQUÍ *** */
-            /* El valor de 'top' y 'left' se establece en JS como el centro de la casilla */
-            /* Este translate mueve la ficha el -50% de su tamaño para CENTRARLA */
-            transform: translate(-50%, -50%) scale(1);
-
-            /* La transición ahora es solo sobre 'transform' (más eficiente) */
-            transition: transform 0.6s linear, box-shadow 0.3s ease;
-
-            /* Indica al navegador que prepare la GPU para estas propiedades */
-            will-change: transform, box-shadow;
-
-            background-size: 80%;
-            background-repeat: no-repeat;
-            background-position: center;
-            background-color: transparent;
-        }
-
-        .player-ficha-class.active-turn {
-            box-shadow: 0 0 15px 5px #33AFFF;
-        }
-
-        #map-zoom-container.is-zoomed .player-ficha-class {
-            transform: translate(-50%, -50%) scale(0.2);
-            border-width: 20px;
-        }
-
-        /* --- ESTILOS DADO --- */
-        .dice-cube .dice-face {
-            position: absolute;
-            width: 74px;
-            height: 74px;
-            top: -2px;
-            left: -2px;
-            box-sizing: border-box;
-            background-color: #fff;
-            border-radius: 10px;
-            overflow: hidden;
-            backface-visibility: hidden;
-        }
-
-        .dice-cube .dice-image {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-            box-sizing: border-box;
-        }
-
-        @keyframes pulse {
-            0% {
-                transform: scale(1);
-                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-            }
-
-            50% {
-                transform: scale(1.1);
-                box-shadow: 0 6px 20px rgba(0, 0, 0, 0.7);
-            }
-
-            100% {
-                transform: scale(1);
-                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-            }
-        }
-
-        .dice-ready {
-            animation: pulse 2s infinite;
-        }
-
-        /* --- ¡NUEVO CSS PARA MENSAJE DE TURNO! --- */
-        .turn-indicator {
-            background-color: rgba(0, 0, 0, 0.75);
-            color: white;
-            padding: 8px 15px;
-            border-radius: 20px;
-            font-size: 1.1em;
-            font-weight: bold;
-            font-family: 'Lora', serif;
-            margin-bottom: 10px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
-            opacity: 0;
-            display: none;
-            transition: opacity 0.3s ease;
-            animation: pulse 2s infinite;
-        }
-
-        .turn-indicator.visible {
-            display: block;
-            opacity: 1;
-        }
-
-        #turn-indicator-name {
-            color: #8bc34a;
-            text-transform: uppercase;
-        }
-
-        /*/----------------------------------------------*/
-        #map-screen {
-            position: relative;
-            overflow: hidden;
-        }
-
-        #map-zoom-container {
-            position: relative;
-            width: 100%;
-            max-width: 1000px;
-            margin: auto;
-            aspect-ratio: 10667 / 6000;
-            transition: transform 2s ease-in-out, transform-origin 2s ease-in-out;
-            transform-origin: 50% 50%;
-            transform: scale(1);
-        }
-
-        /* --- ESTILOS UNIFICADOS PARA TODOS LOS MODALES --- */
-        .modal-backdrop {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.7);
-            z-index: 3000;
-            display: none;
-            justify-content: center;
-            align-items: center;
-            opacity: 0;
-            transition: opacity 0.4s ease;
-        }
-
-
-
-        .modal-content {
-            background-color: white;
-            padding: 25px 35px;
-            border-radius: 15px;
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
-            text-align: center;
-            width: 90%;
-            max-width: 450px;
-            transform: scale(0.9);
-            transition: transform 0.4s ease;
-            max-height: 90%;
-            overflow-y: auto;
-            box-sizing: border-box;
-        }
-
-        .modal-backdrop.visible {
-            opacity: 1;
-        }
-
-        .modal-backdrop.visible .modal-content {
-            transform: scale(1);
-        }
-
-        .modal-content h2 {
-            color: #055513;
-            font-size: 1.6em;
-            margin-top: 0;
-            margin-bottom: 15px;
-        }
-
-        #info-modal-image {
-            max-width: 80%;
-            /* <-- Esto la hace más pequeña */
-
-            /* --- ¡ESTAS 3 LÍNEAS LA CENTRAN! --- */
-            display: block;
-            margin-left: auto;
-            margin-right: auto;
-
-            /* --- FIN DE LAS LÍNEAS DE CENTRADO --- */
-
-            Height: auto;
-            border-radius: 8px;
-            margin-bottom: 15px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-        }
-
-        .modal-content p {
-            font-size: 1.1em;
-            color: #333;
-            line-height: 1.6;
-            margin-bottom: 25px;
-        }
-
-
-        #event-icon-container {
-            width: 50px;
-            height: auto;
-            margin: 20px auto;
-        }
-
-        #event-icon-container svg {
-            fill: #FFC107;
-        }
-
-        .modal-content button {
-            padding: 10px 25px;
-            background-color: #8bc34a;
-            color: white;
-            border: none;
-            border-radius: 7px;
-            font-size: 1em;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-
-        .modal-content button:hover {
-            background-color: #7cb342;
-        }
-
-
-
-        #question-options {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            margin-bottom: 20px;
-        }
-
-        .option-button {
-            width: 100%;
-            padding: 12px;
-            font-size: 1em;
-            border: 2px solid #ddd;
-            border-radius: 8px;
-            background-color: #f8f8f8;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-
-        .option-button:hover:not(:disabled) {
-            background-color: #e9e9e9;
-            border-color: #a7c7e7;
-        }
-
-        .option-button.correct {
-            background-color: #c8e6c9;
-            border-color: #4caf50;
-            color: #2e7d32;
-            font-weight: bold;
-        }
-
-        .option-button.incorrect {
-            background-color: #ffcdd2;
-            border-color: #f44336;
-            color: #c62828;
-            font-weight: bold;
-        }
-
-        #question-feedback {
-            min-height: 20px;
-            font-weight: bold;
-            font-size: 1.1em;
-            margin-bottom: 20px;
-        }
-
-        #player-stats-container {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            z-index: 50;
-            background-color: rgba(255, 255, 255, 0.92);
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-            padding: 10px;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            width: 310px;
-            max-width: calc(100vw - 20px);
-            box-sizing: border-box;
-            transition: all 0.3s ease;
-        }
-
-        .player-stat-row {
-            display: grid;
-            grid-template-columns: auto 1fr auto;
-            grid-template-rows: auto auto;
-            align-items: center;
-            padding: 5px;
-            border-radius: 8px;
-            border: 2px solid transparent;
-            transition: all 0.3s ease;
-            background-color: rgba(240, 240, 240, 0.5);
-        }
-
-        .player-stat-row.active-turn {
-            border-color: #0074D9;
-            background-color: #ffffff;
-            box-shadow: 0 2px 8px rgba(0, 116, 217, 0.3);
-        }
-
-        .player-stat-row .player-name {
-            grid-column: 2 / 3;
-            grid-row: 1 / 2;
-            font-size: 1.1em;
-            font-weight: bold;
-            font-family: 'Lora', serif;
-            color: #333;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .player-stat-row .player-score {
-            grid-column: 3 / 4;
-            grid-row: 1 / 3;
-            font-size: 1.6em;
-            font-weight: 700;
-            color: #0074D9;
-            padding-left: 5px;
-            text-align: right;
-            align-self: center;
-        }
-
-        .player-stat-row .player-inventory-small {
-            grid-column: 2 / 3;
-            grid-row: 2 / 3;
-            display: grid;
-            grid-template-columns: repeat(5, 1fr);
-
-            gap: 4px;
-            min-height: 22px;
-        }
-
-
-
-        .player-stat-row .player-ficha-icon {
-            grid-column: 1 / 2;
-            grid-row: 1 / 3;
-            width: 28px;
-            height: 28px;
-            object-fit: contain;
-            border-radius: 50%;
-            background-color: #e9e9e9;
-            border: 1px solid #ccc;
-            margin-right: 8px;
-            align-self: center;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-        }
-
-        @media (max-width: 768px) {
-            #player-stats-container {
-                width: auto;
-                padding: 8px;
-            }
-
-            .player-stat-row .player-name {
-                font-size: 1em;
-            }
-
-            .player-stat-row .player-score {
-                font-size: 1.4em;
-            }
-
-            .player-inventory-small .small-reward-icon {
-                width: 18px;
-                height: 18px;
-            }
-
-            .player-stat-row .player-ficha-icon {
-                width: 28px;
-                height: 28px;
-            }
-
-            .reward-slot {
-                width: 22px;
-                /* Un tamaño más pequeño para móviles */
-                height: 22px;
-            }
-
-            .reward-slot-counter {
-                font-size: 11px;
-                /* Reajustamos el contador para móvil */
-            }
-        }
-
-        /* --- NUEVOS ESTILOS PARA RECOMPENSAS (SLOTS) --- */
-        .reward-slot {
-            position: relative;
-            width: 28px;
-            height: 28px;
-            justify-self: center;
-            /* Centra el slot en la celda del grid */
-        }
-
-        .reward-slot-icon {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-            background-color: #f0f0f0;
-            border-radius: 4px;
-            padding: 2px;
-            box-sizing: border-box;
-            transition: opacity 0.3s ease;
-        }
-
-        .reward-slot-counter {
-            position: absolute;
-            bottom: -4px;
-            right: -6px;
-            background-color: #0074D9;
-            /* Color que combine con el puntaje */
-            color: white;
-            font-size: 12px;
-            font-weight: bold;
-            padding: 0px 4px;
-            border-radius: 50%;
-            border: 1px solid white;
-            box-shadow: 0 0 3px rgba(0, 0, 0, 0.5);
-            display: none;
-            /* Oculto por defecto */
-        }
-
-        /* Estado: No recolectado */
-        .reward-slot.uncollected .reward-slot-icon {
-            opacity: 0.3;
-            /* Semitransparente */
-        }
-
-        .reward-slot.uncollected .reward-slot-counter {
-            display: none;
-        }
-
-        /* Estado: Recolectado */
-        .reward-slot.collected .reward-slot-icon {
-            opacity: 1;
-            /* Opaco */
-        }
-
-        .reward-slot.collected .reward-slot-counter {
-            display: block;
-            /* Visible */
-        }
-
-        /* --- FIN DE NUEVOS ESTILOS --- */
-
-
-
-        /*-------------------*/
-
-        .reward-display {
-            display: none;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            margin-top: 15px;
-            padding: 8px 12px;
-            background-color: #fffbe0;
-            border: 1px solid #ffecb3;
-            border-radius: 8px;
-        }
-
-        .reward-text {
-            font-weight: bold;
-            color: #f57c00;
-        }
-
-        .reward-icon {
-            width: 32px;
-            height: 32px;
-        }
-
-
-
-        #back-to-game-btn:hover {
-            background-color: #333;
-        }
-
-        /* --- ESTILOS PARA EL NUEVO MODAL DE SELECCIÓN DE JUGADOR --- */
-        #player-select-backdrop {
-            background-color: rgba(0, 0, 0, 0.7);
-        }
-
-        .player-select-button {
-            padding: 15px 20px;
-            font-size: 1.2em;
-            font-weight: bold;
-            border: 2px solid #ddd;
-            border-radius: 8px;
-            background-color: #f8f8f8;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            color: #333;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 80%;
-            align-self: center;
-            box-sizing: border-box;
-        }
-
-        .player-select-button:hover {
-            background-color: #e9e9e9;
-            border-color: #a7c7e7;
-            transform: translateY(-2px);
-        }
-
-        .player-select-button .fas {
-            margin-right: 10px;
-            color: #8bc34a;
-        }
-
-        /* --- ESTILOS PARA EL MODAL DE SELECCIÓN DE FICHA (MEJORADOS) --- */
-        #ficha-modal-backdrop {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.7);
-            z-index: 2000;
-            display: none;
-            justify-content: center;
-            align-items: center;
-        }
-
-        #ficha-modal {
-            background-color: #f9f9f9;
-            padding: 25px 30px;
-            border-radius: 15px;
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
-            text-align: center;
-            width: 50%;
-            max-width: 350px;
-        }
-
-        #ficha-modal h2 {
-            color: #a7c7e7;
-            font-size: 1.6em;
-            margin-top: 0;
-            margin-bottom: 25px;
-        }
-
-        .ficha-choices {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
-            margin-top: 20px;
-        }
-
-        .ficha-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 5px;
-            cursor: pointer;
-            transition: transform 0.2s ease;
-        }
-
-        .ficha-container:hover {
-            transform: scale(1.1);
-        }
-
-        .ficha-option {
-            width: 70px;
-            height: 70px;
-            border-radius: 50%;
-            border: 4px solid #ddd;
-            background-color: #ffffff;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-            transition: all 0.3s ease;
-            object-fit: contain;
-            padding: 5px;
-            box-sizing: border-box;
-        }
-
-        .ficha-container:hover .ficha-option {
-            border-color: #8bc34a;
-            box-shadow: 0 4px 10px rgba(139, 195, 74, 0.4);
-        }
-
-        .ficha-name {
-            font-size: 0.9em;
-            font-weight: 600;
-            color: #333;
-            text-align: center;
-        }
-
-        .ficha-container.selected {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        .ficha-container.selected .ficha-option {
-            filter: grayscale(100%);
-        }
-
-        .ficha-container.selected:hover {
-            transform: scale(1);
-        }
-
-        .ficha-container.selected:hover .ficha-option {
-            border-color: #ddd;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        }
-
-        /* --- NUEVO: ESTILOS PARA EL LOADER DE ZOOM --- */
-        #zoom-loader-backdrop {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.8);
-            z-index: 999;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.3s ease-in-out;
-        }
-
-        #zoom-loader-backdrop.visible {
-            opacity: 1;
-            pointer-events: auto;
-        }
-
-        #zoom-loader-text {
-            color: white;
-            font-size: 1.5em;
-            font-weight: bold;
-            font-family: 'Lora', serif;
-            animation: pulse-text 1.5s infinite;
-        }
-
-        @keyframes pulse-text {
-            0% {
-                opacity: 0.8;
-                transform: scale(1);
-            }
-
-            50% {
-                opacity: 1;
-                transform: scale(1.05);
-            }
-
-            100% {
-                opacity: 0.8;
-                transform: scale(1);
-            }
-        }
-
-        /* --- ESTILOS PARA MODAL DE NIVEL --- */
-        .player-select-button.disabled-level {
-            background-color: #f0f0f0;
-            border-color: #e0e0e0;
-            color: #aaa;
-            cursor: not-allowed;
-            opacity: 0.7;
-        }
-
-        .player-select-button.disabled-level .fas {
-            color: #aaa;
-        }
-
-        .player-select-button .coming-soon {
-            font-size: 0.8em;
-            font-weight: normal;
-            margin-left: 8px;
-            opacity: 0.9;
-        }
-
-        /* ---BOTON INFO  ESTILOS PARA EL BOTÓN CON ÍCONO --- */
-
-        #info-modal-close-button {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-
-        #info-modal-reward-icon {
-            width: 24px;
-            height: 24px;
-        }
-
-        /* --- BOTON DATO CURIOSO ESTILOS PARA EL BOTÓN DE RECOMPENSA CON ÍCONO --- */
-
-        #reward-modal-close-button {
-            /* ... (Aquí van tus estilos existentes para el botón) ... */
-
-            /* Añade estas 4 propiedades para alinear el contenido: */
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            /* Espacio entre el ícono y el texto */
-        }
-
-        /* Define un tamaño para el ícono CUANDO está dentro del botón. */
-        /* Define un tamaño para el ícono CUANDO está dentro del botón. */
-        #reward-modal-icon {
-            width: 24px;
-            height: 24px;
-        }
-
-        /* --- ESTILOS PARA EL TÍTULO DEL MODAL DE EVENTO --- */
-        #event-modal-title {
-            font-size: 1.6em;
-            font-weight: bold;
-            margin-top: 0;
-            margin-bottom: 15px;
-            text-transform: uppercase;
-        }
-
-        #event-modal-title.advantage {
-            color: #4CAF50;
-        }
-
-        #event-modal-title.trap {
-            color: #F44336;
-        }
-
-
-        /* --- ESTILOS CORREGIDOS PARA BOTONES DEL HEADER --- */
-
-        /* 1. Define la posición del nuevo botón de info */
-        #game-info-button {
-            position: absolute;
-            top: 50%;
-            right: 20px;
-            /* Se ubica a la izquierda del botón de admin (que está en 20px) */
-            transform: translateY(-50%);
-        }
-
-        /* 2. Pone AMBOS íconos del header (Info y Admin) en blanco por defecto */
-        header .settings-button svg {
-            fill: #FFFFFF;
-        }
-
-        /* 3. ¡LA SOLUCIÓN! Evita que aparezca el fondo circular gris 
-      al pasar el mouse sobre CUALQUIER botón del header */
-        header .settings-button:hover {
-            background-color: transparent !important;
-            /* Anula el estilo base */
-        }
-
-        /* 4. Mantiene el cambio de color del ícono a negro en AMBOS botones */
-        header .settings-button:hover svg {
-            fill: #4CAF50;
-        }
-
-        /* 5. Elimina el "círculo grande" (outline) que aparece al hacer clic */
-        header .settings-button:focus {
-            outline: none;
-            box-shadow: none;
-        }
-
-        /* --- ESTILOS DEFINITIVOS PARA EL MODAL DE INFO DEL JUEGO --- */
-
-        /* 1. Define el ancho y la alineación base del modal */
-        #game-info-modal {
-            max-width: 650px;
-            text-align: left;
-        }
-
-        /* 2. Resetea los márgenes de todos los elementos de texto 
-      (¡ESTA ES LA CORRECCIÓN CLAVE!) */
-        #game-info-modal h4,
-        #game-info-modal p,
-        #game-info-modal ul,
-        #game-info-modal table {
-            margin-top: 0;
-            margin-bottom: 0;
-            padding: 0;
-        }
-
-        /* 3. Añade espaciado de forma controlada */
-        #game-info-modal h4 {
-            font-size: 1.2em;
-            font-weight: bold;
-            color: #333;
-            margin-top: 24px;
-            /* Espacio GRANDE ANTES de un nuevo subtítulo */
-            margin-bottom: 10px;
-            /* Espacio PEQUEÑO entre subtítulo y texto/tabla */
-        }
-
-        #game-info-modal p {
-            margin-bottom: 16px;
-            /* Espacio normal después de un párrafo */
-            line-height: 1.4;
-            /* Un interlineado cómodo */
-        }
-
-        #game-info-modal ul {
-            margin-bottom: 16px;
-            /* Espacio después de la lista */
-            padding-left: 30px;
-            /* Sangría de la lista */
-            line-height: 1.6;
-        }
-
-        /* 4. Estilos de la Tabla (sin márgenes propios) */
-        .info-legend-table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 0.95em;
-        }
-
-        .info-legend-table th,
-        .info-legend-table td {
-            padding: 8px 10px;
-            border-bottom: 1px solid #f0f0f0;
-            vertical-align: middle;
-            text-align: left;
-        }
-
-        .info-legend-table th {
-            background-color: #f8f8f8;
-            font-weight: bold;
-            color: #555;
-            text-transform: uppercase;
-            font-size: 0.9em;
-        }
-
-        .info-legend-table td:first-child {
-            width: 50px;
-            text-align: center;
-        }
-
-        .info-legend-table td:nth-child(2) {
-            width: 35%;
-        }
-
-        .legend-square-icon {
-            width: 40px;
-            height: 40px;
-            object-fit: contain;
-            display: block;
-            margin: 0 auto;
-        }
-
-        /* --- ESTILOS OVERLAY FIN DE PARTIDA (CONFETI) --- */
-        #game-over-backdrop {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.85);
-            z-index: 5000;
-            /* Debe estar sobre todo */
-            display: none;
-            /* Oculto por defecto */
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-            opacity: 0;
-            transition: opacity 1s ease-in-out;
-        }
-
-        #game-over-backdrop.visible {
-            opacity: 1;
-        }
-
-        #game-over-content {
-            text-align: center;
-            color: white;
-        }
-
-        #confetti-gif {
-            width: 250px;
-            /* Ajusta el tamaño si lo necesitas */
-            height: auto;
-            margin-bottom: 20px;
-            opacity: 0;
-            transform: scale(0.5);
-            animation: confetti-pop-in 1s forwards;
-        }
-
-        #game-over-content h2 {
-            font-size: 3em;
-            font-family: 'Lora', serif;
-            margin: 0;
-            color: #8bc34a;
-            text-shadow: 0 0 15px rgba(139, 195, 74, 0.7);
-            animation: pulse-text-large 2s infinite;
-        }
-
-        #game-over-content p {
-            font-size: 1.5em;
-            font-family: Arial, sans-serif;
-            margin-top: 10px;
-            color: white;
-        }
-
-        /* Animación de pulso para el texto */
-        @keyframes pulse-text-large {
-            0% {
-                transform: scale(0.95);
-            }
-
-            50% {
-                transform: scale(1.05);
-            }
-
-            100% {
-                transform: scale(0.95);
-            }
-        }
-
-        /* Animación "pop-in" para el GIF */
-        @keyframes confetti-pop-in {
-            0% {
-                opacity: 0;
-                transform: scale(0.5) translateY(50px);
-            }
-
-            70% {
-                opacity: 1;
-                transform: scale(1.1) translateY(-10px);
-            }
-
-            100% {
-                opacity: 1;
-                transform: scale(1) translateY(0);
-            }
-        }
-
-        /* --- ESTILOS MODAL PUNTUACIÓN FINAL (TROFEO) --- */
-        #final-score-modal {
-            max-width: 500px;
-            text-align: center;
-        }
-
-        #final-score-icon {
-            font-size: 4em;
-            /* Ícono grande */
-            color: #FFC107;
-            /* Color dorado */
-            margin-bottom: 15px;
-            animation: trophy-bounce 2s infinite;
-            /* ¡Para centrar el trofeo! */
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            width: 100%;
-        }
-
-        @keyframes trophy-bounce {
-
-            0%,
-            20%,
-            50%,
-            80%,
-            100% {
-                transform: translateY(0);
-            }
-
-            40% {
-                transform: translateY(-20px);
-            }
-
-            60% {
-                transform: translateY(-10px);
-            }
-        }
-
-        #final-score-title {
-            color: #055513;
-            font-size: 2em;
-            margin-top: 0;
-            margin-bottom: 20px;
-        }
-
-        #final-score-details {
-            font-size: 1.1em;
-            color: #333;
-            line-height: 1.6;
-            margin-bottom: 25px;
-            text-align: left;
-            /* Alineamos la lista a la izquierda */
-        }
-
-        #final-score-details h4 {
-            text-align: center;
-            margin-bottom: 10px;
-            color: #555;
-            border-bottom: 1px solid #eee;
-            padding-bottom: 5px;
-        }
-
-        .score-entry {
-            display: flex;
-            justify-content: space-between;
-            padding: 8px 12px;
-            border-bottom: 1px solid #f0f0f0;
-        }
-
-        .score-entry:last-child {
-            border-bottom: none;
-        }
-
-        .score-entry-name {
-            font-weight: 600;
-        }
-
-        .score-entry-score {
-            font-weight: bold;
-            color: #0074D9;
-        }
-
-        .score-entry.winner {
-            background-color: #fffbe0;
-            /* Resaltado amarillo */
-            border-radius: 6px;
-        }
-
-        .score-entry.winner .score-entry-name {
-            color: #f57c00;
-        }
-
-        #play-again-button {
-            padding: 12px 30px;
-            font-size: 1.1em;
-            font-weight: bold;
-        }
-
-        /* --- ESTILOS PARA PANTALLAS GRANDES (e.g., Kioscos o Smart TV) --- */
-        @media (min-width: 1400px) {
-
-            /* ... (Mantener los ajustes de dado, encabezado, etc.) ... */
-
-            /* ¡CORRECCIÓN CRÍTICA AQUÍ! Aumentamos el tamaño de la ficha */
-            .player-ficha-class {
-                width: 80px;
-                /* Tamaño más cómodo y visible para 86" */
-                height: 80px;
-                /* Aseguramos que la transición sea solo transform si ya aplicaste el paso 1.1 */
-                transition: transform 0.6s linear, box-shadow 0.3s ease;
-            }
-
-            /* Mantenemos el tamaño del icono de las estadísticas más grande */
-            .player-stat-row .player-ficha-icon {
-                width: 45px;
-                /* Icono más visible en el panel de stats */
-                height: 45px;
-            }
-
-            /* Ajustamos el zoom para que se vea bien cuando hacemos el acercamiento */
-            #map-zoom-container.is-zoomed .player-ficha-class {
-                /* Para una ficha de 80px y un zoom de 5x, usamos scale(0.2) 
-           para que se vea como si fuera de 16px en la vista de zoom. 
-           Asegúrate de que este valor esté presente. */
-                transform: translate(-50%, -50%) scale(0.2);
-            }
-
-        }
-        /* Estilos por defecto (para pantallas medianas/grandes) */
-.ficha-del-jugador {
-    display: flex; /* O grid */
-    flex-direction: row; /* Elementos lado a lado por defecto */
-    width: 350px;
-}
-
-/* --- Media Query para Pantallas Pequeñas (ejemplo: menos de 600px) --- */
-@media (max-width: 600px) {
-    .ficha-del-jugador {
-        /* 1. Usar ancho relativo */
-        width: 95%; /* Ocupa casi todo el ancho disponible */
-        margin: 0 auto; /* Centrar la ficha */
-
-        /* 2. Cambiar la dirección del layout para apilar elementos */
-        flex-direction: column; /* Apila los elementos de la ficha */
-        align-items: stretch; /* Opcional: hace que los elementos internos ocupen todo el ancho */
+    #face-1 .pip { top: 50%; left: 50%; transform: translate(-50%, -50%); }
+    #face-2 .pip.tl { top: 10px; left: 10px; }
+    #face-2 .pip.br { bottom: 10px; right: 10px; }
+    #face-3 .pip.tl { top: 10px; left: 10px; }
+    #face-3 .pip.c { top: 50%; left: 50%; transform: translate(-50%, -50%); }
+    #face-3 .pip.br { bottom: 10px; right: 10px; }
+    #face-4 .pip.tl { top: 10px; left: 10px; }
+    #face-4 .pip.tr { top: 10px; right: 10px; }
+    #face-4 .pip.bl { bottom: 10px; left: 10px; }
+    #face-4 .pip.br { bottom: 10px; right: 10px; }
+    #face-5 .pip.tl { top: 10px; left: 10px; }
+    #face-5 .pip.tr { top: 10px; right: 10px; }
+    #face-5 .pip.c { top: 50%; left: 50%; transform: translate(-50%, -50%); }
+    #face-5 .pip.bl { bottom: 10px; left: 10px; }
+    #face-5 .pip.br { bottom: 10px; right: 10px; }
+    #face-6 .pip.tl { top: 10px; left: 10px; }
+    #face-6 .pip.tr { top: 10px; right: 10px; }
+    #face-6 .pip.cl { top: 50%; left: 10px; transform: translateY(-50%); }
+    #face-6 .pip.cr { top: 50%; right: 10px; transform: translateY(-50%); }
+    #face-6 .pip.bl { bottom: 10px; left: 10px; }
+    #face-6 .pip.br { bottom: 10px; right: 10px; }
+
+    @keyframes roll-animation {
+        0% { transform: translateZ(-35px) rotateX(0deg) rotateY(0deg) rotateZ(0deg); }
+        100% { transform: translateZ(-35px) rotateX(1080deg) rotateY(720deg) rotateZ(1440deg); }
+    }
+    .dice-cube.is-rolling { animation: roll-animation 1.5s linear; }
+    .dice-cube.show-1 { transform: translateZ(-35px) rotateY(0deg); }
+    .dice-cube.show-6 { transform: translateZ(-35px) rotateY(-180deg); }
+    .dice-cube.show-4 { transform: translateZ(-35px) rotateY(-90deg); }
+    .dice-cube.show-3 { transform: translateZ(-35px) rotateY(90deg); }
+    .dice-cube.show-2 { transform: translateZ(-35px) rotateX(-90deg); }
+    .dice-cube.show-5 { transform: translateZ(-35px) rotateX(90deg); }
+
+    @keyframes pulse {
+        0% { transform: scale(1); box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); }
+        50% { transform: scale(1.1); box-shadow: 0 6px 20px rgba(0, 0, 0, 0.7); }
+        100% { transform: scale(1); box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); }
+    }
+    .dice-ready { animation: pulse 2s infinite; }
+
+    .turn-indicator {
+        background-color: rgba(0, 0, 0, 0.75); color: white; padding: 8px 15px;
+        border-radius: 20px; font-size: 1.1em; font-weight: bold; font-family: 'Lora', serif;
+        margin-bottom: 10px; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5); opacity: 0;
+        display: none; transition: opacity 0.3s ease; animation: pulse 2s infinite;
+    }
+    .turn-indicator.visible { display: block; opacity: 1; }
+    #turn-indicator-name { color: #8bc34a; text-transform: uppercase; }
+
+    /* MODALES GENERALES */
+    .modal-backdrop {
+        position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+        background-color: rgba(0, 0, 0, 0.7); z-index: 3000; display: none;
+        justify-content: center; align-items: center; opacity: 0; transition: opacity 0.4s ease;
+    }
+    .modal-content {
+        background-color: white; padding: 25px 35px; border-radius: 15px;
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4); text-align: center; width: 90%;
+        max-width: 450px; transform: scale(0.9); transition: transform 0.4s ease;
+        max-height: 90%; overflow-y: auto; box-sizing: border-box;
+    }
+    .modal-backdrop.visible { opacity: 1; }
+    .modal-backdrop.visible .modal-content { transform: scale(1); }
+    .modal-content h2 { color: #055513; font-size: 1.6em; margin-top: 0; margin-bottom: 15px; }
+    #info-modal-image {
+        max-width: 80%; display: block; margin-left: auto; margin-right: auto;
+        height: auto; border-radius: 8px; margin-bottom: 15px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+    .modal-content p {
+        font-size: 1.1em; color: #333; line-height: 1.6; margin-bottom: 25px;
+    }
+    #event-icon-container { width: 50px; height: auto; margin: 20px auto; }
+    #event-icon-container svg { fill: #FFC107; }
+    .modal-content button {
+        padding: 10px 25px; background-color: #8bc34a; color: white; border: none;
+        border-radius: 7px; font-size: 1em; cursor: pointer; transition: background-color 0.3s ease;
+    }
+    .modal-content button:hover { background-color: #7cb342; }
+
+    #question-options { display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; }
+    .option-button {
+        width: 100%; padding: 12px; font-size: 1em; border: 2px solid #ddd;
+        border-radius: 8px; background-color: #f8f8f8; cursor: pointer; transition: all 0.2s ease;
+    }
+    .option-button:hover:not(:disabled) { background-color: #e9e9e9; border-color: #a7c7e7; }
+    .option-button.correct { background-color: #c8e6c9; border-color: #4caf50; color: #2e7d32; font-weight: bold; }
+    .option-button.incorrect { background-color: #ffcdd2; border-color: #f44336; color: #c62828; font-weight: bold; }
+    #question-feedback { min-height: 20px; font-weight: bold; font-size: 1.1em; margin-bottom: 20px; }
+
+    #player-stats-container {
+        position: absolute; top: 10px; left: 10px; z-index: 50;
+        background-color: rgba(255, 255, 255, 0.92); border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); padding: 10px; display: flex;
+        flex-direction: column; gap: 8px; width: 310px; max-width: calc(100vw - 20px);
+        box-sizing: border-box; transition: all 0.3s ease;
+    }
+    .player-stat-row {
+        display: grid; grid-template-columns: auto 1fr auto; grid-template-rows: auto auto;
+        align-items: center; padding: 5px; border-radius: 8px; border: 2px solid transparent;
+        transition: all 0.3s ease; background-color: rgba(240, 240, 240, 0.5);
+    }
+    .player-stat-row.active-turn {
+        border-color: #0074D9; background-color: #ffffff; box-shadow: 0 2px 8px rgba(0, 116, 217, 0.3);
+    }
+    .player-stat-row .player-name {
+        grid-column: 2 / 3; grid-row: 1 / 2; font-size: 1.1em; font-weight: bold;
+        font-family: 'Lora', serif; color: #333; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .player-stat-row .player-score {
+        grid-column: 3 / 4; grid-row: 1 / 3; font-size: 1.6em; font-weight: 700;
+        color: #0074D9; padding-left: 5px; text-align: right; align-self: center;
+    }
+    .player-stat-row .player-inventory-small {
+        grid-column: 2 / 3; grid-row: 2 / 3; display: grid;
+        grid-template-columns: repeat(5, 1fr); gap: 4px; min-height: 22px;
+    }
+    .player-stat-row .player-ficha-icon {
+        grid-column: 1 / 2; grid-row: 1 / 3; width: 28px; height: 28px;
+        object-fit: contain; border-radius: 50%; background-color: #e9e9e9;
+        border: 1px solid #ccc; margin-right: 8px; align-self: center; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
     }
 
-    /* Opcional: Reducir padding o font-size si es necesario */
-    .ficha-del-jugador h3, .ficha-del-jugador p {
-        padding: 5px;
-        text-align: center;
+    @media (max-width: 768px) {
+        #player-stats-container { width: auto; padding: 8px; }
+        .player-stat-row .player-name { font-size: 1em; }
+        .player-stat-row .player-score { font-size: 1.4em; }
+        .player-inventory-small .small-reward-icon { width: 18px; height: 18px; }
+        .player-stat-row .player-ficha-icon { width: 28px; height: 28px; }
+        .reward-slot { width: 22px; height: 22px; }
+        .reward-slot-counter { font-size: 11px; }
     }
-}
-    </style>
+
+    .reward-slot { position: relative; width: 28px; height: 28px; justify-self: center; }
+    .reward-slot-icon {
+        width: 100%; height: 100%; object-fit: contain; background-color: #f0f0f0;
+        border-radius: 4px; padding: 2px; box-sizing: border-box; transition: opacity 0.3s ease;
+    }
+    .reward-slot-counter {
+        position: absolute; bottom: -4px; right: -6px; background-color: #0074D9;
+        color: white; font-size: 12px; font-weight: bold; padding: 0px 4px;
+        border-radius: 50%; border: 1px solid white; box-shadow: 0 0 3px rgba(0, 0, 0, 0.5); display: none;
+    }
+    .reward-slot.uncollected .reward-slot-icon { opacity: 0.3; }
+    .reward-slot.uncollected .reward-slot-counter { display: none; }
+    .reward-slot.collected .reward-slot-icon { opacity: 1; }
+    .reward-slot.collected .reward-slot-counter { display: block; }
+
+    .reward-display {
+        display: none; align-items: center; justify-content: center; gap: 10px;
+        margin-top: 15px; padding: 8px 12px; background-color: #fffbe0;
+        border: 1px solid #ffecb3; border-radius: 8px;
+    }
+    .reward-text { font-weight: bold; color: #f57c00; }
+    .reward-icon { width: 32px; height: 32px; }
+    #back-to-game-btn:hover { background-color: #333; }
+
+    #player-select-backdrop { background-color: rgba(0, 0, 0, 0.7); }
+    .player-select-button {
+        padding: 15px 20px; font-size: 1.2em; font-weight: bold; border: 2px solid #ddd;
+        border-radius: 8px; background-color: #f8f8f8; cursor: pointer; transition: all 0.2s ease;
+        color: #333; display: flex; align-items: center; justify-content: center;
+        width: 80%; align-self: center; box-sizing: border-box;
+    }
+    .player-select-button:hover { background-color: #e9e9e9; border-color: #a7c7e7; transform: translateY(-2px); }
+    .player-select-button .fas { margin-right: 10px; color: #8bc34a; }
+
+    #ficha-modal-backdrop {
+        position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+        background-color: rgba(0, 0, 0, 0.7); z-index: 2000; display: none;
+        justify-content: center; align-items: center;
+    }
+    #ficha-modal {
+        background-color: #f9f9f9; padding: 25px 30px; border-radius: 15px;
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4); text-align: center; width: 50%; max-width: 350px;
+    }
+    #ficha-modal h2 { color: #a7c7e7; font-size: 1.6em; margin-top: 0; margin-bottom: 25px; }
+    .ficha-choices { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-top: 20px; }
+    .ficha-container {
+        display: flex; flex-direction: column; align-items: center; gap: 5px;
+        cursor: pointer; transition: transform 0.2s ease;
+    }
+    .ficha-container:hover { transform: scale(1.1); }
+    .ficha-option {
+        width: 70px; height: 70px; border-radius: 50%; border: 4px solid #ddd;
+        background-color: #ffffff; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease; object-fit: contain; padding: 5px; box-sizing: border-box;
+    }
+    .ficha-container:hover .ficha-option { border-color: #8bc34a; box-shadow: 0 4px 10px rgba(139, 195, 74, 0.4); }
+    .ficha-name { font-size: 0.9em; font-weight: 600; color: #333; text-align: center; }
+    .ficha-container.selected { opacity: 0.5; cursor: not-allowed; }
+    .ficha-container.selected .ficha-option { filter: grayscale(100%); }
+    .ficha-container.selected:hover { transform: scale(1); }
+    .ficha-container.selected:hover .ficha-option { border-color: #ddd; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); }
+
+    .player-select-button.disabled-level {
+        background-color: #f0f0f0; border-color: #e0e0e0; color: #aaa;
+        cursor: not-allowed; opacity: 0.7;
+    }
+    .player-select-button.disabled-level .fas { color: #aaa; }
+    .player-select-button .coming-soon { font-size: 0.8em; font-weight: normal; margin-left: 8px; opacity: 0.9; }
+
+    #info-modal-close-button { display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+    #info-modal-reward-icon { width: 24px; height: 24px; }
+    #reward-modal-close-button { display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+    #reward-modal-icon { width: 24px; height: 24px; }
+
+    #event-modal-title { font-size: 1.6em; font-weight: bold; margin-top: 0; margin-bottom: 15px; text-transform: uppercase; }
+    #event-modal-title.advantage { color: #4CAF50; }
+    #event-modal-title.trap { color: #F44336; }
+
+    #game-info-modal { max-width: 650px; text-align: left; }
+    #game-info-modal h4, #game-info-modal p, #game-info-modal ul, #game-info-modal table {
+        margin-top: 0; margin-bottom: 0; padding: 0;
+    }
+    #game-info-modal h4 { font-size: 1.2em; font-weight: bold; color: #333; margin-top: 24px; margin-bottom: 10px; }
+    #game-info-modal p { margin-bottom: 16px; line-height: 1.4; }
+    #game-info-modal ul { margin-bottom: 16px; padding-left: 30px; line-height: 1.6; }
+    .info-legend-table { width: 100%; border-collapse: collapse; font-size: 0.95em; }
+    .info-legend-table th, .info-legend-table td { padding: 8px 10px; border-bottom: 1px solid #f0f0f0; vertical-align: middle; text-align: left; }
+    .info-legend-table th { background-color: #f8f8f8; font-weight: bold; color: #555; text-transform: uppercase; font-size: 0.9em; }
+    .info-legend-table td:first-child { width: 50px; text-align: center; }
+    .info-legend-table td:nth-child(2) { width: 35%; }
+    .legend-square-icon { width: 40px; height: 40px; object-fit: contain; display: block; margin: 0 auto; }
+
+    #game-over-backdrop {
+        position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+        background-color: rgba(0, 0, 0, 0.85); z-index: 5000; display: none;
+        justify-content: center; align-items: center; flex-direction: column;
+        opacity: 0; transition: opacity 1s ease-in-out;
+    }
+    #game-over-backdrop.visible { opacity: 1; }
+    #game-over-content { text-align: center; color: white; }
+    #confetti-gif { width: 250px; height: auto; margin-bottom: 20px; opacity: 0; transform: scale(0.5); animation: confetti-pop-in 1s forwards; }
+    #game-over-content h2 {
+        font-size: 3em; font-family: 'Lora', serif; margin: 0; color: #8bc34a;
+        text-shadow: 0 0 15px rgba(139, 195, 74, 0.7); animation: pulse-text-large 2s infinite;
+    }
+    #game-over-content p { font-size: 1.5em; font-family: Arial, sans-serif; margin-top: 10px; color: white; }
+
+    @keyframes pulse-text-large {
+        0% { transform: scale(0.95); } 50% { transform: scale(1.05); } 100% { transform: scale(0.95); }
+    }
+    @keyframes confetti-pop-in {
+        0% { opacity: 0; transform: scale(0.5) translateY(50px); }
+        70% { opacity: 1; transform: scale(1.1) translateY(-10px); }
+        100% { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
+    #final-score-modal { max-width: 500px; text-align: center; }
+    #final-score-icon { font-size: 4em; color: #FFC107; margin-bottom: 15px; animation: trophy-bounce 2s infinite; display: flex; justify-content: center; align-items: center; width: 100%; }
+    @keyframes trophy-bounce {
+        0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+        40% { transform: translateY(-20px); }
+        60% { transform: translateY(-10px); }
+    }
+    #final-score-title { color: #055513; font-size: 2em; margin-top: 0; margin-bottom: 20px; }
+    #final-score-details { font-size: 1.1em; color: #333; line-height: 1.6; margin-bottom: 25px; text-align: left; }
+    #final-score-details h4 { text-align: center; margin-bottom: 10px; color: #555; border-bottom: 1px solid #eee; padding-bottom: 5px; }
+    .score-entry { display: flex; justify-content: space-between; padding: 8px 12px; border-bottom: 1px solid #f0f0f0; }
+    .score-entry:last-child { border-bottom: none; }
+    .score-entry-name { font-weight: 600; }
+    .score-entry-score { font-weight: bold; color: #0074D9; }
+    .score-entry.winner { background-color: #fffbe0; border-radius: 6px; }
+    .score-entry.winner .score-entry-name { color: #f57c00; }
+    #play-again-button { padding: 12px 30px; font-size: 1.1em; font-weight: bold; }
+
+    @media (min-width: 1400px) {
+        .player-stat-row .player-ficha-icon { width: 45px; height: 45px; }
+    }
+    .ficha-del-jugador { display: flex; flex-direction: row; width: 350px; }
+    @media (max-width: 600px) {
+        .ficha-del-jugador { width: 95%; margin: 0 auto; flex-direction: column; align-items: stretch; }
+        .ficha-del-jugador h3, .ficha-del-jugador p { padding: 5px; text-align: center; }
+        
+        /* Ajuste del dado en móvil */
+        #dice-container { bottom: 10px; left: 10px; }
+        .dice-scene, .dice-cube .dice-face { width: 60px; height: 60px; }
+        .dice-cube { transform: translateZ(-30px); }
+        .pip { width: 8px; height: 8px; }
+    }
+</style>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
