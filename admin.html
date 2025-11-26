@@ -205,36 +205,41 @@
             font-size: 1.2rem;
         }
 
-       /* Ajuste Móvil */
+     /* Ajuste Móvil */
         @media (max-width: 768px) {
-            /* Modificación para forzar 3 columnas en móviles */
+            /* Modificación para forzar 2 columnas en móviles */
             .barra-filtros {
-                /* Cambiamos a grid para tener control de columnas */
+                /* Crea 2 columnas de igual ancho */
                 display: grid !important; 
-                grid-template-columns: repeat(3, 1fr); /* Crea 3 columnas de igual ancho */
+                grid-template-columns: repeat(2, 1fr); 
                 gap: 10px; 
             }
 
-            /* Los campos se ajustan automáticamente al grid */
             .grupo-filtro {
-                /* Eliminamos el width: 100% que usábamos en la disposición por columna */
+                /* Asegura que los campos se ajusten al ancho de la columna del grid */
                 width: auto; 
-                min-width: unset; /* Para asegurar que el campo se adapta al ancho de la columna del grid */
+                min-width: unset; 
             }
             
-            /* Ajuste especial para el campo de Búsqueda Rápida */
-            /* Este campo es más grande en el diseño original, le damos más espacio */
+            /* Ajuste especial para Búsqueda Rápida (Fila 1 completa) */
+            /* Ocupa el ancho completo (las 2 columnas) */
             .grupo-filtro:first-child { 
-                grid-column: span 3; /* Ocupa el ancho completo (las 3 columnas) */
+                grid-column: span 2; 
                 min-width: unset;
             }
 
+            /* Los filtros Ciudad y Género ya ocupan la Fila 2, Columna 1 y 2 respectivamente. */
+            
             /* Ajuste especial para el botón de Limpiar */
-            /* Lo movemos al final de la tercera columna */
+            /* Lo colocamos en la Fila 3 (donde está Edad), en la Columna 2 */
              .grupo-filtro:last-child {
-                grid-column: 3 / 4; /* Comienza en la línea 3, termina en la 4 (tercera columna) */
-                grid-row: 2 / 3; /* En la segunda fila */
-                margin-top: 15px; /* Pequeño margen para separarlo visualmente de lo de arriba */
+                grid-column: 2 / 3; /* Columna 2 */
+                grid-row: 3 / 4; /* Fila 3 (junto a Edad) */
+                margin-top: 15px; /* Pequeño margen para separarlo de Ciudad/Género */
+                display: flex; /* Para controlar la alineación del botón */
+                justify-content: flex-end; /* Lo alinea a la derecha de su columna */
+                align-items: flex-end; /* Lo alinea a la parte inferior de su celda */
+                padding-bottom: 5px; /* Ajuste visual para alinear con el input de Edad */
             }
 
 
@@ -245,7 +250,6 @@
                 padding: 10px;
             }
         }
-
         /* --- BARRA DE FILTROS --- */
         .barra-filtros {
             display: flex;
@@ -288,17 +292,7 @@
             box-shadow: 0 0 5px rgba(46, 125, 50, 0.2);
         }
 
-        /* Ajuste Móvil */
-        @media (max-width: 768px) {
-            .barra-filtros {
-                flex-direction: column;
-                gap: 10px;
-            }
-
-            .grupo-filtro {
-                width: 100%;
-            }
-        }
+       
     </style>
 
 </head>
