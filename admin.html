@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Panel Admin - Te Vivo Imbabura</title>
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+        /* --- CORRECCIÓN DEL LAYOUT (Sobre-escribe style.css) --- */
+        main {
+            display: flex !important;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            grid-template-columns: none !important;
+            grid-template-rows: none !important;
+            height: calc(100vh - 70px) !important;
+            width: 100% !important;
+            padding: 0 !important;
+        }
+
+        .panel-admin {
+            width: 95% !important;
+            height: 90% !important;
+            max-width: 1600px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            padding: 0px 25px 25px 25px;
+            display: flex;
+            flex-direction: column;
+            margin: auto;
+            filter: blur(10px);
+            pointer-events: none;
+            transition: filter 0.5s ease;
+        }
+
+        /* --- ESTILOS DE PESTAÑAS (TABS) --- */
+        .tabs-navigation {
+            display: flex;
+            margin-bottom: 0px;
+            border-bottom: 2px solid #ccc;
+            width: 100%;
+            padding-top: 20px;
+        }
+
+        .tab-button {
+            padding: 10px 20px;
+            cursor: pointer;
+            background-color: #f0f0f0;
+            border: 1px solid #ccc;
+            border-bottom: none;
+            border-top-left-radius: 8px;
+            border-top-right-radius: 8px;
+            font-weight: bold;
+            color: #555;
+            transition: background-color 0.3s, color 0.3s;
+            margin-right: 5px;
+            outline: none;
+        }
+
+        .tab-button:hover {
+            background-color: #e0e0e0;
+        }
+
+        .tab-button.active {
+            background-color: white;
+            color: #2E7D32;
+            border-color: #ccc;
+            border-bottom: 2px solid white;
+            margin-bottom: -2px;
+        }
+
+        .tab-content {
+            display: none;
+            width: 100%;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+
+        .tab-content.active {
+            display: flex;
+        }
+
+
+        /* --- ESTILOS DE LA TABLA --- */
+        .cabecera-admin {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 15px;
+            padding-top: 15px;
+        }
+
+        .titulo-seccion h2 {
+            margin: 0;
+            color: #333;
+            font-size: 1.8rem;
+        }
+
+        .contador {
+            background: #e0e0e0;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            margin-left: 10px;
+        }
+
+        .contenedor-tabla {
+            flex-grow: 1;
+            overflow: auto;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.05);
+        }
+        
+        /* Contenedor de tabla para Score Global */
+        #contenedor-tabla-score {
+            overflow: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 1000px;
+        }
+
+        thead {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        th {
+            background-color: #2E7D32;
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+        
+        #tabla-score th.score-total {
+            background-color: #388E3C; /* Un verde ligeramente diferente para destacar */
+        }
+
+        td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #eee;
+            color: #333;
+            vertical-align: middle;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+
+        tr:hover {
+            background-color: #e8f5e9;
+        }
+
+        /* --- BOTONES Y LOGIN --- */
+        .botones-accion {
+            display: flex;
+            gap: 15px;
+        }
+
+        /* Pantalla de Login (Bloqueo) */
+        #overlay-login {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .card-login {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            text-align: center;
+            width: 90%;
+            max-width: 400px;
+        }
+
+        .input-login {
+            width: 100%;
+            padding: 12px;
+            margin: 20px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            text-align: center;
+            font-size: 1.2rem;
+        }
+
+        /* Responsive Header para Admin */
+        @media (max-width: 768px) {
+            .cabecera-admin {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+
+            .botones-accion {
+                width: 100%;
+                justify-content: space-between;
+            }
+
+            .panel-admin {
+                width: 100% !important;
+                height: 100% !important;
+                border-radius: 0;
+                padding: 10px;
+            }
+        }
+
+        /* --- BARRA DE FILTROS --- */
+        .barra-filtros {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #eee;
+            flex-wrap: wrap;
+        }
+
+        .grupo-filtro {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            min-width: 200px;
+        }
+
+        .label-filtro {
+            font-size: 0.85rem;
+            font-weight: bold;
+            color: var(--color-tierra-oscura);
+        }
+
+        .input-filtro {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-family: var(--fuente-principal);
+            font-size: 0.95rem;
+            outline: none;
+            transition: border 0.3s;
+        }
+
+        .input-filtro:focus {
+            border-color: var(--color-bosque-profundo);
+            background-color: #fff;
+            box-shadow: 0 0 5px rgba(46, 125, 50, 0.2);
+        }
+
+        /* Ajuste Móvil */
+        @media (max-width: 768px) {
+            .barra-filtros {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .grupo-filtro {
+                width: 100%;
+            }
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <div id="overlay-login">
+        <div class="card-login">
+            <h2 style="color: var(--color-bosque-profundo);">🔒 Acceso Restringido</h2>
+            <p style="color: #666;">Solo personal autorizado del ITCA</p>
+
+            <input type="password" id="admin-pass" class="input-login" placeholder="Ingresa la contraseña">
+
+            <button class="btn-imbabura primario" onclick="validarIngreso()" style="width: 100%;">
+                Entrar al Sistema
+            </button>
+
+            <p id="msg-error" class="error-msg" style="display:none; color:red; margin-top:10px;">⛔ Contraseña incorrecta</p>
+
+            <br>
+            <a href="index.html" style="color: #999; text-decoration: none; font-size: 0.9rem;">← Volver al inicio</a>
+        </div>
+    </div>
+
+    <header>
+        <div class="zona-logo izquierda">
+            <img src="assets/imagenes/logounesco.png" alt="UNESCO" class="img-responsive"
+                onerror="this.style.display='none'">
+        </div>
+
+        <div class="zona-logo centro">
+            <h1 style="color: #fff; font-size: 1.4rem; text-shadow: 0 2px 4px rgba(0,0,0,0.5); margin:0;">
+                ⚙️ PANEL DE CONTROL
+            </h1>
+        </div>
+
+        <div class="zona-logo derecha">
+            <img src="assets/imagenes/logoitca.png" alt="ITCA" class="img-responsive"
+                onerror="this.style.display='none'">
+        </div>
+    </header>
+
+    <main>
+        <div id="panel-principal" class="panel-admin">
+
+            <div class="tabs-navigation">
+                <button id="tab-db-btn" class="tab-button active" onclick="mostrarPestana('db')">
+                    📋 Base de Datos
+                </button>
+                <button id="tab-score-btn" class="tab-button" onclick="mostrarPestana('score')">
+                    🏆 Score Global
+                </button>
+            </div>
+
+
+            <div id="tab-db-content" class="tab-content active">
+
+                <div class="cabecera-admin">
+                    <div class="titulo-seccion" style="display: flex; align-items: baseline;">
+                        <h2>Registros de Jugadores</h2>
+                        <span style="background:#eee; padding:5px 10px; border-radius:10px; margin-left: 15px;">Total: <strong
+                                id="total-registros">...</strong></span>
+                    </div>
+                    <div class="botones-accion">
+                        <button class="btn-excel" onclick="exportarExcel()">📊 Descargar Excel</button>
+                        <button class="btn-imbabura secundario" onclick="window.location.href='index.html'">Cerrar
+                            Sesión</button>
+                    </div>
+                </div>
+
+                <div class="barra-filtros">
+
+                    <div class="grupo-filtro" style="flex: 2;">
+                        <label class="label-filtro">🔍 Búsqueda Rápida</label>
+                        <input type="text" id="filtro-texto" class="input-filtro" placeholder="Escribe Cédula o Nombre..."
+                            onkeyup="filtrarTabla()">
+                    </div>
+
+                    <div class="grupo-filtro">
+                        <label class="label-filtro">🏙️ Ciudad</label>
+                        <input type="text" id="filtro-ciudad" class="input-filtro" placeholder="Ej: Ibarra"
+                            onkeyup="filtrarTabla()">
+                    </div>
+
+                    <div class="grupo-filtro">
+                        <label class="label-filtro">🚻 Género</label>
+                        <select id="filtro-genero" class="input-filtro" onchange="filtrarTabla()">
+                            <option value="">Todos</option>
+                            <option value="Masculino">Masculino</option>
+                            <option value="Femenino">Femenino</option>
+                            <option value="Otro">Otro</option>
+                        </select>
+                    </div>
+                    <div class="grupo-filtro">
+                        <label class="label-filtro">🎂 Edad</label>
+                        <input type="number" id="filtro-edad" class="input-filtro" placeholder="Ej: 25"
+                            onkeyup="filtrarTabla()">
+                    </div>
+                    <div class="grupo-filtro" style="flex: 0; min-width: auto; justify-content: flex-end;">
+                        <button class="btn-imbabura secundario" onclick="limpiarFiltros()" style="padding: 10px;">
+                            🧹
+                        </button>
+                    </div>
+
+                </div>
+                <div class="contenedor-tabla">
+                    <table id="tabla-jugadores">
+                        <thead>
+                            <tr>
+                                <th>Fecha</th>
+                                <th>Cédula</th>
+                                <th>Edad</th>
+                                <th>Nombre</th>
+                                <th>Celular</th>
+                                <th>Email</th>
+                                <th>Género</th>
+                                <th>Ciudad</th>
+                            </tr>
+                        </thead>
+                        <tbody id="cuerpo-tabla">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+
+            <div id="tab-score-content" class="tab-content">
+                <div class="cabecera-admin">
+                    <div class="titulo-seccion" style="display: flex; align-items: baseline;">
+                        <h2>🏆 Score Global de Jugadores</h2>
+                        <span style="background:#eee; padding:5px 10px; border-radius:10px; margin-left: 15px;">Total: <strong
+                            id="total-registros-score">...</strong></span>
+                    </div>
+                    <div class="botones-accion">
+                        <button class="btn-excel" onclick="exportarExcelScore()">📊 Descargar Score</button>
+                        <button class="btn-imbabura secundario" onclick="window.location.href='index.html'">Cerrar
+                            Sesión</button>
+                    </div>
+                </div>
+                
+                <div class="contenedor-tabla" id="contenedor-tabla-score">
+                    <table id="tabla-score">
+                        <thead>
+                            <tr>
+                                <th>Puesto</th>
+                                <th>Cédula</th>
+                                <th>Nombre</th>
+                                <th class="score-total">Score Total</th>
+                                <th>Nivel 1</th>
+                                <th>Nivel 2</th>
+                                <th>Nivel 3</th>
+                                <th>Nivel 4</th>
+                            </tr>
+                        </thead>
+                        <tbody id="cuerpo-tabla-score">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+
+        </div>
+    </main>
+
+    <script type="module">
+        // A. IMPORTAR FIREBASE
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getFirestore, collection, getDocs, query } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        // B. CREDENCIALES (¡LAS TUYAS!)
+        const firebaseConfig = {
+            apiKey: "AIzaSyDtgE2I0eYet03R6VfeXvgvXtEpdAUaYSo",
+            authDomain: "juego-te-vivo-imababura.firebaseapp.com",
+            projectId: "juego-te-vivo-imababura",
+            storageBucket: "juego-te-vivo-imababura.firebasestorage.app",
+            messagingSenderId: "54108968941",
+            appId: "1:54108968941:web:2ac23cd1eac1e6781b39e4",
+            measurementId: "G-320511XQMN"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // Almacén global para datos del score
+        let globalScoreData = []; 
+
+        // --- FUNCIÓN 1: LOGIN LOCAL ---
+        window.validarIngreso = function () {
+            const inputPass = document.getElementById('admin-pass').value;
+            const errorMsg = document.getElementById('msg-error');
+            const overlay = document.getElementById('overlay-login');
+            const panel = document.getElementById('panel-principal');
+
+            // CONTRASEÑA SENCILLA (Cámbiala aquí: La contraseña es "1234")
+            if (inputPass === "admintevivoimbabura2025") {
+                errorMsg.style.display = 'none';
+                // 1. Quitar bloqueo
+                overlay.style.display = 'none';
+
+                // 2. Mostrar panel nítido
+                panel.style.filter = 'none';
+                panel.style.pointerEvents = 'auto';
+
+                // 3. CARGAR DATOS
+                cargarRegistros();
+                cargarScoreGlobal(); // 🔑 Cargar datos del Score al iniciar
+            } else {
+                // Mostrar error
+                errorMsg.style.display = 'block';
+            }
+        }
+
+        // --- FUNCIÓN 2: CARGAR DATOS DE FIREBASE (BASE DE DATOS) ---
+        async function cargarRegistros() {
+            const cuerpoTabla = document.getElementById('cuerpo-tabla');
+            const totalLabel = document.getElementById('total-registros');
+
+            try {
+                const q = query(collection(db, "registros"));
+                const querySnapshot = await getDocs(q);
+
+                totalLabel.innerHTML = querySnapshot.size;
+                cuerpoTabla.innerHTML = ''; 
+
+                if (querySnapshot.empty) {
+                    cuerpoTabla.innerHTML = '<tr><td colspan="8" style="text-align:center; padding:20px;">No hay registros</td></tr>';
+                    return;
+                }
+
+                querySnapshot.forEach((doc) => {
+                    const data = doc.data();
+
+                    const cedulaID = doc.id;
+                    const edadValor = data.edad || "-";
+                    let fechaTexto = data.registradoEn || "S/F";
+
+                    const fila = `
+                <tr>
+                    <td style="font-size:0.85rem; color:#666;">${fechaTexto}</td>
+                    <td style="font-weight:bold; color:#2E7D32;">${cedulaID}</td> 
+                    
+                    <td style="text-align:center;">${edadValor}</td>
+                    
+                    <td>${data.nombre || "-"}</td>
+                    <td>${data.telefono || "-"}</td>
+                    <td>${data.email || "-"}</td>
+                    <td>${data.genero || "-"}</td>
+                    <td>${data.ciudad || "-"}</td>
+                </tr>
+            `;
+
+                    cuerpoTabla.innerHTML += fila;
+                });
+
+                window.filtrarTabla();
+
+            } catch (error) {
+                console.error("Error al cargar registros:", error);
+                cuerpoTabla.innerHTML = '<tr><td colspan="8" style="color:red; text-align:center;">Error de conexión</td></tr>';
+            }
+        }
+        
+        // --- FUNCIÓN 3: CARGAR DATOS DE FIREBASE (SCORE GLOBAL) ---
+        async function cargarScoreGlobal() {
+            const cuerpoTablaScore = document.getElementById('cuerpo-tabla-score');
+            const totalLabelScore = document.getElementById('total-registros-score');
+            globalScoreData = []; // Limpiar datos globales
+
+            try {
+                const q = query(collection(db, "registros"));
+                const querySnapshot = await getDocs(q);
+                
+                totalLabelScore.innerHTML = querySnapshot.size;
+                cuerpoTablaScore.innerHTML = ''; 
+
+                if (querySnapshot.empty) {
+                    cuerpoTablaScore.innerHTML = '<tr><td colspan="7" style="text-align:center; padding:20px;">No hay datos de score</td></tr>';
+                    return;
+                }
+                
+                // 1. Procesar y calcular scores
+                querySnapshot.forEach((doc) => {
+                    const data = doc.data();
+                    const cedulaID = doc.id;
+                    const nombre = data.nombre || "-";
+                    const estadoNiveles = data.estado_niveles || {};
+
+                    let totalScore = 0;
+                    let scoresNiveles = {};
+
+                    // Iterar sobre los niveles para sumar el score
+                    for (let i = 1; i <= 4; i++) {
+                        const nivelKey = `nivel_${i}`;
+                        const nivelData = estadoNiveles[nivelKey] || {};
+                        const score = parseInt(nivelData.score) || 0; 
+                        scoresNiveles[nivelKey] = score;
+                        totalScore += score;
+                    }
+                    
+                    // Almacenar en el arreglo global
+                    globalScoreData.push({
+                        cedula: cedulaID,
+                        nombre: nombre,
+                        scoreTotal: totalScore,
+                        nivel1: scoresNiveles.nivel_1,
+                        nivel2: scoresNiveles.nivel_2,
+                        nivel3: scoresNiveles.nivel_3,
+                        nivel4: scoresNiveles.nivel_4,
+                    });
+                });
+                
+                // 2. Ordenar por Score Total (mayor a menor)
+                globalScoreData.sort((a, b) => b.scoreTotal - a.scoreTotal);
+
+                // 3. Renderizar la tabla
+                globalScoreData.forEach((jugador, index) => {
+                    const puesto = index + 1;
+                    const fila = `
+                        <tr>
+                            <td style="font-weight:bold; text-align:center;">#${puesto}</td>
+                            <td>${jugador.cedula}</td>
+                            <td>${jugador.nombre}</td>
+                            <td style="font-weight:bold; color:#00695C; font-size:1.1rem; text-align:center;">${jugador.scoreTotal}</td>
+                            <td style="text-align:center;">${jugador.nivel1}</td>
+                            <td style="text-align:center;">${jugador.nivel2}</td>
+                            <td style="text-align:center;">${jugador.nivel3}</td>
+                            <td style="text-align:center;">${jugador.nivel4}</td>
+                        </tr>
+                    `;
+                    cuerpoTablaScore.innerHTML += fila;
+                });
+                
+
+            } catch (error) {
+                console.error("Error al cargar score global:", error);
+                cuerpoTablaScore.innerHTML = '<tr><td colspan="7" style="color:red; text-align:center;">Error al conectar con la base de datos</td></tr>';
+            }
+        }
+        
+        // --- FUNCIÓN 4: EXPORTAR EXCEL (Base de Datos) ---
+        window.exportarExcel = function () {
+            let table = document.getElementById("tabla-jugadores");
+            let rows = table.querySelectorAll("tr");
+            let csv = [];
+            for (let i = 0; i < rows.length; i++) {
+                let row = [], cols = rows[i].querySelectorAll("td, th");
+                for (let j = 0; j < cols.length; j++) {
+                    let data = cols[j].innerText.replace(/(\r\n|\n|\r)/gm, "").replace(/"/g, '""');
+                    row.push('"' + data + '"');
+                }
+                csv.push(row.join(","));
+            }
+            let csvFile = new Blob([csv.join("\n")], { type: "text/csv" });
+            let downloadLink = document.createElement("a");
+            downloadLink.download = "jugadores_imbabura.csv";
+            downloadLink.href = window.URL.createObjectURL(csvFile);
+            downloadLink.style.display = "none";
+            document.body.appendChild(downloadLink);
+            downloadLink.click();
+        }
+        
+        // --- FUNCIÓN 5: EXPORTAR EXCEL (Score Global) ---
+        window.exportarExcelScore = function () {
+            let table = document.getElementById("tabla-score");
+            let rows = table.querySelectorAll("tr");
+            let csv = [];
+            for (let i = 0; i < rows.length; i++) {
+                let row = [], cols = rows[i].querySelectorAll("td, th");
+                for (let j = 0; j < cols.length; j++) {
+                    let data = cols[j].innerText.replace(/(\r\n|\n|\r)/gm, "").replace(/"/g, '""');
+                    row.push('"' + data + '"');
+                }
+                csv.push(row.join(","));
+            }
+            let csvFile = new Blob([csv.join("\n")], { type: "text/csv" });
+            let downloadLink = document.createElement("a");
+            downloadLink.download = "score_global_imbabura.csv";
+            downloadLink.href = window.URL.createObjectURL(csvFile);
+            downloadLink.style.display = "none";
+            document.body.appendChild(downloadLink);
+            downloadLink.click();
+        }
+
+        // Permitir login con la tecla Enter
+        document.getElementById('admin-pass').addEventListener("keypress", function (event) {
+            if (event.key === "Enter") {
+                window.validarIngreso();
+            }
+        });
+
+        // --- FUNCIÓN 6: FILTRAR TABLA EN TIEMPO REAL (Base de Datos) ---
+        window.filtrarTabla = function () {
+            // ... (Lógica de filtrado de Base de Datos sin cambios) ...
+            const texto = document.getElementById('filtro-texto').value.toUpperCase();
+            const ciudad = document.getElementById('filtro-ciudad').value.toUpperCase();
+            const genero = document.getElementById('filtro-genero').value.toUpperCase();
+            const edad = document.getElementById('filtro-edad').value.trim(); 
+
+            const tabla = document.getElementById('tabla-jugadores');
+            const filas = tabla.getElementsByTagName('tr');
+            let contadorVisibles = 0;
+
+            for (let i = 1; i < filas.length; i++) {
+                const celdas = filas[i].getElementsByTagName('td');
+
+                if (celdas.length < 2) continue;
+
+                const valorCedula = celdas[1].textContent || "";
+                const valorEdad = celdas[2].textContent || ""; 
+                const valorNombre = celdas[3].textContent || "";
+                const valorGenero = celdas[6].textContent || "";
+                const valorCiudad = celdas[7].textContent || "";
+
+                const coincideEdad = edad === "" || valorEdad.includes(edad);
+
+                const coincideTexto = valorCedula.toUpperCase().includes(texto) ||
+                    valorNombre.toUpperCase().includes(texto);
+                const coincideCiudad = valorCiudad.toUpperCase().includes(ciudad);
+                const coincideGenero = genero === "" || valorGenero.toUpperCase() === genero;
+
+                if (coincideTexto && coincideCiudad && coincideGenero && coincideEdad) { 
+                    filas[i].style.display = "";
+                    contadorVisibles++;
+                } else {
+                    filas[i].style.display = "none";
+                }
+            }
+            document.getElementById('total-registros').innerText = contadorVisibles;
+        }
+
+        // --- FUNCIÓN 7: LIMPIAR FILTROS (Base de Datos) ---
+        window.limpiarFiltros = function () {
+            document.getElementById('filtro-texto').value = "";
+            document.getElementById('filtro-ciudad').value = "";
+            document.getElementById('filtro-genero').value = "";
+            document.getElementById('filtro-edad').value = ""; 
+            window.filtrarTabla();
+        }
+
+        // --- FUNCIÓN 8: MOSTRAR PESTAÑA (Tabs) ---
+        window.mostrarPestana = function (pestanaId) {
+            // Ocultar todos los contenidos y desactivar botones
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            document.querySelectorAll('.tab-button').forEach(button => {
+                button.classList.remove('active');
+            });
+
+            // Mostrar el contenido y activar el botón correspondiente
+            document.getElementById('tab-' + pestanaId + '-content').classList.add('active');
+            document.getElementById('tab-' + pestanaId + '-btn').classList.add('active');
+
+            // Si se selecciona la pestaña de Score Global, recarga los datos
+            if (pestanaId === 'score') {
+                cargarScoreGlobal(); 
+            }
+            
+            // Si se selecciona la Base de Datos, se recargan los filtros 
+            if (pestanaId === 'db') {
+                // Solo llama a filtrarTabla, no a cargarRegistros, para usar los datos ya cargados.
+                window.filtrarTabla(); 
+            }
+        }
+
+    </script>
+</body>
+
+</html>

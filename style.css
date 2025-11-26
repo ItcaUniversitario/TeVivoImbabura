@@ -1,0 +1,2126 @@
+           /*---------------------------------------*/
+           /* 1. VARIABLES UNIVERSALES (Paleta Natural) */
+           :root {
+               --color-bosque-profundo: #2E7D32;
+               --color-bosque-claro: #81C784;
+               --color-tierra-oscura: #4E342E;
+               --color-tierra-clara: #8D6E63;
+               --color-arena: #F1F8E9;
+               --color-madera: #D7CCC8;
+               --color-blanco-roto: #FAFAFA;
+
+               --radio-borde: 16px;
+               --sombra-natural: 0 10px 20px rgba(46, 125, 50, 0.15);
+               --fuente-principal: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+           }
+
+           * {
+               box-sizing: border-box;
+               margin: 0;
+               padding: 0;
+           }
+
+           body {
+               background-color: var(--color-arena);
+               /* Imagen de fondo (la que pusimos antes) */
+               background-image: url('assets/imagenes/portada_tvi.png');
+               background-size: cover;
+               background-position: center;
+               background-attachment: fixed;
+
+               color: var(--color-tierra-oscura);
+               font-family: var(--fuente-principal);
+
+               /* --- AJUSTES PARA PANTALLAS GIGANTES (4K / Ultrawide) --- */
+               max-width: 1600px;
+               /* El juego nunca será más ancho que esto */
+               margin: 0 auto;
+               /* Centra el juego en el medio de la pantalla negra */
+               position: relative;
+               /* Necesario para la sombra */
+               box-shadow: 0 0 50px rgba(0, 0, 0, 0.8);
+               /* Sombra elegante a los lados en TV */
+
+               height: 100vh;
+               display: flex;
+               flex-direction: column;
+               overflow: auto;
+           }
+
+           /* --- HEADER TOTALMENTE RESPONSIVE --- */
+           header {
+               height: 70px;
+
+               /* CAMBIO 1: Degradado en vez de color plano (Da volumen) */
+               background: linear-gradient(180deg, #5D4037 0%, #3E2723 100%);
+
+               /* CAMBIO 2: Borde inferior dorado/claro para resaltar */
+               border-bottom: 3px solid #8D6E63;
+
+               /* CAMBIO 3: Sombra fuerte para que flote sobre el juego */
+               box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+
+               display: flex;
+               justify-content: space-between;
+               align-items: center;
+               padding: 0 1rem;
+
+               /* Asegura que esté por encima de todo */
+               position: relative;
+               z-index: 20;
+               flex-shrink: 0;
+           }
+
+           /* CONTENEDORES DE LOGOS (ZONAS) */
+           .zona-logo {
+               display: flex;
+               align-items: center;
+               height: 100%;
+               /* Ocupan todo el alto del header */
+               flex: 1;
+               /* Las 3 zonas intentan tener el mismo ancho */
+               /* Esto evita que se aplasten totalmente */
+               min-width: 0;
+           }
+
+           .izquierda {
+               justify-content: flex-start;
+           }
+
+           .centro {
+               justify-content: center;
+               flex: 2;
+               /* El centro tiene el doble de prioridad de espacio */
+           }
+
+           .derecha {
+               justify-content: flex-end;
+           }
+
+           /* --- REGLA MAESTRA PARA TODAS LAS IMÁGENES --- */
+           .zona-logo img {
+               max-width: 100%;
+               /* Nunca más ancha que su zona */
+               object-fit: contain;
+               /* Se escala manteniendo proporción perfecta */
+               filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.5));
+           }
+
+           /* --- PERSONALIZACIÓN DE TAMAÑOS --- */
+
+           /* 1. Logos Laterales (UNESCO / ITCA) */
+           /* Les damos un margen de respiración (80% del alto) para que se vean elegantes */
+           .zona-logo.izquierda img,
+           .zona-logo.derecha img {
+               height: auto;
+               /* El alto es automático */
+               max-height: 80%;
+               /* Pero nunca superan el 80% del header */
+           }
+
+           /* 2. Logo Central (Juego) */
+           /* Le forzamos a intentar ocupar el 100% del alto, pero si no cabe a lo ancho, se reduce */
+           .zona-logo.centro img {
+               height: 100%;
+               /* Intenta llenar el alto */
+               width: auto;
+               max-height: 100%;
+           }
+
+           /* --- MEDIA QUERIES (CELULARES) --- */
+           @media (max-width: 768px) {
+               header {
+                   height: 60px;
+                   /* Header un poco más bajo */
+                   padding: 0 0.5rem;
+                   /* Menos margen a los lados */
+               }
+
+               /* En celular, damos prioridad a que se vean, aunque sean pequeños */
+               .zona-logo.centro {
+                   flex: 3;
+               }
+
+               /* El centro gana más espacio */
+               .zona-logo.izquierda,
+               .zona-logo.derecha {
+                   flex: 1;
+               }
+
+           }
+
+           /* --- LAYOUT PRINCIPAL (GRID) --- */
+           main {
+               flex-grow: 1;
+               display: grid;
+               padding: 1rem;
+               gap: 1rem;
+
+
+               grid-template-columns: minmax(100px, 1fr) minmax(400px, 3fr) minmax(100px, 1fr);
+               grid-template-rows: 1fr;
+               grid-template-areas: "left center right";
+
+               height: calc(100vh - 70px);
+
+               height: calc(100vh - 70px);
+               /* Altura total menos el header */
+               /* Ajustado al nuevo alto del header */
+
+               /* --- FONDO DEL JUEGO (WALLPAPER) --- */
+               background-image: url('assets/imagenes/portada_tvi.png');
+               /* Tu imagen aquí */
+               background-size: cover;
+               /* Cubre toda la pantalla */
+               background-position: center;
+               /* Centrada */
+               background-attachment: fixed;
+               /* EFECTO PRO: La imagen se queda quieta al hacer scroll */
+           }
+
+           /* --- ESTILOS DE PANELES LATERALES (Scoreboard / Info) --- */
+           .panel {
+               /* Mantenemos el cristal */
+               background: rgba(255, 255, 255, 0.8);
+               backdrop-filter: blur(10px);
+               -webkit-backdrop-filter: blur(10px);
+               border-radius: var(--radio-borde);
+
+               padding: 1rem;
+
+               /* 🏆 Altura 100% de su fila, y permite scroll interno */
+               overflow-y: auto;
+               height: 100%;
+               box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+
+               /* Nota: Se ha ELIMINADO el 'display: none' general de esta regla */
+           }
+
+           /* CLAVE: Ocultamos SÓLO el panel derecho por defecto (Score de Partida) */
+           #panel-derecho {
+               grid-area: right;
+               display: none;
+               height: 100%;
+               /* Esto es correcto para llenar la celda Grid */
+               overflow-y: visible;
+               /* Debe ser visible para que el scroll del hijo funcione */
+               max-height: 100%;
+               /* Esto también es correcto */
+           }
+
+           /* ========================================================= */
+           /* ESTILOS PARA EL MARCADOR GLOBAL (#panel-izquierdo) */
+           /* ========================================================= */
+
+           #panel-izquierdo {
+               /* 1. Fondo: Degradado de Claro a Tierra (Efecto Pergamino) */
+               /* El degradado va de un blanco hueso (#FCF7F0) a un color tierra claro (#E1D4BB). */
+               background: linear-gradient(180deg,
+                       #fcf7f0 0%,
+                       #E1D4BB 80%);
+
+               /* 2. Forma y Sombra: Borde redondeado y profundidad */
+               /* Aplicar un borde redondeado fuerte al panel (ajusta el valor según el tamaño del panel) */
+               border-radius: 15px;
+
+               /* Sombra para darle un efecto "elevado" y separar el panel */
+               box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+
+               /* Asegurar que el contenido no se salga de los bordes redondeados */
+               overflow: hidden;
+
+               /* Margen: Un pequeño margen para que el panel no toque el borde de la ventana */
+               margin: 10px 0 10px 10px;
+               /* Ajusta este valor si es necesario */
+           }
+
+           /* --------------------------------------------------------- */
+           /* ESTILOS PARA EL CONTENIDO INTERNO */
+           /* --------------------------------------------------------- */
+
+           /* Título: "🏆 Marcador Global" */
+           #panel-izquierdo h3 {
+               /* Color verde oscuro para el texto del título */
+               color: var(--color-bosque-profundo, #2E7D32);
+
+               /* Asegurar que el título esté en la parte superior */
+               padding-top: 15px;
+               margin-bottom: 5px;
+               /* Ajusta el margen si es necesario */
+           }
+
+           /* Estilo de la tabla (Encabezados de Nombre y Puntaje) */
+           #panel-izquierdo .jugador-score-item {
+               /* Mismo color verde oscuro para los encabezados */
+               border-bottom: 2px solid var(--color-bosque-profundo, #2E7D32) !important;
+
+               /* Aplicar el color a los textos dentro del encabezado */
+               color: var(--color-bosque-profundo, #2E7D32) !important;
+               font-weight: bold;
+           }
+
+           /* Lista de Jugadores (Jugadores inyectados por JS) */
+           #lista-jugadores-score {
+               /* El texto de los jugadores debe ser un gris/negro oscuro legible */
+               color: #333;
+               font-weight: 500;
+               /* Ligeramente más grueso para destacar */
+           }
+
+           /* Estilo para los puntajes individuales (solo si es necesario diferenciarlos) */
+           #lista-jugadores-score span {
+               color: #444;
+           }
+
+           /* --- ESTILO DEL TABLERO CENTRAL (OCUPA TODO) --- */
+           #tablero-central {
+               grid-area: center;
+               width: 100%;
+               height: 100%;
+
+               /* CAMBIO CLAVE: Mucho más transparente (0.6) para ver el paisaje */
+               background: rgba(255, 255, 255, 0.6);
+
+               /* Aumentamos el desenfoque para que el texto se lea bien aunque sea transparente */
+               backdrop-filter: blur(20px);
+               -webkit-backdrop-filter: blur(20px);
+
+               /* Borde sutil brillante */
+               border: 1px solid rgba(255, 255, 255, 0.5);
+               border-radius: var(--radio-borde);
+
+               /* Sombra suave interna para dar sensación de grosor */
+               box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.2);
+
+               display: flex;
+               justify-content: center;
+               align-items: center;
+               position: relative;
+               overflow-y: auto;
+           }
+
+           /* --- CENTRAR TÍTULOS EN EL TABLERO --- */
+           #tablero-central h2 {
+               text-align: center;
+               /* Centra el texto */
+               width: 100%;
+               /* Asegura que el título use todo el espacio */
+               margin-bottom: 15px;
+               /* Un poco de aire debajo del título */
+               color: var(--color-bosque-profundo);
+               /* Asegura el color de marca */
+           }
+
+           #tablero-central>* {
+               margin-top: 0 !important;
+               padding-top: 0 !important;
+           }
+
+           /* --- CONTENIDO INTERNO (Centrado Perfecto) --- */
+           .menu-seleccion {
+               /* 1. Ocupar todo el espacio del padre */
+               width: 100%;
+               /* height: 100%; <-- ¡ELIMINAR O COMENTAR ESTA LÍNEA! */
+
+               /* 2. Flexbox para CENTRAR TODO */
+               display: flex;
+               flex-direction: column;
+               /* Uno debajo del otro */
+               justify-content: center;
+               /* Centrado VERTICAL */
+               align-items: center;
+               /* Centrado HORIZONTAL */
+
+               /* 3. Estilos visuales (Transparente como pediste) */
+               background: transparent;
+               border: none;
+               box-shadow: none;
+
+               /* 4. Ajustes de espaciado */
+               padding: 1rem;
+               box-sizing: border-box;
+               /* Para que el padding no aumente el ancho */
+
+               /* Animación */
+               animation: fadeIn 0.5s ease;
+           }
+
+           @keyframes fadeIn {
+               from {
+                   opacity: 0;
+                   transform: translateY(10px);
+               }
+
+               to {
+                   opacity: 1;
+                   transform: translateY(0);
+               }
+           }
+
+           .menu-seleccion h2 {
+               margin-top: 0;
+               /* Evita que el título empuje todo hacia abajo */
+               text-align: center;
+               margin-bottom: 30px;
+               /* Tus otros estilos de texto (sombra, color) se mantienen... */
+           }
+
+           /* Estilo específico para el subtítulo */
+           .subtitulo {
+               width: 100%;
+               text-align: center;
+               color: var(--color-tierra-clara);
+               margin-bottom: 15px;
+               font-size: 1rem;
+               text-shadow: 0 1px 1px rgba(255, 255, 255, 0.8);
+           }
+
+           /* --- ESTILOS TARJETAS DE SELECCIÓN (1, 2, 3 JUGADORES) --- */
+
+           .grid-jugadores {
+               display: grid;
+               grid-template-columns: repeat(3, 1fr);
+               gap: 30px;
+               /* Más espacio entre botones */
+               margin-bottom: 30px;
+               margin-top: 0;
+               width: 100%;
+               max-width: 800px;
+               /* Para que los botones no sean gigantescos */
+           }
+
+           /* El estilo de CADA BOTÓN (La tarjeta) */
+           .btn-jugador {
+               background-color: rgba(255, 255, 255, 0.9);
+               /* Blanco casi puro */
+               border: 2px solid var(--color-tierra-clara);
+               /* Borde café suave */
+               border-radius: 12px;
+               padding: 20px 10px;
+               /* Buen espacio interno */
+
+               /* Flexbox para centrar icono y número verticalmente */
+               display: flex;
+               flex-direction: column;
+               align-items: center;
+               justify-content: center;
+               gap: 10px;
+
+               cursor: pointer;
+               transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+               /* Animación fluida */
+
+               /* Color del texto inicial */
+               color: var(--color-tierra-oscura);
+           }
+
+           /* Estilo del ICONO SVG */
+           .icono-jugador {
+               width: 48px;
+               /* Tamaño grande para que se vea bien */
+               height: 48px;
+               color: var(--color-bosque-profundo);
+               /* Verde inicial */
+               transition: color 0.3s ease;
+           }
+
+           /* Estilo del NÚMERO */
+           .texto-jugador {
+               font-size: 1.5rem;
+               /* Número grande */
+               font-weight: bold;
+           }
+
+           /* --- EFECTOS AL PASAR EL MOUSE (HOVER) --- */
+           .btn-jugador:hover {
+               /* Se vuelve verde bosque */
+               background-color: var(--color-bosque-profundo);
+               border-color: var(--color-bosque-profundo);
+
+               /* El texto cambia a blanco */
+               color: white;
+
+               /* Se eleva un poco (Efecto 3D) */
+               transform: translateY(-5px);
+               box-shadow: 0 10px 20px rgba(46, 125, 50, 0.3);
+           }
+
+           /* Truco: Cuando el botón es verde, el icono se vuelve blanco */
+           /* Esto funciona gracias a fill="currentColor" en tu HTML */
+           .btn-jugador:hover .icono-jugador {
+               color: white;
+           }
+
+           /* --- RESPONSIVE PARA CELULARES --- */
+           @media (max-width: 480px) {
+               .grid-jugadores {
+                   /* 🏆 CLAVE: Cambiar a una sola columna para evitar el desborde */
+                   grid-template-columns: 1fr;
+                   gap: 15px;
+                   /* Ajustamos el espacio vertical */
+               }
+
+               .btn-jugador {
+                   /* El padding y tamaño de texto más pequeños que ya tienes */
+                   padding: 15px 10px;
+               }
+
+               .icono-jugador {
+                   width: 32px;
+                   /* Iconos un poco más pequeños */
+                   height: 32px;
+               }
+
+               .texto-jugador {
+                   font-size: 1.2rem;
+               }
+
+               .menu-seleccion h2 {
+                   /* ... (propiedades existentes) ... */
+
+                   margin-bottom: 30px;
+                   /* 🏆 CLAVE: Define el espacio EXACTO entre el título y el elemento siguiente (la cuadrícula) */
+
+                   margin-top: 0;
+                   /* Asegura que no haya espacio extra arriba */
+               }
+           }
+
+
+           /* --- RESPONSIVE 100% --- */
+
+           /* TABLETS */
+           @media (max-width: 1024px) {
+               main {
+                   grid-template-columns: 1fr 1fr;
+                   grid-template-rows: minmax(400px, 1fr) auto;
+                   grid-template-areas:
+                       "center center"
+                       "left right";
+               }
+           }
+
+           /* MÓVILES (Celulares) */
+           @media (max-width: 768px) {
+               body {
+                   overflow: auto;
+               }
+
+               main {
+                   /* Desactiva el Grid de 3 columnas y apila */
+                   display: flex;
+                   flex-direction: column;
+                   height: auto;
+               }
+
+               .panel {
+                   width: 100%;
+                   margin-bottom: 15px;
+                   /* Espacio entre los bloques apilados */
+                   flex-shrink: 0;
+                   /* El Marcador Global (panel-izquierdo) ya no se oculta aquí */
+               }
+
+               /* 🏆 CLAVE: Altura flexible para el Marcador Global (Panel Izquierdo) */
+               #panel-izquierdo {
+                   /* Para que siempre se vea, pero se desplace si tiene muchos jugadores */
+                   max-height: 40vh;
+                   /* Máximo 40% de la pantalla para dejar espacio al mapa y la partida */
+                   overflow-y: auto;
+               }
+
+               #tablero-central {
+                   height: auto;
+                   min-height: 300px;
+                   flex-grow: 1;
+
+                   /* Nota: Dado que main es flex-direction: column y ya tiene height:auto, 
+       usar un valor fijo aquí es necesario para el centrado. */
+               }
+
+               /* 🏆 CLAVE: Altura flexible para el Scoreboard de la Partida (Panel Derecho) */
+               #panel-derecho {
+                   width: 100%;
+                   max-height: 50vh;
+                   /* Altura máxima visible de 50% de la pantalla */
+                   overflow-y: auto;
+                   /* Permite scroll dentro del panel */
+               }
+
+               .menu-seleccion {
+                   width: 100%;
+                   height: 100%;
+                   /* << ASEGÚRATE DE QUE ESTO SE HAYA ELIMINADO/COMENTADO EN LA REGLA GLOBAL TAMBIÉN */
+                   border-radius: 0;
+                   /* Quitamos bordes curvos para ganar espacio */
+                   border: none;
+                   /* Sin borde para que parezca una app nativa */
+                   padding: 1rem;
+                   /* Menos relleno para que quepa más contenido */
+                   background: rgba(255, 255, 255, 0.98);
+                   /* Más sólido para leer mejor */
+               }
+
+               .grid-jugadores {
+                   gap: 10px;
+               }
+
+               /* Ajuste para pantallas muy pequeñas (iPhone SE / Fold) */
+               @media (max-width: 360px) {
+                   .logo {
+                       font-size: 1rem;
+                   }
+
+                   /* Logo más pequeño */
+                   header {
+                       padding: 0 0.5rem;
+                   }
+               }
+           }
+
+           /* --- ESTILOS PARA EL ÁREA QR (RESPONSIVE) --- */
+           .area-qr {
+               display: flex;
+               flex-direction: column;
+               align-items: center;
+               gap: 10px;
+               margin-top: 15px;
+               /* Un poco más de aire */
+               width: 100%;
+               /* Asegura que use el ancho disponible */
+           }
+
+           .linea-divisoria {
+               width: 80%;
+               height: 1px;
+               background-color: var(--color-tierra-clara);
+               opacity: 0.3;
+               margin-bottom: 5px;
+           }
+
+           .titulo-qr {
+               font-size: 0.9rem;
+               /* Un pelín más grande para leer bien en celular */
+               color: var(--color-bosque-profundo);
+               text-align: center;
+               padding: 0 10px;
+               /* Evita que el texto toque los bordes */
+           }
+
+           .img-qr {
+               width: 120px;
+               /* Un poco más grande para facilitar el escaneo */
+               height: auto;
+               /* Mantiene la proporción */
+
+               /* SEGURIDAD RESPONSIVE: */
+               max-width: 60%;
+               /* En celulares muy pequeños, se reducirá si es necesario */
+
+               border: 2px solid var(--color-bosque-claro);
+               border-radius: 8px;
+               padding: 5px;
+               background: white;
+               transition: transform 0.3s ease;
+           }
+
+           .img-qr:hover {
+               transform: scale(1.05);
+               border-color: var(--color-bosque-profundo);
+           }
+
+           /* --- FORMULARIO AVANZADO DE REGISTRO --- */
+
+           #contenedor-inputs {
+               /* 1. Centrado Horizontal del bloque */
+               margin: 10px auto 20px auto;
+
+               /* 2. Dimensiones */
+               width: 100%;
+               max-width: 800px;
+               /* Un poco más estrecho para que se vea compacto y centrado */
+               max-height: 60vh;
+               /* Altura máxima para permitir scroll */
+
+               overflow-y: auto;
+               /* Scroll vertical */
+               padding: 10px 20px;
+               /* Relleno interno para que la scrollbar no toque los inputs */
+
+               /* Asegura que el contenido interno (Grid) se comporte bien */
+               box-sizing: border-box;
+           }
+
+           /* Estilo de la Scrollbar (Opcional - para que se vea bonita en Chrome) */
+           #contenedor-inputs::-webkit-scrollbar {
+               width: 8px;
+           }
+
+           #contenedor-inputs::-webkit-scrollbar-thumb {
+               background: var(--color-tierra-clara);
+               border-radius: 4px;
+           }
+
+           /* Tarjeta individual de cada jugador */
+           .ficha-jugador {
+               background: rgba(255, 255, 255, 0.6);
+               border: 1px solid var(--color-tierra-clara);
+               border-radius: 8px;
+               padding: 15px;
+               margin-bottom: 15px;
+           }
+
+           .titulo-ficha {
+               font-size: 1rem;
+               color: var(--color-bosque-profundo);
+               margin-bottom: 10px;
+               border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+               padding-bottom: 5px;
+           }
+
+           /* Grid para los campos (2 columnas) */
+           .grid-formulario {
+               display: grid;
+               grid-template-columns: 1fr 1fr;
+               /* Dos columnas iguales */
+               gap: 10px;
+           }
+
+           /* Inputs Estilizados */
+           .input-imbabura {
+               width: 100%;
+               padding: 10px;
+               border: 1px solid #ccc;
+               border-radius: 5px;
+               background: rgba(255, 255, 255, 0.9);
+               font-family: inherit;
+           }
+
+           /* Clase para que el correo ocupe todo el ancho */
+           .full-width {
+               grid-column: span 2;
+               /* Ocupa las 2 columnas */
+           }
+
+           /* --- RESPONSIVE PARA EL FORMULARIO --- */
+           @media (max-width: 600px) {
+               .grid-formulario {
+                   grid-template-columns: 1fr;
+                   /* En celular, 1 sola columna */
+               }
+
+               .full-width {
+                   grid-column: span 1;
+               }
+           }
+
+           /* --- ESTILOS BÚSQUEDA CÉDULA --- */
+
+           .grupo-busqueda {
+               display: flex;
+               gap: 10px;
+               align-items: center;
+               margin-bottom: 5px;
+           }
+
+           /* El input de cédula crece para llenar espacio */
+           .grupo-busqueda .input-imbabura {
+               flex-grow: 1;
+           }
+
+
+
+           /* Mensaje de Error (Rojo) */
+           .mensaje-alerta {
+               color: #D32F2F;
+               /* Rojo fuerte */
+               font-size: 0.85rem;
+               font-weight: bold;
+               margin-bottom: 10px;
+               display: none;
+               /* Oculto al principio */
+               animation: fadeIn 0.3s ease;
+           }
+
+           /* Contenedor de los campos extra (Oculto al inicio) */
+           .campos-restantes {
+               display: none;
+               /* EL TRUCO: Oculto hasta que se busque la cédula */
+               margin-top: 10px;
+               padding-top: 10px;
+               border-top: 1px dashed var(--color-tierra-clara);
+               animation: slideDown 0.5s ease;
+           }
+
+           /* Animación suave al desplegar */
+           @keyframes slideDown {
+               from {
+                   opacity: 0;
+                   transform: translateY(-10px);
+               }
+
+               to {
+                   opacity: 1;
+                   transform: translateY(0);
+               }
+           }
+
+           /* --- SISTEMA DE BOTONES UNIVERSAL (TE VIVO IMBABURA) --- */
+
+           /* 1. Estilo Base (La estructura es idéntica para todos) */
+           .btn-imbabura {
+               font-family: var(--fuente-principal);
+               font-weight: bold;
+               font-size: 1rem;
+               border-radius: 8px;
+               /* Bordes redondeados estándar */
+               padding: 10px 20px;
+               /* Tamaño cómodo */
+               cursor: pointer;
+               transition: all 0.3s ease;
+               /* Animación suave universal */
+               display: inline-flex;
+               align-items: center;
+               justify-content: center;
+               gap: 8px;
+               /* Espacio entre icono y texto */
+               border: 2px solid transparent;
+               /* Preparamos el borde */
+               white-space: nowrap;
+               /* Evita que el texto se rompa */
+           }
+
+           /* Efecto universal al presionar (Click) */
+           .btn-imbabura:active {
+               transform: scale(0.96);
+           }
+
+           /* 2. VARIANTE PRINCIPAL (Verde Bosque - Para "Buscar" y "Jugar") */
+           .btn-imbabura.primario {
+               background-color: var(--color-bosque-profundo);
+               color: white;
+               box-shadow: 0 4px 6px rgba(46, 125, 50, 0.2);
+           }
+
+           .btn-imbabura.primario:hover {
+               background-color: #1b5e20;
+               /* Verde más oscuro */
+               transform: translateY(-2px);
+               box-shadow: 0 6px 10px rgba(46, 125, 50, 0.3);
+           }
+
+           /* 3. VARIANTE SECUNDARIA (Borde Café - Para "Atrás") */
+           .btn-imbabura.secundario {
+               background-color: transparent;
+               color: var(--color-tierra-clara);
+               border-color: var(--color-tierra-clara);
+           }
+
+           .btn-imbabura.secundario:hover {
+               background-color: var(--color-tierra-clara);
+               color: white;
+           }
+
+           /* --- AJUSTES FINALES RESPONSIVE (MÓVIL) --- */
+
+           @media (max-width: 768px) {
+
+               /* 1. La Tarjeta ocupa TODO el espacio en celular */
+               .menu-seleccion {
+                   width: 100%;
+                   height: 100%;
+                   border-radius: 0;
+                   /* Quitamos bordes curvos para ganar espacio */
+                   border: none;
+                   /* Sin borde para que parezca una app nativa */
+                   padding: 1rem;
+                   /* Menos relleno para que quepa más contenido */
+                   background: rgba(255, 255, 255, 0.98);
+                   /* Más sólido para leer mejor */
+               }
+
+               /* 2. Los Botones de Selección (1, 2, 3) */
+               .grid-jugadores {
+                   gap: 10px;
+                   /* Menos espacio entre ellos */
+               }
+
+               .btn-jugador {
+                   padding: 10px 5px;
+                   /* Botones más compactos */
+               }
+
+               .texto-jugador {
+                   font-size: 1.2rem;
+                   /* Texto un poco más chico */
+               }
+
+               /* 3. El Formulario de Registro */
+               #contenedor-inputs {
+                   max-height: 55vh;
+                   /* Ajustamos la altura para que no tape el teclado */
+               }
+
+               .grid-formulario {
+                   grid-template-columns: 1fr;
+                   /* Una sola columna (Nombre abajo de Apellido) */
+                   gap: 15px;
+               }
+
+               /* En celular, todos los campos ocupan el ancho total */
+               .full-width {
+                   grid-column: span 1;
+               }
+
+               /* 4. Botones de Acción (Atrás / Jugar) */
+               .btn-imbabura {
+                   width: 100%;
+                   /* Botones anchos para tocar fácil con el dedo */
+                   justify-content: center;
+               }
+           }
+
+           /* --- MODO PAISAJE EN MÓVIL (Giro de pantalla) --- */
+           @media (max-height: 500px) and (orientation: landscape) {
+
+               /* 1. Ocultamos el Header para ganar espacio vital */
+               header {
+                   display: none;
+               }
+
+               /* 2. Ajustamos el main para que use toda la pantalla */
+               main {
+                   height: 100vh;
+                   /* Usa el 100% ya que no hay header */
+                   padding: 0.5rem;
+
+                   grid-template-areas: "left center right";
+                   /* Mapa al centro */
+               }
+
+               /* 3. Hacemos la tarjeta de registro más compacta */
+               .menu-seleccion {
+                   padding: 10px;
+                   flex-direction: row;
+                   /* Botones a los lados para aprovechar lo ancho */
+               }
+
+               #contenedor-inputs {
+                   max-height: 150px;
+                   /* Scroll pequeño */
+               }
+           }
+
+           /* --- BOTÓN DE ADMINISTRADOR (DISCRETO) --- */
+           .btn-admin {
+               margin-top: 20px;
+               /* Separación del QR */
+               background: transparent;
+               border: 1px dashed var(--color-tierra-clara);
+               /* Borde sutil */
+               color: var(--color-tierra-clara);
+               padding: 5px 15px;
+               border-radius: 20px;
+               font-size: 0.8rem;
+               cursor: pointer;
+               opacity: 0.7;
+               /* Un poco transparente para que no llame la atención */
+               transition: all 0.3s ease;
+           }
+
+           .btn-admin:hover {
+               opacity: 1;
+               background-color: var(--color-tierra-clara);
+               color: white;
+               border-style: solid;
+           }
+
+           /* --- NOTIFICACIÓN FLOTANTE (TOAST) --- */
+           .toast {
+               visibility: hidden;
+               /* Oculto por defecto */
+               min-width: 250px;
+               background-color: rgba(30, 30, 30, 0.9);
+               /* Fondo oscuro elegante */
+               color: #fff;
+               text-align: center;
+               border-radius: 50px;
+               /* Muy redondeado */
+               padding: 16px;
+               position: fixed;
+               z-index: 10000;
+               /* Por encima de todo */
+               left: 50%;
+               top: 30px;
+               /* Distancia desde arriba */
+               transform: translateX(-50%);
+               /* Centrado perfecto */
+               font-size: 1rem;
+               box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+               opacity: 0;
+               transition: opacity 0.5s, top 0.5s;
+               /* Animación suave */
+           }
+
+           /* Clase para mostrarlo */
+           .toast.mostrar {
+               visibility: visible;
+               opacity: 1;
+               top: 50px;
+               /* Baja un poquito al aparecer (efecto caída) */
+           }
+
+
+
+           /* Asegurar lectura en fondo transparente */
+           h2,
+           .subtitulo,
+           .titulo-qr,
+           .texto-jugador {
+               text-shadow: 0 1px 1px rgba(255, 255, 255, 0.8);
+               /* Brillo blanco detrás del texto */
+               color: var(--color-tierra-oscura);
+               /* Asegura que sea oscuro */
+           }
+
+           /* Contenedor de botones al pie del formulario */
+           .footer-botones {
+               width: 100%;
+               display: flex;
+               justify-content: center;
+               /* Centra los botones horizontalmente */
+               gap: 15px;
+               /* Espacio entre botones */
+               margin-top: 10px;
+           }
+
+           /* --- PANTALLA DE SELECCIÓN DE FICHAS --- */
+
+           .grid-fichas {
+               display: grid;
+               grid-template-columns: repeat(3, 1fr);
+               /* 3 arriba, 3 abajo */
+               gap: 20px;
+               width: 100%;
+               max-width: 700px;
+               margin-top: 20px;
+           }
+
+           .btn-ficha {
+               background: rgba(255, 255, 255, 0.5);
+               /* Fondo semitransparente */
+               border: 2px solid transparent;
+               border-radius: 12px;
+               padding: 15px;
+               cursor: pointer;
+               transition: all 0.3s ease;
+               /* Para que la imagen se ajuste bien */
+               display: flex;
+               justify-content: center;
+               align-items: center;
+           }
+
+           .btn-ficha img {
+               /* Mantenemos el tamaño ligeramente reducido */
+               width: 70px;
+               height: 70px;
+
+               object-fit: contain;
+               transition: transform 0.3s;
+
+               /* 🏆 CLAVE DE CORRECCIÓN: Aplicar un margen a la imagen */
+               margin: 5px;
+               /* Crea un espacio de 5px alrededor de la imagen dentro del botón */
+
+               border-radius: 4px;
+               filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.2));
+           }
+
+           /* Efecto Hover (Solo si no está desactivada) */
+           .btn-ficha:not(:disabled):hover {
+               background: rgba(255, 255, 255, 0.9);
+               transform: scale(1.05);
+               border-color: var(--color-bosque-profundo);
+               box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+           }
+
+           /* ESTADO DESACTIVADO (Ya elegida) */
+           .btn-ficha:disabled {
+               cursor: not-allowed;
+               opacity: 0.6;
+               background: rgba(0, 0, 0, 0.1);
+               filter: grayscale(100%);
+               /* Blanco y negro */
+           }
+
+           /* Responsive Móvil */
+           @media (max-width: 600px) {
+               .grid-fichas {
+                   grid-template-columns: repeat(2, 1fr);
+                   /* 2 columnas en celular */
+                   gap: 10px;
+               }
+
+               .btn-ficha img {
+                   width: 60px;
+                   height: 60px;
+               }
+           }
+
+
+
+           /*-------------------------------------------------------*/
+
+           /* --- PANTALLA DE NIVELES --- */
+
+           .grid-niveles {
+               display: grid;
+               grid-template-columns: repeat(2, 1fr);
+               /* 2 Columnas */
+               gap: 15px;
+               width: 100%;
+               max-width: 900px;
+               padding: 10px;
+               overflow-y: auto;
+               /* Scroll si la pantalla es pequeña */
+               max-height: 65vh;
+           }
+
+           /* Estilo Base de la Tarjeta */
+           .card-nivel {
+               display: flex;
+               align-items: center;
+               padding: 15px;
+               border-radius: 12px;
+               background: rgba(255, 255, 255, 0.9);
+               border: 2px solid transparent;
+               transition: all 0.3s ease;
+               position: relative;
+               overflow: hidden;
+           }
+
+           .nivel-numero {
+               font-size: 1.5rem;
+               font-weight: bold;
+               background: #eee;
+               width: 40px;
+               height: 40px;
+               border-radius: 50%;
+               display: flex;
+               justify-content: center;
+               align-items: center;
+               margin-right: 15px;
+               color: #555;
+           }
+
+           .nivel-info h3 {
+               margin: 0;
+               font-size: 1rem;
+               color: var(--color-tierra-oscura);
+           }
+
+           .nivel-info span {
+               font-size: 0.8rem;
+               color: #666;
+           }
+
+           .nivel-accion {
+               margin-left: auto;
+               /* Empuja el icono a la derecha */
+               font-size: 1.2rem;
+           }
+
+           /* --- ESTILO NIVEL ACTIVO --- */
+           .card-nivel.activo {
+               border-color: var(--color-bosque-profundo);
+               background: #fff;
+               cursor: pointer;
+               box-shadow: 0 4px 10px rgba(46, 125, 50, 0.2);
+           }
+
+           .card-nivel.activo .nivel-numero {
+               background: var(--color-bosque-profundo);
+               color: white;
+           }
+
+           .card-nivel.activo:hover {
+               transform: translateY(-3px);
+               background-color: #E8F5E9;
+               /* Verde muy clarito */
+               box-shadow: 0 8px 15px rgba(46, 125, 50, 0.3);
+           }
+
+           /* --- ESTILO NIVEL BLOQUEADO --- */
+           .card-nivel.bloqueado {
+               opacity: 0.6;
+               background: rgba(200, 200, 200, 0.5);
+               cursor: not-allowed;
+               filter: grayscale(100%);
+               /* Se ve gris */
+           }
+
+           /* Responsive Móvil */
+           @media (max-width: 600px) {
+               .grid-niveles {
+                   grid-template-columns: 1fr;
+                   /* 1 sola columna en celular */
+               }
+           }
+
+
+           /* --- PANEL IZQUIERDO (SCOREBOARD) --- */
+           #panel-izquierdo {
+               /* Mantenemos el cristal */
+               background: rgba(255, 255, 255, 0.8);
+               backdrop-filter: blur(10px);
+
+               /* Agregamos padding interno y un fondo base */
+               padding: 10px;
+               /* Espacio para que el contenido no toque los bordes */
+               border-radius: var(--radio-borde);
+               overflow-y: auto;
+           }
+
+           /* --- ENCABEZADO ESTÁTICO (Ajuste visual) --- */
+           /* La fila que dice 'Nombre' y 'Puntaje' debe tener el mismo padding */
+           #panel-izquierdo>div:first-of-type {
+               padding: 0 10px 10px 10px;
+           }
+
+           /* --- ESTILO DE CADA FILA DEL MARCADOR --- */
+           .jugador-score-item {
+               display: flex;
+               justify-content: space-between;
+               padding: 8px 10px;
+               /* Más espacio vertical para que no se vea pegado */
+               margin-bottom: 2px;
+               /* Pequeño margen entre filas */
+               border-radius: 4px;
+               transition: all 0.2s ease;
+               font-size: 0.95rem;
+               /* Tamaño de letra legible */
+           }
+
+           /* --- EFECTO CEBRA (MEJORA DE LECTURA) --- */
+           /* Las filas impares tendrán un fondo ligeramente más oscuro */
+           .jugador-score-item:nth-child(odd) {
+               background-color: rgba(255, 255, 255, 0.5);
+               /* Semi-transparente/Claro */
+           }
+
+           /* --- EFECTO HOVER EN FILAS --- */
+           .jugador-score-item:hover {
+               background-color: var(--color-bosque-claro);
+               /* Verde suave al pasar mouse */
+               color: var(--color-tierra-oscura) !important;
+               cursor: pointer;
+               transform: scale(1.01);
+           }
+
+           /* Aseguramos que los textos mantengan el color oscuro sobre el hover */
+           .jugador-score-item:hover span {
+               color: var(--color-tierra-oscura) !important;
+           }
+
+           /* --- ESTILOS RESPONSIVE PARA EL VIDEO --- */
+           .video-container {
+               /* Anchura fija para PC, se adapta en móvil */
+               width: 90%;
+               max-width: 650px;
+
+               height: auto;
+
+               /* Centrado manual (además del flexbox del padre) */
+               margin: 20px auto 30px auto;
+
+               /* Estilo visual */
+               border-radius: 12px;
+               box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+               overflow: hidden;
+               /* Recorta las esquinas del video */
+           }
+
+           /* Regla para que el video local ocupe todo el contenedor */
+           #pantalla-video video {
+               width: 100%;
+               height: auto;
+               display: block;
+           }
+
+           /* Ajuste específico para el botón de 'Saltar' si está muy pegado */
+           #pantalla-video .btn-imbabura.primario {
+               margin-top: 20px;
+               margin-bottom: 20px;
+           }
+
+           /* --- ESTILOS DE PESTAÑAS (TABS) --- */
+
+           .tabs-control {
+               display: flex;
+               justify-content: space-between;
+               margin-bottom: 10px;
+               padding-bottom: 5px;
+               border-bottom: 1px solid var(--color-tierra-clara);
+           }
+
+           .tab-button {
+               flex-grow: 1;
+               background: transparent;
+               border: none;
+               padding: 8px 5px;
+               cursor: pointer;
+               font-weight: bold;
+               font-size: 0.9rem;
+               color: var(--color-tierra-clara);
+               border-radius: 6px 6px 0 0;
+               transition: all 0.2s ease;
+           }
+
+           .tab-button:hover {
+               color: var(--color-bosque-profundo);
+               background-color: rgba(255, 255, 255, 0.5);
+           }
+
+           /* PESTAÑA ACTIVA */
+           .tab-button.activo {
+               color: var(--color-bosque-profundo);
+               border-bottom: 3px solid var(--color-bosque-profundo);
+               /* Línea inferior verde */
+           }
+
+           /* Contenido de la pestaña (Corregido para Scroll Interno) */
+           .tab-content {
+               display: none;
+               width: 100%;
+
+               /* 🔑 CLAVE: Permite que la altura se ajuste dinámicamente */
+               /* Lo establecemos en 'auto' o lo eliminamos, y usamos max-height */
+               height: auto;
+
+               /* 🔑 CLAVE: Limitamos la altura de la pestaña y permitimos el scroll */
+               max-height: 85vh;
+               /* Ocupa hasta el 85% del viewport height (Ajusta si es necesario) */
+               overflow-y: auto;
+               /* Permite el scroll vertical si el contenido excede 85vh */
+               overflow-x: hidden;
+           }
+
+           .tab-content.activo {
+               display: flex;
+               flex-direction: column;
+
+               /* 🔑 CLAVE: ALTURA MÁXIMA PARA ACTIVAR EL SCROLL INTERNO */
+               /* Usamos 'vh' para adaptarnos a cualquier tamaño de pantalla */
+               max-height: 80vh;
+               /* Ajuste para que ocupe gran parte de la pantalla verticalmente */
+
+               /* 🔑 CLAVE: FORZAR SCROLL INTERNO */
+               overflow-y: auto;
+
+           }
+
+           /* --- ESTILOS DE LA PESTAÑA PARTIDA --- */
+
+           /* Estilo de la lista de recompensas */
+           .grid-recompensas {
+               display: grid;
+               grid-template-columns: repeat(4, 1fr);
+               /* 4 ítems por fila */
+               gap: 8px;
+               padding: 5px;
+               border: 1px solid #eee;
+               border-radius: 6px;
+               background: #fcfcfc;
+           }
+
+           /* Estilo de cada espacio/slot de inventario */
+           .recompensa-slot {
+               width: 100%;
+               height: 40px;
+               /* Altura fija para el ítem */
+               background: #e0e0e0;
+               /* Color gris suave */
+               border: 1px solid #ccc;
+               border-radius: 4px;
+               display: flex;
+               justify-content: center;
+               align-items: center;
+               font-size: 1.2rem;
+               color: #4E342E;
+           }
+
+
+
+           /* --- ESTILO PARA SLOTS LLENOS (Mejora Contraste) --- */
+           .recompensa-slot-lleno {
+               background: white;
+               border: 1px solid var(--color-bosque-profundo);
+               /* Borde fuerte y verde */
+               box-shadow: 0 1px 5px rgba(0, 0, 0, 0.15);
+               /* Sombra sutil */
+
+               /* Aseguramos que el contenido sea solo la imagen */
+               color: transparent;
+           }
+
+           /* Contenedor principal de la lista de scores (marcador-partida-scroll) */
+           .marcador-partida-scroll {
+               /* ELIMINAR O COMENTAR la línea max-height: 150px; */
+               max-height: none;
+               /* Permitirá que se estire sin scroll si hay espacio */
+               padding-right: 5px;
+               margin-bottom: 10px;
+
+               background: white;
+               border-radius: 4px;
+               padding: 5px;
+               overflow-y: auto;
+           }
+
+           /* --- RECOMPENSAS DEBAJO DEL NOMBRE (Minuatura) --- */
+
+           /* Estilo del icono pequeño de recompensa (la imagen) */
+           .recompensa-icono-miniatura {
+               width: 20px;
+               /* Tamaño muy pequeño y compacto */
+               height: 20px;
+               border-radius: 4px;
+               background-size: cover;
+               background-position: center;
+               border: 1px solid rgba(0, 0, 0, 0.1);
+           }
+
+           /* La etiqueta del contador (El número que flota) */
+           .recompensa-contador {
+               position: absolute;
+               bottom: -5px;
+               /* Posicionado un poco abajo del ícono */
+               right: -5px;
+               /* Posicionado a la derecha del ícono */
+               background: var(--color-bosque-profundo);
+               /* Fondo verde */
+               color: white;
+               font-size: 0.7rem;
+               font-weight: bold;
+               border-radius: 50%;
+               width: 14px;
+               height: 14px;
+               line-height: 14px;
+               text-align: center;
+               z-index: 10;
+               box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+               border: 1px solid white;
+           }
+
+           /* --- LAYOUT DEL JUGADOR: 3 FILAS COMPACTAS (CORREGIDO) --- */
+           .jugador-score-partida {
+               display: grid;
+               /* Columnas: [Ficha (35px)] [Nombre/Puntos (1fr)] */
+               grid-template-columns: 35px 1fr;
+               /* Filas: [Nombre/Puntos] [Recompensas] */
+               grid-template-rows: auto auto;
+
+               padding: 5px 0;
+               margin-bottom: 5px;
+               border-bottom: 1px dashed #ddd;
+               transition: all 0.3s ease;
+           }
+
+           /* El contenido (Nombre, Recompensas, Puntos) ahora se asigna directamente al Grid */
+
+           /* 1. FICHA (Columna 1, Ocupa las tres filas) */
+           .ficha-wrapper {
+               grid-row: 1 / 3;
+               /* Ocupa las dos filas de alto */
+               grid-column: 1;
+               display: flex;
+               justify-content: center;
+               align-items: center;
+               padding-right: 5px;
+           }
+
+           /* 2. FILA SUPERIOR: Nombre y Puntos */
+           .info-jugador-principal {
+               grid-row: 1;
+               grid-column: 2;
+               display: flex;
+               justify-content: space-between;
+               /* Nombre a la izq, Puntos a la der */
+               align-items: center;
+               padding-top: 5px;
+           }
+
+
+           /* 2. NOMBRE (Columna 2, Fila 1) */
+           .nombre-wrapper {
+               font-size: 0.9rem;
+               font-weight: bold;
+               color: var(--color-tierra-oscura);
+               white-space: nowrap;
+               overflow: hidden;
+           }
+
+           /* 3. RECOMPENSAS (Columna 2, Fila 2) */
+           .recompensas-jugador-individual {
+               grid-row: 2;
+               grid-column: 2;
+               display: flex;
+               gap: 3px;
+               padding-top: 2px;
+               padding-bottom: 5px;
+               padding-left: 0;
+               /* Ya no necesita padding-left porque está en la Columna 2 */
+               max-width: 100%;
+               overflow: hidden;
+               white-space: nowrap;
+           }
+
+           /* Estilo del Puntaje */
+           .puntaje-wrapper {
+               font-weight: bold;
+               color: var(--color-bosque-profundo);
+               font-size: 1rem;
+           }
+
+
+
+
+           /*-----------------------------------------------------------------------------*/
+           /*-----------------------------------------------------------------------------*/
+           /*-----------------------------------------------------------------------------*/
+           /*-----------------------------------------------------------------------------*/
+           #contenedor-mapa {
+               width: 100%;
+               height: 100%;
+
+               /* 🏆 CLAVE: Limitar la altura máxima del contenedor. */
+               /* Usamos el 95% de la altura del contenedor padre. */
+               max-height: 95%;
+
+               /* Aseguramos que la proporción de ancho a alto (aspect-ratio) sea buena. */
+               /* Como tu mapa es más ancho que alto, esta es una buena limitación: */
+               max-width: 100%;
+
+               background-color: transparent;
+               position: relative;
+
+               /* Propiedades de centrado (que deben mantenerse) */
+               display: flex;
+               justify-content: center;
+               /* Centrado horizontal */
+               align-items: center;
+               /* Centrado vertical */
+           }
+
+           /* --- Estilo de la Imagen (Asumo que es la única <img> dentro) --- */
+           #contenedor-mapa img {
+               /* 🏆 CLAVE: La imagen debe ser flexible y mantener su proporción */
+               max-width: 100%;
+               max-height: 100%;
+               object-fit: contain;
+               /* Asegura que la imagen se vea completa sin ser recortada */
+           }
+
+
+           /* --- ESTILOS PARA LA PANTALLA INTERSTITIAL --- */
+
+           /* Aseguramos que la imagen no sea demasiado grande */
+           .img-transicion {
+               max-width: 80%;
+               height: auto;
+               margin: 20px 0;
+               border-radius: 10px;
+               box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+           }
+
+           .interstitial-contenido {
+               display: flex;
+               flex-direction: column;
+               align-items: center;
+               justify-content: center;
+               text-align: center;
+           }
+
+           /* Estilos básicos para la barra de carga */
+           .barra-carga {
+               width: 200px;
+               height: 8px;
+               background-color: rgba(0, 0, 0, 0.1);
+               border-radius: 4px;
+               overflow: hidden;
+               margin-top: 15px;
+           }
+
+           /* Animación de la barra */
+           .barra-carga::after {
+               content: '';
+               display: block;
+               width: 0;
+               height: 100%;
+               background-color: #4CAF50;
+               /* Color de tu marca */
+               animation: cargar 2s linear forwards;
+               /* 2 segundos de animación */
+           }
+
+           @keyframes cargar {
+               from {
+                   width: 0;
+               }
+
+               to {
+                   width: 100%;
+               }
+           }
+
+
+           /*---------------------------------------------------------------------*/
+           /* CLAVE 1: El contenedor debe ser relativo y tener una proporción fija */
+           #tablero-visual-juego {
+               position: relative;
+               width: 100%;
+               /* Altura basada en la PROPORCIÓN de la imagen del mapa (Ancho/Alto) */
+               /* Ejemplo: Si tu mapa es 4:3 (Alto/Ancho = 0.75), usa padding-bottom: 75% */
+               /* **DEBES AJUSTAR ESTE VALOR A LA PROPORCIÓN DE TU MAPA**
+       Si tu mapa es más alto que ancho (Vertical), será más de 100%.
+       Si es más ancho que alto (Horizontal), será menos de 100%. */
+               padding-bottom: 100%;
+               /* << EJEMPLO: AJUSTA ESTO >> */
+               height: 0;
+               /* Necesario para que padding-bottom defina la altura */
+               overflow: hidden;
+               /* Oculta cualquier cosa que sobresalga */
+           }
+
+           /* CLAVE 2: La imagen y el contenedor de fichas deben llenar ese nuevo espacio */
+           #mapa-juego-visual,
+           #contenedor-fichas {
+               position: absolute;
+               top: 0;
+               left: 0;
+               width: 100%;
+               height: 100%;
+               /* La imagen debe llenar completamente el área del contenedor sin contener (contain) */
+               object-fit: fill;
+           }
+
+           .ficha-juego {
+               position: absolute;
+
+               /* Mantenemos el tamaño base responsive para pantallas pequeñas */
+               width: 3vw;
+               height: 3vw;
+
+               /* 🚨 VALORES MÁS PEQUEÑOS: 18px 🚨 */
+               max-width: 18px;
+               max-height: 18px;
+
+               /* Reducimos el mínimo para permitir que sea más pequeña en móviles */
+               min-width: 15px;
+               min-height: 15px;
+
+               z-index: 10;
+               /* Recordatorio: -50%, -50% centra la ficha */
+               transform: translate(-50%, -50%);
+               transition: top 0.5s ease-out, left 0.5s ease-out;
+           }
+
+
+           /*--------------------------------------------------------------------------------------*/
+           /*--------------------------------------------------------------------------------------*/
+           /* ======================================================= */
+           /* ESTILOS PARA DADO 3D (CSS CUBE) */
+           /* ======================================================= */
+           /* Ejemplo: Posición más cerca de la parte superior, izquierda */
+
+           /* 1. Contenedor principal que establece la perspectiva y la posición */
+           /* 1. Contenedor principal que establece la perspectiva y la posición */
+           #resultado-dado-display {
+               perspective: 800px;
+
+               /* 💥 CAMBIO: Reducido a 6vw (el dado será más pequeño) */
+               width: 6vw;
+               height: 6vw;
+
+               /* CLAVE PARA CENTRAR EN PANTALLA: */
+               position: fixed;
+               z-index: 2000;
+
+               /* 1. Lo colocamos en el punto 50% (mitad) de la pantalla */
+               top: 50%;
+               left: 50%;
+
+               /* 2. Movemos el elemento hacia atrás por la mitad de su propio tamaño */
+               transform: translate(-50%, -50%);
+
+               background: transparent !important;
+               padding: 0 !important;
+               box-shadow: none !important;
+               display: none;
+           }
+
+           /* El resto del CSS queda igual y sigue funcionando correctamente: */
+           /* ... #dado-cubo, .cara, @keyframes, y las caras ... */
+
+           /* 2. El elemento que será transformado (el cubo en sí) */
+           #dado-cubo {
+               width: 100%;
+               height: 100%;
+               position: relative;
+               transform-style: preserve-3d;
+               transition: transform 1.5s ease-out;
+           }
+
+           /* 3. Estilo común para todas las 6 caras */
+           .cara {
+               position: absolute;
+               width: 100%;
+               height: 100%;
+               background-color: #fdfdfd;
+
+               border-radius: 5px;
+               display: flex;
+               justify-content: center;
+               align-items: center;
+               /* 💥 CAMBIO: Reducido para que los puntos escalen con el dado */
+               font-size: 2vw;
+               color: #333;
+           }
+
+           /* 4. Animación de rotación continua (sin cambios) */
+           @keyframes rotarInfinito {
+               0% {
+                   transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg);
+               }
+
+               100% {
+                   transform: rotateX(360deg) rotateY(360deg) rotateZ(360deg);
+               }
+           }
+
+           .rodando {
+               animation: rotarInfinito 0.5s linear infinite;
+               transition: none;
+           }
+
+           /* 5. Definición de la posición de cada cara en el espacio 3D */
+           /* 💥 CAMBIO CLAVE: El valor de translateZ es la mitad del nuevo ancho (6vw / 2 = 3vw) */
+
+           /* Cara 1: Delantera */
+           .cara-1 {
+               transform: rotateY(0deg) translateZ(3vw);
+           }
+
+           /* Cara 6: Trasera */
+           .cara-6 {
+               transform: rotateY(180deg) translateZ(3vw);
+           }
+
+           /* Cara 2: Derecha */
+           .cara-2 {
+               transform: rotateY(90deg) translateZ(3vw);
+           }
+
+           /* Cara 5: Izquierda */
+           .cara-5 {
+               transform: rotateY(-90deg) translateZ(3vw);
+           }
+
+           /* Cara 3: Arriba */
+           .cara-3 {
+               transform: rotateX(90deg) translateZ(3vw);
+           }
+
+           /* Cara 4: Abajo */
+           .cara-4 {
+               transform: rotateX(-90deg) translateZ(3vw);
+           }
+
+
+
+           /*--------------------------------------------------------------------------------------------*/
+           /* 2. Estilos del Overlay (#gameModal / .modal-imbabura) */
+           /* Este elemento se posiciona ABSOLUTAMENTE sobre #tablero-central. */
+           /* 2. Estilos del Overlay (#gameModal / .modal-imbabura) */
+           /* Este elemento se posiciona absolutamente, cubre 100% el área central y usa Flexbox para el centrado. */
+           #gameModal {
+               position: absolute;
+               top: 0;
+               left: 0;
+               width: 100%;
+               height: 100%;
+
+               /* Superposición: CLAVE. */
+               z-index: 2000;
+
+               /* Fondo Oscuro Semi-transparente */
+               background-color: rgba(0, 0, 0, 0.6);
+
+               /* Centrado de la caja interna (modal-contenido) */
+               display: none;
+               /* Inicia oculto. Tu JS lo cambia a 'flex' para mostrarlo. */
+               justify-content: center;
+               /* Centra la caja horizontalmente */
+               align-items: center;
+               /* Centra la caja verticalmente */
+           }
+
+           /* 3. Estilos de la Caja del Modal (.modal-contenido) */
+           /* Define la apariencia y las reglas de responsividad de la caja blanca. */
+           /* 3. Estilos de la Caja del Modal (.modal-contenido) */
+           #gameModal .modal-contenido {
+               background-color: var(--color-arena-clara, #FFFFFF);
+               padding: 30px;
+               border-radius: 15px;
+               box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+               text-align: center;
+
+               width: 90%;
+               max-width: 480px;
+               min-width: 280px;
+
+               /* 🏆 CLAVE DE CORRECCIÓN: Permite scroll vertical interno si el contenido es grande */
+               overflow-y: auto;
+
+               /* Opcional pero recomendado: Limita la altura del modal en pantallas grandes */
+               max-height: 90vh;
+
+               /* Nota: Se ha ELIMINADO la línea 'overflow: hidden;' para usar 'overflow-y: auto' */
+           }
+
+           /* ---------------------------------------------------- */
+           /* 3. CONTENIDO PRINCIPAL (Título, Imagen, Descripción) */
+           /* ---------------------------------------------------- */
+
+           /* El centrado y el display de la imagen son correctos aquí. */
+
+           #modalTitle {
+               color: var(--color-bosque-profundo, #333);
+               margin-bottom: 10px;
+               /* Reducido */
+               font-size: 1.4rem;
+               /* Ligeramente reducido */
+           }
+
+           #modalImage {
+               display: block;
+               max-width: 65%;
+               /* 🔑 Aumentamos un poco el tamaño para mejor vista */
+               height: auto;
+               margin-bottom: 15px;
+               border-radius: 8px;
+           }
+
+           #modalDescription {
+               margin: 10px 0 15px 0;
+               /* Reducimos el margen inferior */
+               font-size: 1rem;
+               /* Ligeramente reducido */
+               color: #444;
+               word-wrap: break-word;
+               /* 🔑 CLAVE: Previene que palabras largas fuercen el ancho */
+           }
+
+           .modal-body-content {
+               /* ... (otros estilos de flexbox) ... */
+               padding: 10px 0;
+               /* Reducido */
+           }
+
+           /* ---------------------------------------------------- */
+           /* 4. OPCIONES DE PREGUNTA (#modalOptionsContainer) */
+           /* ---------------------------------------------------- */
+           #modalOptionsContainer {
+               display: flex;
+
+               /* 🔑 CLAVE: Cambia el flujo de los elementos de fila a columna */
+               flex-direction: column;
+
+               gap: 10px;
+               margin-top: 20px;
+
+               /* Limitar el ancho de la columna de botones para que no sea excesivo */
+               width: 100%;
+               max-width: 400px;
+           }
+
+           /* Botón de Opción General */
+           #modalOptionsContainer button {
+               padding: 15px 20px;
+               /* Aumentamos el padding para hacerlo más grande */
+               font-size: 1.1rem;
+               /* Hacemos el texto un poco más grande */
+               font-weight: 600;
+               /* Semi-negrita */
+               cursor: pointer;
+
+               /* 🔑 Diseño de Tarjeta Sutil */
+               border: none;
+               /* Quitamos el borde plano */
+               border-radius: 10px;
+               /* Bordes más redondeados */
+               background-color: var(--color-arena-clara, #F5F5DC);
+               /* Fondo color arena */
+               color: var(--color-bosque-profundo, #1A4B3A);
+               /* Color de texto fuerte */
+
+               /* Sombra para dar profundidad y efecto 3D */
+               box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1),
+                   /* Sombra ligera hacia abajo */
+                   0 1px 3px rgba(0, 0, 0, 0.08);
+               /* Sombra suave */
+
+               transition: all 0.2s ease-in-out;
+           }
+
+           /* 3. Efecto Hover (Interactividad) */
+           #modalOptionsContainer button:hover:not(:disabled) {
+               background-color: var(--color-arena-media, #F0E6CC);
+               /* Fondo ligeramente más oscuro al pasar el ratón */
+               transform: translateY(-2px);
+               /* 🔑 CLAVE: Levanta ligeramente el botón */
+               box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15),
+                   0 2px 4px rgba(0, 0, 0, 0.1);
+           }
+
+           /* --- ESTILOS PARA EL MENSAJE DE REALIDAD AUMENTADA --- */
+           #arMessageContainer {
+               /* Mantiene el mensaje centrado bajo la imagen */
+               text-align: center;
+           }
+
+           .mensaje-ar {
+               /* Estilos principales */
+               color: #D32F2F;
+               /* Rojo fuerte */
+               font-weight: bold;
+               margin-top: 15px;
+               font-size: 0.95em;
+               padding: 5px 10px;
+
+
+               /* Animación */
+               animation: pulse-ar 1.8s infinite;
+           }
+
+           @keyframes pulse-ar {
+               0% {
+                   transform: scale(1);
+                   opacity: 1;
+               }
+
+               50% {
+                   transform: scale(1.02);
+                   opacity: 0.8;
+               }
+
+               100% {
+                   transform: scale(1);
+                   opacity: 1;
+               }
+           }
+
+           /* ---------------------------------------------------- */
+           /* 7. MEDIA QUERY (Dispositivos pequeños: < 480px) */
+           /* ---------------------------------------------------- */
+           @media (max-width: 480px) {
+               #gameModal .modal-contenido {
+                   width: 98%;
+                   padding: 15px;
+
+                   /* 🏆 CLAVE DE CORRECCIÓN: Limita la altura del modal en móvil */
+                   max-height: 90vh;
+                   /* Máximo 90% de la altura de la pantalla */
+               }
+
+               #modalTitle {
+                   font-size: 1.2rem;
+                   /* Títulos más pequeños */
+               }
+
+               #modalDescription {
+                   font-size: 0.9rem;
+                   /* Texto de descripción más pequeño */
+               }
+
+               #modalImage {
+                   max-width: 70%;
+                   /* Le damos un poco más de espacio a la imagen en vertical */
+               }
+
+               /* Reducir el padding de los botones de las opciones */
+               #modalOptionsContainer button {
+                   padding: 10px 10px;
+                   font-size: 0.9rem;
+               }
+           }
+
+           /* --- MODO PAISAJE EN MÓVIL (Giro de pantalla) --- */
+           @media (max-height: 500px) and (orientation: landscape) {
+
+               /* ... (otros estilos de header y main) ... */
+
+               #gameModal .modal-contenido {
+                   /* Se adapta perfectamente al modo paisaje. Reducir padding. */
+                   padding: 15px 10px;
+
+                   /* 🏆 CLAVE: Altura más restrictiva para pantallas muy cortas */
+                   max-height: 95vh;
+               }
+
+               /* Reducir el tamaño de la imagen del modal si es necesario */
+               #modalImage {
+                   max-width: 50%;
+                   /* Más pequeño en modo paisaje para dejar espacio al texto */
+                   margin-bottom: 5px;
+               }
+
+               #modalTitle {
+                   font-size: 1.1rem;
+               }
+
+               #modalOptionsContainer button {
+                   padding: 8px 10px;
+                   font-size: 0.85rem;
+               }
+           }
+
+
+
+           /*----------------------------------------------------------------------------------------------------------*/
+           /* 1. Contenedor del Grupo de Control */
+           #controles-mapa {
+               position: absolute;
+
+               /* Posición: Colócalo donde desees. Usaré la esquina inferior izquierda. */
+               left: 20px;
+               bottom: 20px;
+
+               /* CLAVE: Usar Flexbox para APILAR los elementos (turno y botón) */
+               display: flex;
+               flex-direction: column;
+               /* Apila de arriba a abajo */
+               align-items: center;
+               /* Centra horizontalmente los elementos (el texto sobre el botón) */
+
+               z-index: 50;
+               /* Asegúrate de que esté sobre el mapa */
+           }
+
+           /* 1. Define el Keyframe para Flotar/Respirar (MÁS NOTORIO) */
+           @keyframes turnoFlotarNotorio {
+
+               /* Estado inicial: Sombra suave, tamaño normal */
+               0% {
+                   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+                   /* Sombra inicial un poco más fuerte */
+                   transform: translateY(0) scale(1);
+               }
+
+               /* 50%: Punto más alto de la "flotación" y mayor énfasis */
+               50% {
+                   /* Sombra más dramática para simular que se "eleva" más */
+                   box-shadow: 0 6px 15px rgba(0, 0, 0, 0.45);
+                   /* Se mueve más hacia arriba */
+                   transform: translateY(-5px) scale(1.02);
+                   /* Aumento de tamaño un poco más evidente */
+               }
+
+               /* 100%: Vuelve al estado inicial */
+               100% {
+                   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+                   transform: translateY(0) scale(1);
+               }
+           }
+
+           /* 2. Aplica la Animación al Contenedor del Turno */
+           .info-turno-mapa {
+               background-color: rgba(255, 255, 255, 0.85);
+               padding: 8px 15px;
+               border-radius: 8px;
+               margin-bottom: 5px;
+               text-align: center;
+               width: 100%;
+
+               /* Aplicamos la animación más notoria */
+               animation: turnoFlotarNotorio 2.5s ease-in-out infinite;
+               /* Duración ligeramente reducida para más frecuencia */
+               transition: all 0.3s;
+           }
+
+           /* 3. Estilo del Botón (Aseguramos que no se estire más de lo necesario) */
+           #boton-dado {
+               /* Sobrescribe cualquier posición absoluta anterior y permite que Flexbox lo maneje */
+               position: static;
+
+               /* El resto de estilos del botón se mantienen */
+               font-size: 1.2rem;
+               padding: 15px 30px;
+           }
+
+           /*------------------------------------------------------------------------------------*/
+           /*------------------------------------------------------------------------------------*/
+           /* ---------------------------------------------------- */
+           /* CONTENEDOR DEL CUERPO DEL MODAL */
+           /* ---------------------------------------------------- */
+           .modal-body-content {
+               /* CLAVE: Activa Flexbox para centrar elementos internos */
+               display: flex;
+               flex-direction: column;
+               /* Apila los elementos (imagen, descripción) verticalmente */
+               align-items: center;
+               /* 🔑 CLAVE: Centra horizontalmente los elementos hijos */
+
+               padding: 15px 0;
+               /* Ajuste de padding */
+               text-align: center;
+               /* Centra el texto y elementos inline que no sean flex-items */
+           }
+
+           /* ---------------------------------------------------- */
+           /* LA IMAGEN DENTRO DEL MODAL */
+           /* ---------------------------------------------------- */
+           #modalImage {
+               /* 🔑 CLAVE: Asegura que la imagen se comporte como un bloque para centrarla con Flexbox */
+               display: block;
+
+               /* 🔑 CLAVE: Define el ancho máximo (puedes ajustar este valor, por ejemplo 60% o 70%) */
+               max-width: 60%;
+
+               height: auto;
+               /* Mantiene la proporción de la imagen */
+               margin-bottom: 15px;
+               /* Espacio debajo de la imagen */
+               border-radius: 8px;
+               /* Bordes redondeados */
+               box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+               /* Sombra sutil */
+           }
+
+           /*------------------------------------------------------------------------------------*/
+           /*------------------------------------------------------------------------------------*/
+           /* En tu archivo CSS (ej. style.css) */
+           .modal-body {
+               /* O el selector que contenga tu imagen y descripción */
+               text-align: center;
+               /* Centra el texto y elementos en línea como <img> */
+           }
+
+           /* Estilos específicos para la imagen dentro del modal */
+           #modal-casilla .modal-image,
+           /* Si tienes un ID o clase específica para la imagen */
+           #modal-casilla img {
+               /* O un selector más general para cualquier img dentro del modal */
+               display: block;
+               /* Es necesario para que margin: auto funcione correctamente */
+               margin: 0 auto;
+               /* Centra la imagen horizontalmente */
+               max-width: 100%;
+               /* Asegura que la imagen no se desborde del modal */
+               height: auto;
+               /* Mantiene la proporción de la imagen */
+               border-radius: 8px;
+               /* Opcional: para bordes redondeados como en tus modales */
+               margin-bottom: 15px;
+               /* Opcional: un poco de espacio debajo de la imagen */
+           }
