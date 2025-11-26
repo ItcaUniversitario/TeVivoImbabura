@@ -205,18 +205,38 @@
             font-size: 1.2rem;
         }
 
-        /* Responsive Header para Admin */
+       /* Ajuste Móvil */
         @media (max-width: 768px) {
-            .cabecera-admin {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 15px;
+            /* Modificación para forzar 3 columnas en móviles */
+            .barra-filtros {
+                /* Cambiamos a grid para tener control de columnas */
+                display: grid !important; 
+                grid-template-columns: repeat(3, 1fr); /* Crea 3 columnas de igual ancho */
+                gap: 10px; 
             }
 
-            .botones-accion {
-                width: 100%;
-                justify-content: space-between;
+            /* Los campos se ajustan automáticamente al grid */
+            .grupo-filtro {
+                /* Eliminamos el width: 100% que usábamos en la disposición por columna */
+                width: auto; 
+                min-width: unset; /* Para asegurar que el campo se adapta al ancho de la columna del grid */
             }
+            
+            /* Ajuste especial para el campo de Búsqueda Rápida */
+            /* Este campo es más grande en el diseño original, le damos más espacio */
+            .grupo-filtro:first-child { 
+                grid-column: span 3; /* Ocupa el ancho completo (las 3 columnas) */
+                min-width: unset;
+            }
+
+            /* Ajuste especial para el botón de Limpiar */
+            /* Lo movemos al final de la tercera columna */
+             .grupo-filtro:last-child {
+                grid-column: 3 / 4; /* Comienza en la línea 3, termina en la 4 (tercera columna) */
+                grid-row: 2 / 3; /* En la segunda fila */
+                margin-top: 15px; /* Pequeño margen para separarlo visualmente de lo de arriba */
+            }
+
 
             .panel-admin {
                 width: 100% !important;
