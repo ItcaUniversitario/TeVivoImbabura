@@ -1,0 +1,685 @@
+/* =========================================
+   1. VARIABLES Y CONFIGURACIÓN BASE
+   ========================================= */
+:root {
+    /* 🎨 Paleta de Colores: Identidad Te Vivo Imbabura */
+    --color-sidebar: #1B5E20;       /* Verde Bosque Profundo (Institucional) */
+    --color-sidebar-hover: #2E7D32; /* Verde Hoja (Interacción) */
+    --color-acento: #FFD700;        /* Dorado (Detalles activos) */
+    
+    --color-fondo-main: #F4F6F5;    /* Gris menta muy suave (Fondo general) */
+    --color-blanco: #FFFFFF;
+    --color-texto: #37474F;         /* Gris oscuro azulado (Mejor lectura) */
+    
+    --color-rojo: #d32f2f;          /* Alertas / Zonas de Peligro */
+    --color-excel: #217346;         /* Verde Excel */
+
+    /* 📏 Medidas del Layout */
+    --ancho-sidebar: 260px;
+    --altura-header: 65px;
+
+    /* 🌑 Sombras (Estilo Material Design) */
+    --sombra-suave: 0 2px 10px rgba(0,0,0,0.05);
+    --sombra-card: 0 4px 20px rgba(0,0,0,0.08);
+    --sombra-flotante: 0 10px 30px rgba(0,0,0,0.15);
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Segoe UI', 'Roboto', Helvetica, Arial, sans-serif;
+    background-color: var(--color-fondo-main);
+    color: var(--color-texto);
+    height: 100vh; /* Altura exacta de la ventana */
+    overflow: hidden; /* IMPORTANTE: Previene doble barra de scroll */
+    font-size: 16px;
+}
+
+/* =========================================
+   2. PANTALLA DE LOGIN (OVERLAY)
+   ========================================= */
+#overlay-login {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background-color: rgba(20, 30, 20, 0.95); /* Fondo oscuro verdoso */
+    backdrop-filter: blur(10px);
+    z-index: 9999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.card-login {
+    background: var(--color-blanco);
+    padding: 3rem 2rem;
+    border-radius: 16px;
+    width: 100%;
+    max-width: 420px;
+    text-align: center;
+    box-shadow: var(--sombra-flotante);
+    border-top: 6px solid var(--color-sidebar);
+    animation: slideUp 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.input-login {
+    width: 100%;
+    padding: 14px;
+    margin: 15px 0;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 1rem;
+    background: #fafafa;
+    transition: all 0.3s;
+}
+
+.input-login:focus {
+    border-color: var(--color-sidebar);
+    background: #fff;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(27, 94, 32, 0.1);
+}
+
+/* Animación de error */
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+}
+.error-shake { 
+    animation: shake 0.3s ease-in-out; 
+    border-color: var(--color-rojo) !important;
+    color: var(--color-rojo);
+}
+
+
+/* =========================================
+   ESTILOS DASHBOARD (ESTADÍSTICAS)
+   ========================================= */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); /* Responsivo automático */
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.card-stat {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    transition: transform 0.2s;
+    border: 1px solid rgba(0,0,0,0.05);
+}
+
+.card-stat:hover { transform: translateY(-5px); }
+
+.icono-stat {
+    font-size: 2.5rem;
+    background: #f5f5f5;
+    width: 60px; height: 60px;
+    border-radius: 50%;
+    display: flex; justify-content: center; align-items: center;
+}
+
+.info-stat h3 { margin: 0; font-size: 0.9rem; color: #777; font-weight: 600; text-transform: uppercase; }
+.info-stat h1 { margin: 5px 0; font-size: 2rem; color: #333; }
+.info-stat p { margin: 0; font-size: 0.8rem; color: #999; }
+
+/* Colores decorativos */
+.azul .icono-stat { background: #e3f2fd; }
+.azul h1 { color: #1976d2; }
+
+.verde .icono-stat { background: #e8f5e9; }
+.verde h1 { color: #388e3c; }
+
+.naranja .icono-stat { background: #fff3e0; }
+.naranja h1 { color: #f57c00; }
+
+.morada .icono-stat { background: #f3e5f5; }
+.morada h1 { color: #7b1fa2; }
+
+
+/* ESTILOS DASHBOARD EXTRA */
+.btn-quick {
+    padding: 15px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    display: flex; align-items: center; gap: 8px;
+    transition: transform 0.2s;
+    flex: 1;
+    justify-content: center;
+}
+.btn-quick:hover { transform: translateY(-3px); }
+
+/* Ajuste Responsive para el Dashboard */
+@media (max-width: 900px) {
+    .dashboard-mix {
+        grid-template-columns: 1fr !important; /* En tablet/móvil, una sola columna */
+    }
+}
+/* Contenedor de la gráfica para evitar que se vea plana */
+.chart-container {
+    position: relative;
+    height: 250px; /* Altura fija importante */
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+/* ESTILOS PESTAÑAS INTERNAS DE CERTIFICADOS */
+.tab-btn {
+    background: none;
+    border: none;
+    font-size: 1rem;
+    padding: 10px 20px;
+    cursor: pointer;
+    color: #666;
+    border-bottom: 3px solid transparent; /* Línea invisible */
+    font-weight: 600;
+    transition: all 0.3s;
+}
+
+.tab-btn:hover {
+    color: var(--color-sidebar);
+    background-color: #f5f5f5;
+    border-radius: 5px 5px 0 0;
+}
+
+.tab-btn.active {
+    color: var(--color-sidebar);
+    border-bottom: 3px solid var(--color-sidebar); /* Línea activa */
+}
+
+
+
+
+/* =========================================
+   3. LAYOUT DASHBOARD (ESTRUCTURA PRINCIPAL)
+   ========================================= */
+.admin-layout {
+    display: flex;
+    width: 100%;
+    height: 100vh; /* Ocupa toda la pantalla */
+    overflow: hidden;
+}
+
+/* --- A. MENÚ LATERAL (SIDEBAR) --- */
+.sidebar {
+    width: var(--ancho-sidebar);
+    background: linear-gradient(180deg, var(--color-sidebar) 0%, #0d3311 100%);
+    color: white;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 4px 0 20px rgba(0,0,0,0.1);
+    z-index: 1000;
+    flex-shrink: 0; /* Evita que se aplaste */
+    height: 100%;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.sidebar-header {
+    padding: 30px 20px;
+    text-align: center;
+    background: rgba(0,0,0,0.1);
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+.logo-sidebar { 
+    max-width: 70px; 
+    margin-bottom: 10px;
+    filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3)); 
+}
+.sidebar-header h3 { font-size: 1.1rem; letter-spacing: 0.5px; font-weight: 600; }
+
+.sidebar-user {
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    background: rgba(255,255,255,0.05);
+    margin: 10px;
+    border-radius: 8px;
+}
+.avatar {
+    width: 40px; height: 40px;
+    background: white;
+    border-radius: 50%;
+    display: flex; justify-content: center; align-items: center;
+    font-size: 1.2rem;
+    color: var(--color-sidebar);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+/* Navegación */
+.sidebar-nav {
+    flex: 1;
+    overflow-y: auto;
+    padding: 15px 0;
+}
+.sidebar-nav ul { list-style: none; }
+
+.nav-link {
+    width: 100%;
+    background: transparent;
+    border: none;
+    color: rgba(255,255,255,0.7);
+    padding: 16px 25px;
+    text-align: left;
+    cursor: pointer;
+    font-size: 0.95rem;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    transition: all 0.2s ease;
+    border-left: 4px solid transparent;
+}
+
+.nav-link:hover {
+    background-color: rgba(255,255,255,0.1);
+    color: white;
+    padding-left: 30px; /* Efecto movimiento */
+}
+
+.nav-link.active {
+    background-color: rgba(255,255,255,0.15);
+    color: var(--color-acento);
+    border-left-color: var(--color-acento);
+    font-weight: 700;
+}
+
+.nav-divider {
+    height: 1px;
+    background: rgba(255,255,255,0.1);
+    margin: 15px 25px;
+}
+
+.sidebar-footer { padding: 20px; }
+.btn-logout {
+    width: 100%;
+    padding: 12px;
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.3);
+    color: rgba(255,255,255,0.8);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.3s;
+    font-weight: 600;
+}
+.btn-logout:hover {
+    background: var(--color-rojo);
+    border-color: var(--color-rojo);
+    color: white;
+}
+
+/* --- B. CONTENIDO PRINCIPAL (DERECHA) --- */
+.main-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    width: 100%;
+    min-width: 0; /* TRUCO: Evita desbordes de flexbox */
+}
+
+.top-header {
+    height: var(--altura-header);
+    background: var(--color-blanco);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 30px;
+    box-shadow: var(--sombra-suave);
+    z-index: 900;
+    flex-shrink: 0;
+}
+.top-header h2 { font-size: 1.2rem; color: var(--color-sidebar); }
+
+.menu-toggle {
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: var(--color-texto);
+    display: none; /* Solo móvil */
+    padding: 5px;
+}
+
+/* --- ÁREA DE PANELES (DONDE OCURRE LA MAGIA DEL SCROLL) --- */
+.content-wrapper {
+    flex: 1; /* Ocupa el espacio restante */
+    overflow-y: auto; /* SCROLL AQUÍ */
+    overflow-x: hidden;
+    padding: 30px;
+    /* Cálculo de altura para asegurar scroll */
+    height: calc(100vh - var(--altura-header)); 
+    scroll-behavior: smooth;
+}
+
+.panel-section {
+    display: none;
+    animation: fadeIn 0.4s ease-out;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+.panel-section.active { display: block; }
+
+/* =========================================
+   4. COMPONENTES DE INTERFAZ
+   ========================================= */
+
+/* Tarjetas y Contenedores */
+.cabecera-admin, .barra-filtros, .contenedor-tabla {
+    background: var(--color-blanco);
+    border-radius: 12px;
+    box-shadow: var(--sombra-card);
+    margin-bottom: 25px;
+    border: 1px solid rgba(0,0,0,0.02);
+}
+
+/* Header Interno */
+.cabecera-admin {
+    padding: 25px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+/* Filtros */
+.barra-filtros {
+    padding: 20px;
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+    align-items: flex-end;
+}
+.grupo-filtro { flex: 1; min-width: 150px; display: flex; flex-direction: column; }
+.label-filtro { font-size: 0.85rem; font-weight: 700; color: #546e7a; margin-bottom: 8px; }
+.input-filtro {
+    padding: 10px 14px;
+    border: 1px solid #cfd8dc;
+    border-radius: 8px;
+    background: #fff;
+    font-size: 0.95rem;
+    color: var(--color-texto);
+}
+
+/* Tablas */
+.contenedor-tabla { overflow: hidden; overflow-x: auto; padding: 0; }
+table { width: 100%; border-collapse: collapse; min-width: 800px; }
+
+thead {
+    background-color: var(--color-sidebar);
+    color: white;
+}
+th { font-weight: 600; text-transform: uppercase; font-size: 0.8rem; letter-spacing: 0.5px; }
+th, td { padding: 18px 20px; text-align: left; border-bottom: 1px solid #f0f0f0; }
+
+tbody tr { transition: background 0.2s; }
+tbody tr:hover { background-color: #f1f8e9; }
+
+.score-total {
+    font-weight: 800;
+    color: var(--color-sidebar);
+    background: rgba(27, 94, 32, 0.05);
+    text-align: center;
+    font-size: 1.1rem;
+}
+
+/* Botones */
+.btn-imbabura {
+    padding: 10px 24px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: all 0.2s;
+    color: white;
+    display: inline-flex; justify-content: center; align-items: center; gap: 8px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+.btn-imbabura:active { transform: translateY(1px); box-shadow: none; }
+
+.primario { background-color: var(--color-sidebar); }
+.primario:hover { background-color: #144a18; box-shadow: 0 6px 12px rgba(27,94,32,0.2); }
+
+.secundario { background-color: #78909c; }
+.secundario:hover { background-color: #546e7a; }
+
+.btn-excel {
+    background-color: var(--color-excel);
+    color: white;
+    padding: 10px 20px;
+    border: none; border-radius: 8px;
+    cursor: pointer; font-weight: bold;
+    display: inline-flex; align-items: center; gap: 8px;
+}
+.btn-excel:hover { background-color: #1b5e20; }
+
+/* Switch Toggle */
+.switch { position: relative; display: inline-block; width: 52px; height: 28px; }
+.switch input { opacity: 0; width: 0; height: 0; }
+.slider {
+    position: absolute; cursor: pointer;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-color: #ccc; transition: .4s;
+    border-radius: 34px;
+}
+.slider:before {
+    position: absolute; content: "";
+    height: 22px; width: 22px;
+    left: 3px; bottom: 3px;
+    background-color: white; transition: .4s;
+    border-radius: 50%;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+input:checked + .slider { background-color: var(--color-sidebar); }
+input:checked + .slider:before { transform: translateX(24px); }
+
+/* =========================================
+   5. RESPONSIVE (TABLET Y MÓVIL)
+   ========================================= */
+
+@media (max-width: 1024px) {
+    /* Tablet: Filtros en 2 columnas */
+    .barra-filtros { gap: 10px; }
+    .grupo-filtro { min-width: 45%; }
+}
+
+@media (max-width: 768px) {
+    /* 📱 MÓVIL: Sidebar Oculto */
+    .sidebar {
+        position: fixed;
+        height: 100%;
+        left: 0; top: 0;
+        transform: translateX(-100%); /* Escondido */
+        z-index: 2000; /* Encima de todo */
+        box-shadow: 10px 0 30px rgba(0,0,0,0.5);
+    }
+    
+    /* Estado Abierto (Con fondo oscuro atrás) */
+    .sidebar.open { 
+        transform: translateX(0);
+        /* Truco para oscurecer el resto de la pantalla */
+        box-shadow: 0 0 0 100vmax rgba(0, 0, 0, 0.6); 
+    }
+
+    .menu-toggle { display: block; }
+    
+    /* Layout Móvil */
+    .top-header { padding: 0 15px; }
+    .content-wrapper { padding: 15px; }
+
+    /* Cards adaptadas */
+    .cabecera-admin { flex-direction: column; align-items: stretch; text-align: center; }
+    .cabecera-admin h2 { margin-bottom: 10px; font-size: 1.1rem; }
+    
+    /* Filtros apilados pero inteligentes */
+    .barra-filtros { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .grupo-filtro:first-child, .grupo-filtro:last-child { grid-column: span 2; }
+    
+    /* Botones grandes */
+    .btn-imbabura, .btn-excel { width: 100%; justify-content: center; }
+    
+    /* Navegación Táctil */
+    .nav-link { padding: 18px 25px; font-size: 1rem; }
+}
+
+@media (max-width: 480px) {
+    /* Pantallas muy pequeñas */
+    .barra-filtros { display: flex; flex-direction: column; }
+    .grupo-filtro { width: 100%; }
+    .sidebar { width: 85%; }
+}
+
+/* Animaciones */
+@keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+
+
+
+
+.badge-modo {
+    background-color: #e3f2fd;
+    color: #1565c0;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: bold;
+    border: 1px solid #bbdefb;
+}
+/* =========================================
+   ESTILOS NUEVOS: BOTÓN VER Y MODAL QUIZ PARTIDAS
+   ========================================= */
+
+/* Botón pequeño dentro de la tabla */
+.btn-ver-quiz {
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.75rem;
+    padding: 2px 8px;
+    color: #333;
+    transition: all 0.2s;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+}
+.btn-ver-quiz:hover {
+    background-color: #f0f0f0;
+    border-color: #999;
+    transform: translateY(-1px);
+}
+
+/* Tarjeta de Pregunta en el Modal */
+.card-pregunta {
+    background: #fff;
+    padding: 15px;
+    margin-bottom: 12px;
+    border-radius: 8px;
+    border: 1px solid #eee;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.03);
+}
+
+/* Bordes de estado */
+.borde-verde {
+    border-left: 5px solid #2e7d32;
+    background-color: #f1f8e9;
+}
+.borde-rojo {
+    border-left: 5px solid #c62828;
+    background-color: #ffebee;
+}
+
+/* Estructura Modal (Si no la tenías) */
+.modal-overlay {
+    display: none; 
+    position: fixed; 
+    z-index: 10000; 
+    left: 0; top: 0; 
+    width: 100%; height: 100%; 
+    background: rgba(0,0,0,0.6); 
+    justify-content: center; align-items: center;
+    backdrop-filter: blur(3px);
+}
+
+.modal-content {
+    background: white; 
+    width: 90%; max-width: 500px; 
+    border-radius: 10px; 
+    overflow: hidden; 
+    display: flex; flex-direction: column; 
+    max-height: 85vh;
+}
+
+.modal-header {
+    background: var(--color-sidebar); 
+    color: white; 
+    padding: 15px; 
+    display: flex; justify-content: space-between; align-items: center;
+}
+
+.modal-body {
+    padding: 20px; 
+    overflow-y: auto;
+}
+
+.close-modal {
+    cursor: pointer; 
+    font-size: 1.5rem; 
+    font-weight: bold;
+}
+
+/* =========================================
+   📑 ESTILOS DE PESTAÑAS INTERNAS
+   ========================================= */
+
+.tabs-internas {
+    display: flex;
+    gap: 20px;
+    border-bottom: 2px solid #eee;
+    margin-bottom: 20px;
+    padding-bottom: 0;
+}
+
+.tab-btn {
+    background: none;
+    border: none;
+    padding: 10px 5px;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #666;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.tab-btn:hover {
+    color: #1565c0; /* Azul al pasar el mouse */
+}
+
+/* Estado Activo (Pestaña seleccionada) */
+.tab-btn.active {
+    color: #1565c0;
+}
+
+/* La línea azul debajo de la pestaña activa */
+.tab-btn.active::after {
+    content: '';
+    position: absolute;
+    bottom: -2px; /* Para tapar el borde gris del contenedor */
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background-color: #1565c0;
+    border-radius: 3px 3px 0 0;
+}
