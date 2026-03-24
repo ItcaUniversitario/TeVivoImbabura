@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Te Vivo Imbabura</title>
+
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/mapa.css">
+    <link rel="stylesheet" href="css/nivel2.css">
+    <link rel="stylesheet" href="css/nivel3.css">
+    <link rel="stylesheet" href="css/perfil.css">
+</head>
+
+<body>
+    <header>
+        <div class="zona-logo izquierda">
+            <img src="assets/imagenes/generales/logoitca.png" alt="ITCA">
+            <img src="assets/imagenes/generales/logogeoparque.png" alt="GEOPARQUE">
+            <img src="assets/imagenes/generales/logounesco.png" alt="UNESCO">
+             
+        </div>
+
+        <div class="zona-logo centro">
+            <img src="assets/imagenes/generales/banner_tvi.png" alt="Te Vivo Imbabura">
+        </div>
+
+        <div class="zona-logo derecha">
+            <button id="btn-musica" class="btn-header-texto" onclick="controlarMusica()">
+                🔊 <span class="texto-btn"></span>
+            </button>
+
+           
+
+            <button class="btn-header-texto" onclick="mostrarInformacionJuego()">
+                <span style="font-weight:900">?</span> <span class="texto-btn">Ayuda</span>
+            </button>
+
+            <button class="btn-header-texto" onclick="confirmarSalida()">
+                🏠 <span class="texto-btn">INICIO</span>
+                 <button id="btn-admin" class="btn-header-texto" title="Configuración">
+                ⚙️ <span class="texto-btn"></span>
+            </button>
+            </button>
+        </div>
+    </header>
+
+    <main>
+        <section id="panel-izquierdo" class="panel">
+            <h3>🔥 ¡Los 10 Imparables de Imbabura!</h3>
+            <div id="lista-jugadores-score"></div>
+        </section>
+        <section id="tablero-central" class="panel">
+            <div id="pantalla-jugadores" class="menu-seleccion">
+                <div class="panel-juego-unificado">
+
+                    <div class="cabecera-juego">
+
+                        <h1 class="titulo-principal">
+                            VIVE EL <span class="resaltado">GEOPARQUE IMBABURA</span>
+                        </h1>
+                        <div class="linea-decorativa"></div>
+                        <p class="subtitulo-corto">Recorre paisajes mágicos, supera los desafíos de la ruta y
+                            conviértete en leyenda.
+                        </p>
+                    </div>
+
+                    <div class="bloque-control">
+                        <h2 class="etiqueta-control">¿Cuántos aventureros inician el viaje?</h2>
+                        <div class="grid-jugadores">
+                            <button class="btn-jugador" id="btn-jugador-1">
+                                <span class="texto-jugador">1</span>
+                            </button>
+                            <button class="btn-jugador" id="btn-jugador-2">
+                                <span class="texto-jugador">2</span>
+                            </button>
+                            <button class="btn-jugador" id="btn-jugador-3">
+                                <span class="texto-jugador">3</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="pie-opciones">
+
+                        <div class="area-perfil">
+                            <button class="btn-perfil" id="btn-ver-perfil" onclick="mostrarPerfil()">
+                                <span class="icono-perfil">👤</span>
+                                <span>Ver mi Perfil</span>
+                                <span style="margin-left: 5px;">➔</span>
+                            </button>
+                        </div>
+
+                        <div class="tarjeta-app-estatica">
+                            <img src="assets/imagenes/generales/logo_app.webp" alt="App ITCA" class="img-qr-estatica">
+                            <div class="texto-qr-estatico">
+                                <strong>📱 EXPANDE LA AVENTURA</strong>
+                                <span>Descarga la app ITCA Academy</span>
+                                <span class="destaque-cati-estatico">¡Interactúa con Cati en AR!</span>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+            </div>
+            <div id="pantalla-registro" class="menu-seleccion" style="display: none;">
+                <h2>1. Registro de Jugadores</h2>
+                <p class="subtitulo">
+                    Ingrese su cédula para validar o crear su registro.
+                </p>
+
+                <div id="contenedor-inputs"></div>
+
+                <div style="margin-top: 20px; display: flex; gap: 10px; justify-content: center;">
+                    <button class="btn-imbabura secundario" onclick="volverSeleccion()">
+                        ⬅ Atrás
+                    </button>
+
+                    <button class="btn-imbabura primario" style="background-color:orange;color:black;"
+                        onclick="iniciarTablero()">
+                        ¡Registrar jugadores!
+                    </button>
+                </div>
+            </div>
+
+
+
+            <div id="pantalla-interstitial" style="display: none;" class="menu-seleccion">
+                <div class="interstitial-contenido">
+                    <h2>Cargando Aventura...</h2>
+                    <img id="imagen-interstitial" src="assets/imagenes/mapas/mapanivel1.png" alt="Cargando nivel"
+                        class="img-transicion">
+
+                    <div class="barra-carga"></div>
+                </div>
+            </div>
+            <div id="pantalla-niveles" class="menu-seleccion" style="display: none;">
+                <h2>2. Selecciona tu Aventura</h2>
+
+
+                <div class="grid-niveles">
+
+                    <div class="card-nivel activo tema-norte" onclick="cargarNivel(1)">
+                        <div class="nivel-numero">1</div>
+                        <div class="nivel-info">
+                            <h3>Esencia del Norte</h3>
+                            <span>Tradición, Sabor y Paisajes</span>
+                        </div>
+                        <div class="nivel-accion">JUGAR</div>
+                    </div>
+
+                    <div class="card-nivel activo tema-valles" onclick="cargarNivel(2)">
+                        <div class="nivel-numero">2</div>
+                        <div class="nivel-info">
+                            <h3>Valles de Bienestar</h3>
+                            <span>Manos y Aguas Sanadoras</span>
+                        </div>
+                        <div class="nivel-accion">JUGAR</div>
+                    </div>
+
+                    <div class="card-nivel activo tema-aguas" onclick="cargarNivel(3)">
+                        <div class="nivel-numero">3</div>
+                        <div class="nivel-info">
+                            <h3>Ruta de Aguas y Sabores</h3>
+                            <span>Secretos de la Piedra y el Trigal</span>
+                        </div>
+                        <div class="nivel-accion">JUGAR</div>
+                    </div>
+
+                    <div class="card-nivel activo tema-cima" onclick="cargarNivel(4)">
+                        <div class="nivel-numero">4</div>
+                        <div class="nivel-info">
+                            <h3>Cima de los Ancestros</h3>
+                            <span>Vértigo y Tradición Milenaria</span>
+                        </div>
+                         <div class="nivel-accion">JUGAR</div>
+                    </div>
+
+                </div>
+            </div>
+            <div id="pantalla-personaje" class="menu-seleccion" style="display: none;">
+                <h2 id="titulo-seleccion">👤 Jugador 1: Elige tu ficha</h2>
+                <p class="subtitulo">Elige sabiamente, esta ficha te representará en el viaje.</p>
+
+                <div class="grid-fichas">
+                    <button class="btn-ficha" onclick="seleccionarFicha(1)" id="ficha-1">
+                        <img src="assets/imagenes/fichas/ficha_1.png" alt="Paila de Bronce">
+                        <span class="nombre-ficha">Paila de Bronce</span>
+                    </button>
+
+                    <button class="btn-ficha" onclick="seleccionarFicha(2)" id="ficha-2">
+                        <img src="assets/imagenes/fichas/ficha_2.png" alt="Columpio">
+                        <span class="nombre-ficha">Columpio</span>
+                    </button>
+
+                    <button class="btn-ficha" onclick="seleccionarFicha(3)" id="ficha-3">
+                        <img src="assets/imagenes/fichas/ficha_3.png" alt="Sombrero">
+                        <span class="nombre-ficha">Sombrero</span>
+                    </button>
+
+                    <button class="btn-ficha" onclick="seleccionarFicha(4)" id="ficha-4">
+                        <img src="assets/imagenes/fichas/ficha_4.png" alt="Chacana">
+                        <span class="nombre-ficha">Chacana</span>
+                    </button>
+
+                    <button class="btn-ficha" onclick="seleccionarFicha(5)" id="ficha-5">
+                        <img src="assets/imagenes/fichas/ficha_5.png" alt="Hilo">
+                        <span class="nombre-ficha">Hilo</span>
+                    </button>
+
+                    <button class="btn-ficha" onclick="seleccionarFicha(6)" id="ficha-6">
+                        <img src="assets/imagenes/fichas/ficha_6.png" alt="Cabaña">
+                        <span class="nombre-ficha">Cabaña</span>
+                    </button>
+                </div>
+            </div>
+            <div id="pantalla-quiz" style="display: none;">
+                <div class="quiz-container">
+                    <h2 id="titulo-quiz" class="modal-titulo">Cargando Quiz...</h2>
+                    <div id="contenido-quiz">
+                    </div>
+                </div>
+            </div>
+            <div id="contenedor-mapa" style="display: none; position: relative;">
+                <div id="tablero-visual-juego">
+                    <img id="mapa-juego-visual" src="assets/imagenes/mapas/mapa_imbabura1.png"
+                        alt="Mapa Completo del Juego">
+                    <div id="contenedor-fichas"></div>
+                </div>
+
+                <div id="hud-dados-permanente">
+                    <div id="dado-3d-1" class="dado-cubo-3d">
+                        <div class="cara cara-1"></div>
+                        <div class="cara cara-2"></div>
+                        <div class="cara cara-3"></div>
+                        <div class="cara cara-4"></div>
+                        <div class="cara cara-5"></div>
+                        <div class="cara cara-6"></div>
+                    </div>
+                    <div id="dado-3d-2" class="dado-cubo-3d">
+                        <div class="cara cara-1"></div>
+                        <div class="cara cara-2"></div>
+                        <div class="cara cara-3"></div>
+                        <div class="cara cara-4"></div>
+                        <div class="cara cara-5"></div>
+                        <div class="cara cara-6"></div>
+                    </div>
+                </div>
+
+                <div id="controles-mapa">
+                    <div class="info-turno-mapa">
+                        <span>Turno de:</span>
+                        <strong id="nombre-jugador-turno">ESTEFANIA</strong>
+                    </div>
+                    <button id="boton-dado" class="btn-imbabura primario" onclick="window.tirarDado()" disabled>
+                        TIRAR DADO
+                    </button>
+                </div>
+
+            </div>
+
+
+        </section>
+
+        <section id="panel-derecho" class="panel" style="display: none;">
+
+            <h3>
+                📊 SCORE DE LA PARTIDA
+            </h3>
+
+            <div id="contenedor-reloj-feria" class="reloj-feria-box" style="display: none;">
+                <div class="reloj-icono">⏱️</div>
+
+                <div class="reloj-texto">
+                    <div style="display: flex; align-items: baseline; gap: 3px;">
+                        <span id="timer-display">00:00</span>
+                        <span style="font-size: 0.8rem; font-weight: 800; color: #d84315;">MIN</span>
+                    </div>
+
+                    <small>TIEMPO LÍMITE</small>
+                </div>
+            </div>
+
+            <small id="label-nivel">Ruta Nivel 1</small>
+
+            <div id="score-partida-container" class="marcador-partida-scroll">
+            </div>
+
+        </section>
+
+
+        <div id="gameModal" class="modal-imbabura" style="display: none;">
+            <div class="modal-contenido">
+                <h2 id="modalTitle"></h2>
+
+                <div class="modal-body-content">
+                    <img id="modalImage" src="" alt="Lugar emblemático" style="display:none;">
+
+                    <div id="videoContainer" style="display:none; width:100%; position:relative;">
+                        <video id="modalVideo"
+                            style="width: 100%; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.5);" controls>
+                            <source id="videoSource" src="" type="video/mp4">
+                            Tu navegador no soporta videos.
+                        </video>
+                        <button id="btnSaltarVideo" class="btn-imbabura" style="margin-top:10px; width:100%;">
+                            ⏭️ SALTAR VIDEO
+                        </button>
+                    </div>
+
+                    <div id="arMessageContainer"></div>
+                    <p id="modalDescription"></p>
+                    <div id="modalOptionsContainer"></div>
+                </div>
+
+                <div id="modalButtons" class="modal-footer-botones"></div>
+            </div>
+        </div>
+        <div id="modal-terminos" class="modal-superpuesto" style="display: none;">
+            <div class="contenido-modal">
+                <h2>Términos y Condiciones del Viajero</h2>
+                <div class="scroll-terminos">
+                    <p>Al hacer clic en "Aceptar y Jugar", usted confirma que ha leído y acepta los siguientes
+                        términos:
+                    </p>
+                    <ul>
+                        <li>Sus datos (cédula, nombre, email, etc.) serán registrados en nuestra base de datos para
+                            fines de participación y contacto de premios.</li>
+                        <li>Autoriza el uso de su nombre y puntuación en el marcador público.</li>
+                        <li>Acepta las reglas del juego y las decisiones de la administración.</li>
+                        <li>Se garantiza la confidencialidad de los datos personales sensibles, conforme a las
+                            políticas
+                            de la institución.</li>
+                    </ul>
+
+                    <p style="text-align: center; margin-top: 15px;">
+                        <a href="https://drive.google.com/file/d/1FOWdO75X8GoajU0BsB5IGJPoMfGL54j2/view?usp=drive_link"
+                            target="_blank"
+                            style="color: var(--color-principal); font-weight: bold; text-decoration: underline;">
+                            Leer documento completo de términos y condiciones
+                        </a>
+                    </p>
+                    <p style="font-weight: bold; margin-top: 15px;">La participación en el juego implica la
+                        aceptación
+                        total de estos términos.</p>
+                </div>
+                <div class="grupo-botones-modal">
+                    <button class="btn-imbabura secundario" id="btn-rechazar-terminos">Rechazar</button>
+                    <button class="btn-imbabura primario" id="btn-aceptar-terminos">Aceptar y Jugar</button>
+
+                </div>
+            </div>
+        </div>
+
+    </main>
+    <div id="modal-victoria" class="modal-victoria-overlay" style="display: none;">
+        <div class="modal-victoria-content">
+            <div class="confeti-container"></div>
+
+            <div class="victoria-header">
+
+                <h1 id="vic-titulo">¡TENEMOS UN GANADOR!</h1>
+                <p id="vic-mensaje">La aventura por Imbabura ha terminado.</p>
+            </div>
+
+            <div id="vic-lista-jugadores" class="victoria-grid">
+            </div>
+
+            <div class="victoria-footer">
+                <button class="btn-reiniciar-victoria" onclick="window.location.reload()">
+                    🔄 JUGAR OTRA VEZ
+                </button>
+            </div>
+        </div>
+    </div>
+    <div id="modal-salida" class="modal-overlay" style="display: none;">
+        <div class="modal-contenido">
+            <div class="modal-icono">🏠</div>
+            <h3>¿Regresar al Inicio?</h3>
+
+            <p>Estás a punto de volver a la pantalla de bienvenida.</p>
+
+            <div class="caja-advertencia">
+                <p>⚠️ <strong>Ten cuidado:</strong></p>
+                <p>Si confirmas, se reiniciará la sesión actual y <strong>se perderá cualquier progreso</strong> o datos
+                    no guardados.</p>
+            </div>
+
+            <div class="modal-botones">
+                <button id="btn-cancelar-salida" class="btn-modal btn-cancelar">
+                    Cancelar
+                </button>
+                <button id="btn-confirmar-salida" class="btn-modal btn-salir">
+                    Sí, Volver al Inicio
+                </button>
+            </div>
+        </div>
+    </div>
+
+
+    <div id="modal-perfil" class="modal-oculto">
+        <div class="caja-modal-perfil">
+
+            <button class="btn-cerrar-modal" onclick="cerrarPerfil()">✖</button>
+
+            <h2 class="titulo-modal-perfil">Mi Perfil</h2>
+
+            <div id="vista-ingreso-cedula">
+                <p>Ingresa tu número de cédula para buscar tu progreso en el Geoparque:</p>
+
+                <input type="text" id="input-cedula-perfil" class="input-cedula" placeholder="Ej: 1001234567"
+                    autocomplete="off" inputmode="numeric" pattern="[0-9]*" maxlength="10"
+                    oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+                    onkeydown="if(event.key === 'Enter') buscarPerfilPorCedula()">
+
+                <p id="error-cedula-perfil" class="mensaje-error-input" style="display: none;"></p>
+
+                <button class="btn-buscar-perfil" onclick="buscarPerfilPorCedula()">Buscar Explorador</button>
+            </div>
+
+            <div id="vista-datos-perfil" style="display: none;">
+                <div class="info-jugador">
+                    <h3 id="perfil-nombre-jugador">Nombre del Jugador</h3>
+                    <p class="perfil-ranking">Posición Global: <strong id="perfil-puesto">#--</strong></p>
+
+                    <div class="contenedor-puntajes">
+                        <p><span id="pts-nv1">0</span></p>
+                        <p><span id="pts-nv2">0</span></p>
+                        <p><span id="pts-nv3">0</span></p>
+                        <p><span id="pts-nv4">0</span></p>
+                    </div>
+                    <p class="puntaje-total-perfil">Puntaje Total: <span id="pts-total">0</span></p>
+                </div>
+
+                <div class="zona-peligro">
+                    <button class="btn-dar-baja" onclick="confirmarDarDeBaja()">🗑️ Dar de baja mi cuenta</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <div id="modal-confirmacion-baja" class="modal-oculto">
+        <div class="caja-modal-confirmacion">
+            <h2 class="titulo-peligro">⚠️ ¡Cuidado Explorador!</h2>
+
+            <p>Estás a punto de eliminar tu cuenta de <strong>Te Vivo Imbabura</strong>.</p>
+            <p>Se borrará todo tu progreso, puntajes y puesto en el ranking.</p>
+            <p class="texto-rojo"><strong>¿Estás completamente seguro? Esta acción NO se puede deshacer.</strong></p>
+
+            <div class="botones-confirmacion">
+                <button class="btn-cancelar-baja" id="btn-cancelar-baja"
+                    onclick="cerrarConfirmacionBaja()">Cancelar</button>
+                <button class="btn-ejecutar-baja" id="btn-ejecutar-baja" onclick="ejecutarBajaCuenta()">Sí, eliminar
+                    cuenta</button>
+            </div>
+        </div>
+    </div>
+
+
+    <div id="toast-notification" class="toast">Mensaje de prueba</div>
+    <script type="module" src="js/game.js"></script>
+
+</body>
+
+</html>
