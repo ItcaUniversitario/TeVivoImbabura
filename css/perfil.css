@@ -1,0 +1,387 @@
+/* ==========================================
+   Fondo oscuro del modal
+   ========================================== */
+#modal-perfil {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.6); 
+    backdrop-filter: blur(5px);
+    
+    /* Centrado Flexbox Perfecto */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    z-index: 9999; 
+    opacity: 1;
+    transition: opacity 0.3s ease;
+    padding: 20px; /* Evita que el modal toque los bordes en pantallas muy pequeñas */
+    box-sizing: border-box;
+}
+
+/* Clase para ocultar el modal mediante JS */
+.modal-oculto {
+    display: none !important;
+    opacity: 0 !important;
+    pointer-events: none;
+}
+
+/* ==========================================
+   La caja blanca del modal (El Búnker)
+   ========================================== */
+.caja-modal-perfil {
+    background: #ffffff;
+    width: 100%;
+    max-width: 450px; /* Un poco más ancho para que no se vea tan vertical/alargado */
+    
+    /* 🔥 LA MAGIA PARA QUE NO SE ESTIRE DE MÁS */
+    max-height: 85vh; /* Nunca será más alto que el 85% de la pantalla */
+    overflow-y: auto; /* Si el contenido es muy largo, se hace scroll por dentro */
+    
+    border-radius: 20px;
+    padding: 30px;
+    position: relative;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+    text-align: center;
+    box-sizing: border-box;
+    animation: aparecerModal 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* Personalización sutil del scrollbar interno para que se vea pro */
+.caja-modal-perfil::-webkit-scrollbar { width: 6px; }
+.caja-modal-perfil::-webkit-scrollbar-thumb { background: #c8e6c9; border-radius: 10px; }
+.caja-modal-perfil::-webkit-scrollbar-track { background: transparent; }
+
+@keyframes aparecerModal {
+    from { transform: translateY(-30px) scale(0.95); opacity: 0; }
+    to { transform: translateY(0) scale(1); opacity: 1; }
+}
+
+/* ==========================================
+   Botón Cerrar (X)
+   ========================================== */
+.btn-cerrar-modal {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: white; /* Fondo blanco para que no se pierda si hay scroll */
+    border: none;
+    font-size: 1.5rem;
+    color: #888;
+    cursor: pointer;
+    transition: color 0.2s, transform 0.2s;
+    border-radius: 50%;
+    width: 35px;
+    height: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+}
+.btn-cerrar-modal:hover { color: #d32f2f; transform: scale(1.1); }
+
+/* ==========================================
+   Textos e Inputs iniciales
+   ========================================== */
+.titulo-modal-perfil {
+    font-family: 'Luckiest Guy', cursive;
+    color: #1B5E20;
+    font-size: 2rem;
+    margin: 0 0 20px 0;
+    line-height: 1.1;
+}
+
+.input-cedula {
+    width: 100%;
+    padding: 12px 15px;
+    font-size: 1rem;
+    border: 2px solid #ccc;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    box-sizing: border-box;
+    font-family: 'Montserrat', sans-serif;
+    transition: border-color 0.3s;
+}
+.input-cedula:focus { border-color: #4CAF50; outline: none; box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.2); }
+
+.btn-buscar-perfil {
+    background: #4CAF50;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    font-size: 1.1rem;
+    border-radius: 10px;
+    cursor: pointer;
+    width: 100%;
+    font-weight: bold;
+    transition: background 0.2s, transform 0.1s;
+    font-family: 'Montserrat', sans-serif;
+}
+.btn-buscar-perfil:hover { background: #388E3C; }
+.btn-buscar-perfil:active { transform: scale(0.98); }
+
+
+/* ==========================================
+   Mensaje de Error del Input
+   ========================================== */
+.mensaje-error-input {
+    color: #d32f2f;
+    font-size: 0.9rem;
+    margin: -10px 0 15px 0; /* Lo sube para que esté pegadito al input */
+    font-weight: 600;
+    text-align: left;
+    padding-left: 5px;
+    animation: sacudonError 0.3s ease;
+}
+
+/* Animación de temblor para llamar la atención */
+@keyframes sacudonError {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+}
+
+/* Clase extra para pintar el input de rojo cuando hay error */
+.input-error-borde {
+    border-color: #d32f2f !important;
+    background-color: #ffebee;
+}
+/* ==========================================
+   VISTA DE DATOS DEL PERFIL
+   ========================================== */
+.info-jugador {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+#perfil-nombre-jugador {
+    font-size: 1.6rem;
+    color: #4E342E; 
+    margin: 0;
+    text-transform: uppercase;
+    text-align: center;
+    font-weight: 900;
+    width: 100%;
+    line-height: 1.2;
+}
+
+.perfil-ranking {
+    background: #fff9c4; 
+    color: #f57f17; 
+    padding: 8px 25px;
+    border-radius: 30px;
+    font-weight: 900;
+    font-size: 1.1rem;
+    margin: 0;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    border: 2px solid #fff176;
+    display: inline-block;
+}
+
+/* ==========================================
+   Contenedor de Puntajes estilo Tabla
+   ========================================== */
+.contenedor-puntajes {
+    background: #fdfdfd; 
+    border: 1px solid #e0eadd; 
+    border-radius: 15px;
+    padding: 5px; /* Reducido para ahorrar espacio vertical */
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    box-sizing: border-box;
+}
+
+.contenedor-puntajes p {
+    background: #ffffff;
+    margin: 0;
+    padding: 12px 15px;
+    border-bottom: 1px solid #f0f4f0; 
+    display: flex;
+    align-items: center;
+    justify-content: space-between; /* Alinea los extremos automáticamente */
+}
+.contenedor-puntajes p:last-child { border-bottom: none; border-radius: 0 0 15px 15px; }
+.contenedor-puntajes p:first-child { border-radius: 15px 15px 0 0; }
+
+.label-pts {
+    color: #558b2f;
+    font-size: 0.9rem;
+    font-weight: 700;
+    text-align: left;
+}
+
+.separador {
+    color: #c8e6c9;
+    margin: 0 10px;
+    flex-grow: 1;
+    text-align: center;
+    opacity: 0.5;
+}
+
+.valor-pts {
+    color: #0277bd;
+    font-size: 1.1rem;
+    font-weight: 900;
+    text-align: right; 
+}
+
+.nivel-bloqueado {
+    color: #bdbdbd;
+    font-size: 0.85rem;
+    text-align: right;
+    font-weight: 600;
+}
+
+/* Puntaje Total Destacado */
+.puntaje-total-perfil {
+    font-size: 1.3rem;
+    font-weight: 900;
+    color: #ffffff;
+    background: linear-gradient(135deg, #4caf50, #2e7d32); 
+    padding: 15px;
+    border-radius: 15px;
+    margin: 5px 0 0 0; /* Ajuste de margen para compactar */
+    width: 100%;
+    box-sizing: border-box;
+    text-align: center;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+/* ==========================================
+   Zona de peligro y botón
+   ========================================== */
+.zona-peligro {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 2px dashed #e0e0e0;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.btn-dar-baja {
+    background: #ffebee;
+    color: #d32f2f;
+    border: 2px solid #ef9a9a;
+    padding: 10px 20px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 1rem;
+    transition: all 0.2s ease;
+    width: 100%;
+}
+
+.btn-dar-baja:hover {
+    background: #d32f2f;
+    color: white;
+    border-color: #d32f2f;
+}
+
+/* ==========================================
+   📱 MODO CELULAR (RESPONSIVIDAD TOTAL)
+   ========================================== */
+@media (max-width: 480px) {
+    .caja-modal-perfil {
+        padding: 25px 20px; /* Menos padding lateral en celulares */
+        max-height: 90vh; /* Permite ocupar más alto en pantallas pequeñitas */
+    }
+    
+    .titulo-modal-perfil { font-size: 1.6rem; }
+    #perfil-nombre-jugador { font-size: 1.3rem; }
+    
+    .contenedor-puntajes p { padding: 10px; }
+    .label-pts { font-size: 0.85rem; }
+    .valor-pts { font-size: 1rem; }
+    .puntaje-total-perfil { font-size: 1.1rem; padding: 12px; }
+    
+    .btn-cerrar-modal { top: 10px; right: 10px; }
+}
+
+/* ==========================================
+   MODAL DE CONFIRMACIÓN DE BAJA (PELIGRO)
+   ========================================== */
+#modal-confirmacion-baja {
+    position: fixed;
+    top: 0; left: 0; width: 100vw; height: 100vh;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(8px); /* Más desenfoque para dar dramatismo */
+    display: flex; align-items: center; justify-content: center;
+    z-index: 10000; /* Por encima del perfil */
+    opacity: 1; transition: opacity 0.3s ease;
+    padding: 20px; box-sizing: border-box;
+}
+
+.caja-modal-confirmacion {
+    background: #ffffff;
+    width: 100%; max-width: 400px;
+    border-radius: 20px; padding: 30px;
+    text-align: center;
+    border: 4px solid #ef5350; /* Borde rojo */
+    box-shadow: 0 15px 35px rgba(211, 47, 47, 0.4);
+    animation: latidoPeligro 0.4s ease-out;
+}
+
+@keyframes latidoPeligro {
+    0% { transform: scale(0.8); opacity: 0; }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+.titulo-peligro {
+    font-family: 'Luckiest Guy', cursive;
+    color: #d32f2f; font-size: 1.8rem;
+    margin: 0 0 15px 0; letter-spacing: 1px;
+}
+
+.caja-modal-confirmacion p {
+    font-family: 'Montserrat', sans-serif;
+    color: #4E342E; font-size: 1rem;
+    margin-bottom: 12px; line-height: 1.4;
+}
+
+.texto-rojo {
+    color: #c62828 !important;
+    font-size: 1.1rem !important;
+    background: #ffebee;
+    padding: 10px; border-radius: 10px;
+}
+
+.botones-confirmacion {
+    display: flex; gap: 15px;
+    margin-top: 25px; justify-content: center;
+}
+
+.btn-cancelar-baja {
+    background: #e0e0e0; color: #333;
+    border: none; padding: 12px 15px; border-radius: 12px;
+    font-weight: bold; cursor: pointer; flex: 1;
+    font-family: 'Montserrat', sans-serif;
+    transition: background 0.2s;
+}
+.btn-cancelar-baja:hover { background: #bdbdbd; }
+
+.btn-ejecutar-baja {
+    background: #d32f2f; color: white;
+    border: none; padding: 12px 15px; border-radius: 12px;
+    font-weight: bold; cursor: pointer; flex: 1;
+    font-family: 'Montserrat', sans-serif;
+    box-shadow: 0 5px 0 #b71c1c; /* Botón 3D rojo */
+    transition: all 0.1s;
+}
+.btn-ejecutar-baja:hover { background: #c62828; }
+.btn-ejecutar-baja:active { transform: translateY(5px); box-shadow: 0 0 0 #b71c1c; }
+
+/* Para celulares muy pequeños */
+@media (max-width: 400px) {
+    .botones-confirmacion { flex-direction: column; }
+}
