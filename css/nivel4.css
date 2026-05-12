@@ -1,0 +1,76 @@
+/* ==========================================
+   🧩 MINIJUEGOS NIVEL 4 (Gualimán, Imbabura, etc.)
+   ========================================== */
+
+/* --- 🏺 VASIJAS DE LA SUERTE --- */
+.contenedor-vasijas-suerte {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.vasija-interactiva {
+    cursor: pointer;
+    transition: transform 0.3s ease, filter 0.2s ease;
+    user-select: none; /* Evita que el usuario seleccione el emoji como texto */
+    -webkit-tap-highlight-color: transparent; /* Quita el cuadro azul feo al tocar en celulares */
+}
+
+/* Efecto al pasar el mouse (Para PC) */
+.vasija-interactiva:hover {
+    filter: brightness(1.2);
+    transform: translateY(-5px);
+}
+
+/* Efecto al presionar (Para celulares) */
+.vasija-interactiva:active {
+    transform: scale(0.9) !important;
+}
+
+
+/* --- 🎒 LA MOCHILA DEL AVENTURERO --- */
+.contenedor-mochila {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin-top: 15px;
+    text-align: center;
+}
+
+.item-mochila {
+    border: 2px solid #ccc;
+    border-radius: 10px;
+    padding: 10px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background-color: #f9f9f9;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.item-mochila:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* Sombrita elegante */
+}
+
+.item-mochila:active {
+    transform: scale(0.95);
+}
+
+
+/* --- 🧩 ROMPECABEZAS (Tap-to-Swap) --- */
+/* (La mayoría del CSS del rompecabezas está inyectado por JS, 
+   esto es solo para asegurar que los celulares pequeños no lo rompan) */
+#modalOptionsContainer > div {
+    /* Asegura que el contenedor del puzzle no se desborde */
+    max-width:280px;
+    overflow-x: hidden;
+}
+
+/* Evitamos el cuadro azul al tocar las piezas del rompecabezas */
+#modalOptionsContainer div[style*="cursor: pointer"] {
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+}
