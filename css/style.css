@@ -1672,10 +1672,12 @@ main > * {
     box-shadow: 0 0px 0 var(--color-tierra-oscura); 
     transform: translateY(5px); /* Añadí esto para que el botón realmente "baje" al presionarlo */
 }
+
 /* --- NIVEL 2: VALLES (Bosque y Naturaleza) --- */
 .card-nivel.tema-valles {
-    background-color: var(--color-blanco-cristal);
+    background-color: var(--color-arena);
     border-color: var(--color-bosque-claro);
+     background-image: url("../assets/imagenes/fondosniveles/fondonivel2cati.png");
 }
 .tema-valles .nivel-numero { 
     background-color: var(--color-bosque-claro); 
