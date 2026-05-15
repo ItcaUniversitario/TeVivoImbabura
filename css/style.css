@@ -1722,7 +1722,7 @@ main > * {
     background-color: #f7f5f4; /* Un gris muy suave casi tierra */
     border-color: #d7ccc8; /* Tierra clara apagada */
     filter: grayscale(0.5); /* Le quita un poco el color para verse bloqueado */
-     background-image: url("../assets/imagenes/fondosniveles/fondonivel2cati.png");
+     background-image: url("../assets/imagenes/fondosniveles/fondonivel4cati.png");
 }
 .tema-cima .nivel-numero { 
     background-color: var(--color-tierra-clara); 
