@@ -340,7 +340,7 @@ const CASILLAS = [
             },
             incorrecta: {
 
-                feedback: "Incorrecto. La fábrica está localizada en el cantón Antonio Ante."
+                feedback: "Incorrecto. La fábrica Imbabura está localizada en el cantón Antonio Ante."
             }
         }
     },
@@ -535,7 +535,7 @@ const PREGUNTAS = [
     },
     {
         id: 20,
-        pregunta: "¿Qué funciona hoy en día en las instalaciones de la Fábrica?",
+        pregunta: "¿Qué funciona hoy en día en las instalaciones de la Fábrica Imbabura?",
         opciones: ['Un hospital', 'Un mercado', 'Un centro cultural y museo', 'Una escuela'],
         correcta: 2 // Un centro cultural y museo
     },
