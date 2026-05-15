@@ -1604,7 +1604,7 @@ main > * {
 
 /* Botón 3D Base */
 .nivel-accion {
-    font-family: var(--fuente-titulo);
+    font-family: var(--fuente-principal);
     font-size: 1.1rem;
     letter-spacing: 2px;
     padding: 10px 28px;
@@ -1619,49 +1619,53 @@ main > * {
 
 /* --- NIVEL 1: NORTE (Acción y Tierra) --- */
 .card-nivel.tema-norte {
-    background-color: var(--color-arena) ; /* El color debe verse si la imagen falla */
-    background-image: url("../assets/imagenes/fondosniveles/fondonivel1cati.png");
+    background-color: var(--color-arena) ; 
+    
+    /* 🔥 AQUÍ ESTÁ EL VELO: Un degradado negro semi-transparente (0.5) SOBRE tu imagen */
+    background-image: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), 
+                      url("../assets/imagenes/fondosniveles/fondonivel1cati.png");
+                      
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
     min-height: 250px; 
     width: 100%;
     display: block;
+    border-radius: 15px; /* Para que los bordes se vean suaves */
 }
+
+/* ============================================================== */
+/* RESTO DE TU CÓDIGO INTACTO */
+/* ============================================================== */
+
 .tema-norte .nivel-numero { 
     background-color: var(--color-tierra-oscura); 
     color: var(--color-blanco-cristal);
     border: 3px solid var(--color-blanco-cristal);
-    
     display: flex;               
     justify-content: center;     
     align-items: center;         
     margin: 0 auto;              
-    
     padding: 8px 40px; 
-    min-width: 120px; 
     border-radius: 30px; 
     font-size: 14px;
     font-weight: bold;
-    
-    /* --- ESTA ES LA LÍNEA NUEVA QUE EVITA EL SALTO DE LÍNEA --- */
     white-space: nowrap; 
 }
 
-/* 💡 OJO AQUÍ: Sugiero cambiar el texto a blanco/claro para que contraste con la imagen de fondo */
 .tema-norte .nivel-info h3 { 
-    color: var(--color-blanco-cristal); /* Cambiado para mejor lectura sobre la imagen */
-    text-shadow: 1px 1px 3px rgba(0,0,0,0.8); /* Una sombrita extra ayuda a que se lea perfecto */
+    color: var(--color-blanco-cristal); 
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.8); 
 }
 
 .tema-norte .nivel-info span { 
-    color: var(--color-accent); /* Un color claro que tengas en tus variables */
+    color: var(--color-accent); 
 }
 
 .tema-norte .nivel-accion { 
     background-color: var(--color-accent); 
     color: var(--color-blanco-cristal);
-    box-shadow: 0 5px 0 var(--color-tierra-oscura); /* Sombra 3D marrón */
+    box-shadow: 0 5px 0 var(--color-tierra-oscura); 
 }
 
 .tema-norte.activo:hover { 
@@ -1670,80 +1674,186 @@ main > * {
 
 .tema-norte.activo .nivel-accion:active { 
     box-shadow: 0 0px 0 var(--color-tierra-oscura); 
-    transform: translateY(5px); /* Añadí esto para que el botón realmente "baje" al presionarlo */
+    transform: translateY(5px); 
 }
-
 /* --- NIVEL 2: VALLES (Bosque y Naturaleza) --- */
 .card-nivel.tema-valles {
     background-color: var(--color-arena);
     border-color: var(--color-bosque-claro);
-     background-image: url("../assets/imagenes/fondosniveles/fondonivel2cati.png");
+    
+    /* 🔥 EL VELO: El degradado negro semi-transparente sobre la imagen del Nivel 2 */
+    background-image: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), 
+                      url("../assets/imagenes/fondosniveles/fondonivel2cati.png");
+                      
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    min-height: 250px; 
+    width: 100%;
+    display: block;
+    border-radius: 15px; /* Igual que el nivel 1 */
 }
+
 .tema-valles .nivel-numero { 
     background-color: var(--color-bosque-claro); 
     color: var(--color-bosque-profundo); /* Contraste verde sobre verde */
     border: 3px solid var(--color-arena);
+    
+    /* 🔥 Estructura copiada del Nivel 1 para que queden idénticos */
+    display: flex;               
+    justify-content: center;     
+    align-items: center;         
+    margin: 0 auto;              
+    padding: 8px 40px; 
+    border-radius: 30px; 
+    font-size: 14px;
+    font-weight: bold;
+    white-space: nowrap; 
 }
-.tema-valles .nivel-info h3 { color: var(--color-bosque-profundo); }
-.tema-valles .nivel-info span { color: var(--color-tierra-clara); }
+
+.tema-valles .nivel-info h3 { 
+    /* Cambiado a cristal/blanco con sombra para que resalte sobre el velo oscuro */
+    color: var(--color-blanco-cristal); 
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.8); 
+}
+
+.tema-valles .nivel-info span { 
+    color: var(--color-tierra-clara); 
+}
+
 .tema-valles .nivel-accion { 
     background-color: var(--color-bosque-profundo); 
     color: var(--color-arena);
     box-shadow: 0 5px 0 var(--color-tierra-oscura); 
 }
-.tema-valles.activo:hover { border-color: var(--color-bosque-profundo); }
-.tema-valles.activo .nivel-accion:active { box-shadow: 0 0px 0 var(--color-tierra-oscura); }
 
+.tema-valles.activo:hover { 
+    border-color: var(--color-bosque-profundo); 
+}
 
+.tema-valles.activo .nivel-accion:active { 
+    box-shadow: 0 0px 0 var(--color-tierra-oscura); 
+    transform: translateY(5px); /* Movimiento de botón igual al nivel 1 */
+}
 /* --- NIVEL 3: AGUAS Y SABORES (Oro y Bosque) --- */
 .card-nivel.tema-aguas {
     background-color: var(--color-arena);
     border-color: var(--color-oro);
-       background-image: url("../assets/imagenes/fondosniveles/fondonivel3cati.png");
+    
+    /* 🔥 EL VELO OSCURO: Degradado semi-transparente sobre la imagen */
+    background-image: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), 
+                      url("../assets/imagenes/fondosniveles/fondonivel3cati.png");
+                      
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    min-height: 250px; 
+    width: 100%;
+    display: block;
+    border-radius: 15px; /* Bordes redondeados estandarizados */
 }
+
 .tema-aguas .nivel-numero { 
     background-color: var(--color-oro); 
     color: var(--color-tierra-oscura);
     border: 3px solid var(--color-blanco-cristal);
+    
+    /* 🔥 ESTRUCTURA ESTANDARIZADA (Igual al Nivel 1 y 2) */
+    display: flex;               
+    justify-content: center;     
+    align-items: center;         
+    margin: 0 auto;              
+    padding: 8px 40px; 
+    border-radius: 30px; 
+    font-size: 14px;
+    font-weight: bold;
+    white-space: nowrap; 
 }
-.tema-aguas .nivel-info h3 { color: var(--color-tierra-oscura); }
-.tema-aguas .nivel-info span { color: var(--color-bosque-profundo); }
+
+.tema-aguas .nivel-info h3 { 
+    /* Texto en blanco con sombra para resaltar sobre el fondo oscurecido */
+    color: var(--color-blanco-cristal); 
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.8); 
+}
+
+.tema-aguas .nivel-info span { 
+    color: var(--color-bosque-profundo); 
+    /* 💡 Tip: Si notas que este verde no se lee bien sobre el velo oscuro, 
+       cámbialo a var(--color-oro) o var(--color-arena) */
+}
+
 .tema-aguas .nivel-accion { 
     background-color: var(--color-oro); 
     color: var(--color-tierra-oscura);
     box-shadow: 0 5px 0 var(--color-tierra-clara); 
 }
-.tema-aguas.activo:hover { border-color: var(--color-tierra-oscura); }
-.tema-aguas.activo .nivel-accion:active { box-shadow: 0 0px 0 var(--color-tierra-clara); }
 
+.tema-aguas.activo:hover { 
+    border-color: var(--color-tierra-oscura); 
+}
 
+.tema-aguas.activo .nivel-accion:active { 
+    box-shadow: 0 0px 0 var(--color-tierra-clara); 
+    transform: translateY(5px); /* Movimiento del botón al hacer clic */
+}
 /* --- NIVEL 4: CIMA (Bloqueado - Tonos Tierra Apagados) --- */
 .card-nivel.tema-cima {
-    background-color: #f7f5f4; /* Un gris muy suave casi tierra */
-    border-color: #d7ccc8; /* Tierra clara apagada */
-    filter: grayscale(0.5); /* Le quita un poco el color para verse bloqueado */
-     background-image: url("../assets/imagenes/fondosniveles/fondonivel4cati.png");
+    background-color: #f7f5f4; 
+    border-color: #d7ccc8; 
+    filter: grayscale(0.8); /* Le subí un pelín el gris para que se note bien que está bloqueado */
+    
+    /* 🔥 EL VELO OSCURO: Degradado semi-transparente sobre la imagen */
+    background-image: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), 
+                      url("../assets/imagenes/fondosniveles/fondonivel4cati.png");
+                      
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    min-height: 250px; 
+    width: 100%;
+    display: block;
+    border-radius: 15px; /* Bordes redondeados estandarizados */
 }
+
 .tema-cima .nivel-numero { 
     background-color: var(--color-tierra-clara); 
     color: var(--color-arena);
+    
+    /* 🔥 ESTRUCTURA ESTANDARIZADA */
+    display: flex;               
+    justify-content: center;     
+    align-items: center;         
+    margin: 0 auto;              
+    padding: 8px 40px; 
+    border-radius: 30px; 
+    font-size: 14px;
+    font-weight: bold;
+    white-space: nowrap; 
 }
-.tema-cima .nivel-info h3 { color: var(--color-tierra-clara); }
+
+.tema-cima .nivel-info h3 { 
+    /* Texto claro apagado para el estado bloqueado */
+    color: #d7ccc8; 
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.8); 
+}
+
 .tema-cima .nivel-info span { color: #a1887f; }
+
 .tema-cima .nivel-accion { 
     background-color: #d7ccc8; 
     color: #8d6e63;
     box-shadow: inset 0 3px 6px rgba(0,0,0,0.1); /* Efecto hundido */
 }
+
+
 /* ======================================================= */
 /* 🌋 NIVEL 4: CIMA (ESTADO ACTIVO / DESBLOQUEADO)         */
 /* ======================================================= */
 
-/* Al agregar la clase .activo, le quitamos el filtro gris y le damos vida */
 .card-nivel.tema-cima.activo {
     background-color: var(--color-blanco-cristal, #ffffff);
-    border-color: var(--color-volcan, #d35400); /* Un tono naranja/rojo intenso */
-    filter: none; /* 🔥 Fundamental: elimina el grayscale del estado bloqueado */
+    border-color: var(--color-volcan, #d35400); 
+    filter: none; /* 🔥 Fundamental: elimina el grayscale, pero el velo de la imagen SE MANTIENE */
     cursor: pointer;
     transition: all 0.3s ease;
 }
@@ -1755,7 +1865,9 @@ main > * {
 }
 
 .tema-cima.activo .nivel-info h3 { 
-    color: var(--color-roca-oscura, #2c3e50); /* Un tono pizarra/gris muy oscuro para contraste */
+    /* 🔥 Cambiado a blanco brillante con sombra profunda para resaltar espectacular */
+    color: var(--color-blanco-cristal, #ffffff); 
+    text-shadow: 1px 1px 4px rgba(0,0,0,0.9);
 }
 
 .tema-cima.activo .nivel-info span { 
@@ -1766,14 +1878,14 @@ main > * {
 .tema-cima.activo .nivel-accion { 
     background-color: var(--color-volcan, #d35400); 
     color: var(--color-blanco-cristal, #ffffff);
-    box-shadow: 0 5px 0 var(--color-volcan-oscuro, #a04000); /* Sombra 3D profunda */
+    box-shadow: 0 5px 0 var(--color-volcan-oscuro, #a04000); 
     transition: all 0.1s ease;
 }
 
 /* Efectos Hover (Al pasar el ratón) */
 .tema-cima.activo:hover { 
     border-color: var(--color-roca-oscura, #2c3e50); 
-    transform: translateY(-2px); /* Pequeño salto visual */
+    transform: translateY(-2px); 
 }
 
 .tema-cima.activo:hover .nivel-accion {
@@ -1784,7 +1896,7 @@ main > * {
 /* Efectos Active (Al hacer clic) */
 .tema-cima.activo .nivel-accion:active { 
     box-shadow: 0 0px 0 var(--color-volcan-oscuro, #a04000); 
-    transform: translateY(5px); /* Simula que el botón se hunde */
+    transform: translateY(5px); 
 }
 /* ======================================================= */
 /* 📱 MODO RESPONSIVE (CELULARES)                          */
