@@ -2749,13 +2749,16 @@ export function mostrarPestana(tabId) {
 // ==========================================
 // 8. INICIALIZACIÓN Y EVENTOS (DOM LOADED)
 // ==========================================
+// ==========================================
+// 8. INICIALIZACIÓN Y EVENTOS (DOM LOADED)
+// ==========================================
 document.addEventListener("DOMContentLoaded", () => {
     console.log("🎮 Game.js cargado.");
 
     cargarRankingGlobal();
 
-    // Botones de Registro (Jugador 1, 2, 3)
-    [1, 2, 3].forEach(n => {
+    // 🔥 Agregamos el 4 al arreglo para que escuche el nuevo botón
+    [1, 2, 3, 4].forEach(n => {
         const b = document.getElementById(`btn-jugador-${n}`);
         if (b) b.addEventListener("click", () => prepararPantallaRegistro(n));
     });
@@ -2768,15 +2771,11 @@ document.addEventListener("DOMContentLoaded", () => {
     // ============================================================
     const btnDado = document.getElementById('boton-dado');
     if (btnDado) {
-        // Escuchamos el clic en el botón del dado
         btnDado.addEventListener('click', () => {
-            // Llamamos a la función del reloj.
-            // Ella sola revisa si es la primera vez. Si ya está corriendo, no hace nada.
             intentarIniciarRelojFeria();
         });
     }
 });
-
 
 // ==========================================
 // 9. PROTECCIÓN CONTRA SALIDA ACCIDENTAL
