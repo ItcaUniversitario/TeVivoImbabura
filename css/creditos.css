@@ -1,26 +1,75 @@
-/* =========================================
-   CRÉDITOS EN PANTALLA DE VICTORIA
-   ========================================= */
+/* Contenedor principal de créditos */
 .creditos-finales {
-    margin-top: 25px; /* Separa los créditos del botón de jugar de nuevo */
-    padding-top: 15px;
-    border-top: 1px dashed #ccc; /* Una línea sutil para dividir secciones */
+    margin-top: 30px;
+    padding: 15px;
+    background: rgba(0, 0, 0, 0.6); /* Un poco más oscuro para que el texto resalte */
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.grid-creditos {
+    display: flex;
+    justify-content: space-between; /* Espacia las 3 columnas equitativamente */
+    align-items: flex-start; /* Alinea los títulos arriba siempre */
+    gap: 15px;
+}
+.col-credito {
+    flex: 1; 
+    min-width: 160px; /* 🔥 Reducido para que entren 4 columnas cómodamente */
     text-align: center;
-    color: #666; /* Un gris medio para que no resalte más que los puntajes */
-    font-size: 0.9rem;
-    line-height: 1.5;
+    padding: 0 10px;
+    border-right: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.creditos-finales p {
-    margin: 3px 0;
+.col-credito:last-child {
+    border-right: none;
+}
+.titulo-col {
+    font-size: 0.65rem;
+    color: #81c784;
+    margin-bottom: 10px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    border-bottom: 1px solid rgba(129, 199, 132, 0.4);
+    padding-bottom: 5px;
 }
 
-.creditos-finales strong {
-    color: var(--color-bosque-profundo, #2E7D32); /* Tu color verde para destacar tu nombre */
-    font-weight: 700;
-}
-
-.creditos-finales small {
+/* Estilo para los nombres */
+.col-credito p {
     font-size: 0.75rem;
-    color: #888;
+    margin: 4px 0;
+    color: #ffffff;
+    line-height: 1.2;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+}
+
+/* Estilo para los roles (lo que va en paréntesis) */
+.col-credito p span {
+    display: block; /* Obliga al rol a ir debajo del nombre */
+    font-size: 0.6rem;
+    color: #cccccc;
+    font-style: italic;
+    margin-top: 1px;
+}
+
+.pie-creditos {
+    margin-top: 20px;
+    text-align: center;
+    font-size: 0.65rem;
+    color: rgba(255,255,255,0.5);
+}
+/* Título general de los créditos (reemplazar el color marrón) */
+.titulo-principal-creditos {
+    color: #ffffff; /* 🔥 Cambiar de marrón a blanco puro para máxima legibilidad */
+    /* Mantener el resto de propiedades para el estilo y la estructura */
+    text-align: center;
+    font-size: 1rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-top: 0;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    /* 🔥 Añadir una sombra de texto sutil para mayor separación del fondo */
+    text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.9);
 }

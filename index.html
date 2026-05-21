@@ -12,8 +12,8 @@
     <link rel="stylesheet" href="css/nivel2.css">
     <link rel="stylesheet" href="css/nivel3.css">
     <link rel="stylesheet" href="css/perfil.css">
-     <link rel="stylesheet" href="css/creditos.css">
-    
+    <link rel="stylesheet" href="css/creditos.css">
+
 </head>
 
 <body>
@@ -26,8 +26,8 @@
                 <img src="assets/imagenes/generales/logogeoparque.png" alt="GEOPARQUE" style="cursor: pointer;">
             </a>
             <a href="https://www.unesco.org/es" target="_blank" rel="noopener noreferrer">
-    <img src="assets/imagenes/generales/logounesco.png" alt="UNESCO" style="cursor: pointer;">
-</a>
+                <img src="assets/imagenes/generales/logounesco.png" alt="UNESCO" style="cursor: pointer;">
+            </a>
 
         </div>
 
@@ -100,7 +100,7 @@
                                 <span class="texto-jugador">3</span>
                                 <p class="subtitulo-corto">Jugadores</p>
                             </button>
-                             <button class="btn-jugador" id="btn-jugador-4">
+                            <button class="btn-jugador" id="btn-jugador-4">
                                 <span class="texto-jugador">4</span>
                                 <p class="subtitulo-corto">Jugadores</p>
                             </button>
@@ -171,7 +171,7 @@
                 <div class="grid-niveles">
 
                     <div class="card-nivel activo tema-norte" onclick="cargarNivel(1)">
-                         <div class="nivel-numero">1</div>
+                        <div class="nivel-numero">1</div>
                         <div class="nivel-info">
                             <h3>Esencia del Norte</h3>
                         </div>
@@ -182,30 +182,30 @@
                         <div class="nivel-numero">2</div>
                         <div class="nivel-info">
                             <h3>Valles de Bienestar</h3>
-                           
+
                         </div>
                         <div class="nivel-accion">JUGAR NIVEL 2</div>
-                    
+
                     </div>
 
                     <div class="card-nivel activo tema-aguas" onclick="cargarNivel(3)">
                         <div class="nivel-numero">3</div>
                         <div class="nivel-info">
                             <h3>Ruta de Aguas y Sabores</h3>
-                         
+
 
                         </div>
                         <div class="nivel-accion">JUGAR NIVEL 3</div>
-                       
+
                     </div>
 
                     <div class="card-nivel activo tema-cima" onclick="cargarNivel(4)">
                         <div class="nivel-numero">4</div>
                         <div class="nivel-info">
                             <h3>Cima de los Ancestros</h3>
-                         
+
                         </div>
-                        <div class="nivel-accion">JUGAR NIVEL 4</div>  
+                        <div class="nivel-accion">JUGAR NIVEL 4</div>
                     </div>
 
                 </div>
@@ -219,7 +219,7 @@
                         <img src="assets/imagenes/fichas/ficha_1.png" alt="Paila de Bronce">
                         <span class="nombre-ficha">Paila de Bronce</span>
                     </button>
- 
+
                     <button class="btn-ficha" onclick="seleccionarFicha(2)" id="ficha-2">
                         <img src="assets/imagenes/fichas/ficha_2.png" alt="Columpio">
                         <span class="nombre-ficha">Columpio</span>
@@ -347,10 +347,10 @@
                 <div id="modalButtons" class="modal-footer-botones"></div>
             </div>
         </div>
-       
+
 
     </main>
-   <div id="modal-victoria" class="modal-victoria-overlay" style="display: none;">
+    <div id="modal-victoria" class="modal-victoria-overlay" style="display: none;">
         <div class="modal-victoria-content">
             <div class="confeti-container"></div>
 
@@ -361,17 +361,49 @@
 
             <div id="vic-lista-jugadores" class="victoria-grid">
             </div>
-
+            <button class="btn-reiniciar-victoria" onclick="window.location.reload()">
+                🔄 JUGAR OTRA PARTIDA
+            </button>
             <div class="victoria-footer">
-                <button class="btn-reiniciar-victoria" onclick="window.location.reload()">
-                    🔄 JUGAR OTRA PARTIDA
-                </button>
-                
-                <div class="creditos-finales">
-                    <p>Desarrollado con ❤️ por <strong>Carla Paillacho</strong></p>
-                    <p>Programación, Modelado 3D y Animación</p>
-                    <p><small>Proyecto Te Vivo Imbabura - ITCA 2026</small></p>
-                </div>
+
+
+              <div class="creditos-finales">
+    <h3 class="titulo-principal-creditos">CRÉDITOS DEL PROYECTO</h3>
+
+    <div class="grid-creditos">
+        
+        <div class="col-credito">
+            <h4 class="titulo-col">AUTORÍA</h4>
+            <p><strong>PhD. Carlos Merizalde</strong></p>
+        </div>
+
+        <div class="col-credito">
+            <h4 class="titulo-col">DESARROLLO Y 3D</h4>
+            <p><strong>Ing. Carla Paillacho</strong></p>
+            <p><span>Programación, Animación 3D y UX</span></p>
+             <p><strong>Ing. Lenin Paillacho</strong></p>
+            <p><span>Programación, Animación 3D y UX</span></p>
+        </div>
+
+        <div class="col-credito">
+            <h4 class="titulo-col">REPARTO Y LOCUCIÓN</h4>
+            <p><strong>Lic. Alejandra Franco</strong></p>
+            <p><span>Producción de voz - Personaje "Cati"</span></p>
+        </div>
+
+        <div class="col-credito">
+            <h4 class="titulo-col">PRODUCCIÓN VISUAL</h4>
+            <p><strong>Lic. Enrique Delgado</strong> <span>Fotografía y Video</span></p>
+            <p><strong>Mgs. Alexander Alquedán</strong> <span>Iconografía</span></p>
+            <p><strong>Lic. Erik Moreta</strong> <span>Diseño Gráfico / Concept Art</span></p>
+        </div>
+
+    </div>
+
+    <div class="pie-creditos">
+        <p>Proyecto Te Vivo Imbabura - ITCA 2026</p>
+    </div>
+</div>
             </div>
         </div>
     </div>
@@ -400,7 +432,7 @@
     </div>
 
 
-   <div id="modal-perfil" class="modal-oculto">
+    <div id="modal-perfil" class="modal-oculto">
         <div class="caja-modal-perfil">
 
             <button class="btn-cerrar-modal" onclick="cerrarPerfil()">✖</button>
@@ -410,7 +442,9 @@
             <div id="vista-ingreso-cedula">
                 <p>Ingresa tu documento de identidad para buscar tu progreso en el Geoparque:</p>
 
-                <select id="tipo-doc-perfil" class="input-cedula" style="width: 100%; margin-bottom: 10px; padding: 10px; border-radius: 8px; font-size: 1rem;" onchange="
+                <select id="tipo-doc-perfil" class="input-cedula"
+                    style="width: 100%; margin-bottom: 10px; padding: 10px; border-radius: 8px; font-size: 1rem;"
+                    onchange="
                     document.getElementById('input-cedula-perfil').value = '';
                     document.getElementById('input-cedula-perfil').focus();
                 ">
@@ -419,8 +453,7 @@
                 </select>
 
                 <input type="text" id="input-cedula-perfil" class="input-cedula" placeholder="Ingrese su documento"
-                    autocomplete="off" 
-                    oninput="window.validarInputPerfil(this)"
+                    autocomplete="off" oninput="window.validarInputPerfil(this)"
                     onkeydown="if(event.key === 'Enter') buscarPerfilPorCedula()">
 
                 <p id="error-cedula-perfil" class="mensaje-error-input" style="display: none;"></p>
