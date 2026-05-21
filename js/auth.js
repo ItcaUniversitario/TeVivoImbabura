@@ -37,33 +37,51 @@ export function prepararPantallaRegistro(cantidad) {
     const contenedor = document.getElementById('contenedor-inputs');
     contenedor.innerHTML = '';
 
+   // ... (código anterior de prepararPantallaRegistro) ...
+
     for (let i = 1; i <= cantidad; i++) {
         const htmlJugador = `
     <div class="ficha-jugador">
         <div class="encabezado-ficha">
             <h3 class="titulo-ficha">👤 Jugador ${i}</h3>
-           
         </div>
         
-       <div class="grupo-busqueda">
-    <input type="tel" id="cedula-j${i}" class="input-imbabura input-cedula" 
-           placeholder="🔎 Ingrese Cédula" 
-           oninput="this.value = this.value.replace(/[^0-9]/g, ''); if(this.value.length > 10) this.value = this.value.slice(0, 10);"
-           onkeydown="if(event.key === 'Enter') window.verificarCedula(${i})"> 
-    
-    <button class="btn-imbabura primario btn-buscar" onclick="window.verificarCedula(${i})">Buscar</button>
-</div>
+       <div class="grupo-busqueda" style="display: flex; flex-direction: column; gap: 8px;">
+            <select id="tipo-doc-j${i}" class="input-imbabura" style="font-size: 0.85rem; padding: 8px;" onchange="
+                document.getElementById('cedula-j${i}').value = '';
+                document.getElementById('cedula-j${i}').focus();
+                
+                // 🔥 NUEVO: Mostrar/Ocultar el campo de país según la elección
+                if(this.value === 'PASAPORTE') {
+                    document.getElementById('pais-j${i}').style.display = 'block';
+                } else {
+                    document.getElementById('pais-j${i}').style.display = 'none';
+                }
+            ">
+                <option value="CEDULA">Cédula (Ecuador)</option>
+                <option value="PASAPORTE">Pasaporte / ID Extranjero</option>
+            </select>
+            
+            <div style="display: flex; gap: 5px; width: 100%;">
+                <input type="text" id="cedula-j${i}" class="input-imbabura input-cedula" 
+                    placeholder="🔎 Ingrese Documento" 
+                    style="text-transform: uppercase;"
+                    oninput="window.validarInputDoc(this, ${i})"
+                    onkeydown="if(event.key === 'Enter') window.verificarCedula(${i})"> 
+                
+                <button class="btn-imbabura primario btn-buscar" onclick="window.verificarCedula(${i})">Buscar</button>
+            </div>
+        </div>
 
-     <div id="mensaje-j${i}" class="mensaje-alerta" 
-     style="display:none; text-align: center; width: 100%; justify-content: center;">
-    Bienvenido por favor. Completa el registro:
-</div>
+        <div id="mensaje-j${i}" class="mensaje-alerta" style="display:none; text-align: center; width: 100%; justify-content: center;">
+            Bienvenido por favor. Completa el registro:
+        </div>
         
         <div id="form-extra-j${i}" class="campos-restantes" style="display: none;">
             
            <div class="separador-form" style="color: #1B5E20; font-weight: bold; border-bottom: 2px solid #1B5E20; margin-bottom: 10px; padding-bottom: 5px;">
-    Datos Obligatorios <span style="color: #D32F2F;">*</span>
-</div>
+                Datos Obligatorios <span style="color: #D32F2F;">*</span>
+           </div>
             <div class="grid-formulario">
                 <div class="input-group">
                     <input type="text" id="nombre-j${i}" class="input-imbabura" 
@@ -73,7 +91,6 @@ export function prepararPantallaRegistro(cantidad) {
                             this.value = this.value.toUpperCase();
                             let ayuda = document.getElementById('ayuda-nombre-j${i}');
                             let valor = this.value.trim();
-                            
                             if (valor === '') {
                                 ayuda.innerText = '';
                                 this.style.borderColor = '';
@@ -85,8 +102,7 @@ export function prepararPantallaRegistro(cantidad) {
                                 ayuda.innerText = '';
                                 this.style.borderColor = '#2E7D32';
                             }
-                        "
-                        required>
+                        " required>
                     <div id="ayuda-nombre-j${i}" style="font-size: 0.75rem; text-align: left; margin-top: 4px; padding-left: 5px; font-weight: bold; min-height: 15px;"></div>
                 </div>
 
@@ -96,35 +112,43 @@ export function prepararPantallaRegistro(cantidad) {
                         oninput="this.value = this.value.replace(/[^0-9]/g, ''); if(this.value.length > 10) this.value = this.value.slice(0, 10);" 
                         required>
                 </div>
-
-             
             </div>
 
            <div class="separador-form modo-opcional" style="color: #6D4C41; font-weight: 500; border-bottom: 1px dashed #A1887F; margin-top: 15px; margin-bottom: 10px; padding-bottom: 5px;">
-    Datos Adicionales (Opcional)
-</div>
-               <div class="grid-formulario">
-                   <div class="input-group" style="grid-column: 1 / -1;">
-                    <input type="email" id="email-j${i}" class="input-imbabura full-width" placeholder="Correo Electrónico " >
-                </div>
-                <select id="genero-j${i}" class="input-imbabura select-genero" >
-                    <option value="" disabled selected>⚧ Seleccionar Género</option>
-                    <option value="MASCULINO">MASCULINO</option>
-                    <option value="FEMENINO">FEMENINO</option>
-                   
-                </select>
-                
-               <input type="tel" id="edad-j${i}" class="input-imbabura" placeholder=" Edad" 
+                Datos Adicionales (Opcional)
+           </div>
+           
+           <div class="grid-formulario">
+    <div class="input-group" style="grid-column: 1 / -1;">
+        <input type="email" id="email-j${i}" class="input-imbabura full-width" placeholder="Correo Electrónico ">
+    </div>
+    
+    <select id="genero-j${i}" class="input-imbabura select-genero">
+        <option value="" disabled selected>⚧ Seleccionar Género</option>
+        <option value="MASCULINO">MASCULINO</option>
+        <option value="FEMENINO">FEMENINO</option>
+    </select>
+    
+    <input type="tel" id="edad-j${i}" class="input-imbabura" placeholder=" Edad" 
+    oninput="this.value = this.value.replace(/[^0-9]/g, ''); if(this.value.length > 2) this.value = this.value.slice(0, 2);" maxlength="2">
+    
+    <input type="text" id="ciudad-j${i}" class="input-imbabura" placeholder=" Ciudad" oninput="this.value = this.value.toUpperCase()">
 
-                oninput="this.value = this.value.replace(/[^0-9]/g, ''); if(this.value.length > 2) this.value = this.value.slice(0, 2);" 
-                maxlength="2">
-                
-                <input type="text" id="ciudad-j${i}" class="input-imbabura" 
-                       placeholder=" Ciudad" 
-                       
-                       oninput="this.value = this.value.toUpperCase()">
+   <input type="text" id="pais-j${i}" class="input-imbabura" placeholder=" País" 
+           oninput="this.value = this.value.toUpperCase()" style="display: none;">
+
+            <div class="separador-form" style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #ccc; text-align: left;">
+                <label style="display: flex; align-items: flex-start; gap: 10px; cursor: pointer;">
+                    <input type="checkbox" id="terminos-j${i}" style="width: 20px; height: 20px; cursor: pointer; accent-color: #2E7D32; margin-top: 2px;">
+                    <span style="font-size: 0.85rem; color: #444; line-height: 1.4;">
+                        He leído y acepto los 
+                        <a href="https://drive.google.com/file/d/1FOWdO75X8GoajU0BsB5IGJPoMfGL54j2/view?usp=drive_link" target="_blank" style="color: #1B5E20; font-weight: bold; text-decoration: underline;">
+                            Términos y Condiciones
+                        </a> de uso de datos y juego. <span style="color: #D32F2F;">*</span>
+                    </span>
+                </label>
             </div>
-        </div>
+            </div>
     </div>`;
 
         contenedor.innerHTML += htmlJugador;
@@ -132,30 +156,62 @@ export function prepararPantallaRegistro(cantidad) {
     }
 }
 
+export function validarInputDoc(input, idJugador) {
+    const tipo = document.getElementById(`tipo-doc-j${idJugador}`).value;
+    
+    if (tipo === 'CEDULA') {
+        // Validación estricta Ecuador: Solo números, máximo 10
+        input.value = input.value.replace(/[^0-9]/g, '');
+        if (input.value.length > 10) input.value = input.value.slice(0, 10);
+        
+        // Auto-búsqueda a los 10 dígitos (opcional, como lo tenías antes)
+        if (input.value.length === 10) {
+            input.style.borderColor = "#2196F3";
+            window.verificarCedula(idJugador);
+        } else {
+            input.style.borderColor = "#ccc";
+        }
+    } else {
+        // Validación Pasaporte: Letras y números, máximo 20 (estándar internacional)
+        input.value = input.value.replace(/[^a-zA-Z0-9]/g, '').toUpperCase();
+        if (input.value.length > 20) input.value = input.value.slice(0, 20);
+        input.style.borderColor = "#ccc"; // Aquí no hay auto-búsqueda, deben presionar "Buscar"
+    }
+}
 // ==========================================
-// 🛠️ FUNCIÓN AUXILIAR (Debe estar accesible)
+// 🛠️ FUNCIÓN AUXILIAR ACTUALIZADA (Soporta Pasaportes)
 // ==========================================
 function activarBusquedaAutomatica(idJugador) {
-    // Usamos setTimeout para asegurar que el elemento ya existe en el DOM
     setTimeout(() => {
         const inputCedula = document.getElementById(`cedula-j${idJugador}`);
+        const selectTipo = document.getElementById(`tipo-doc-j${idJugador}`);
 
-        if (inputCedula) {
+        if (inputCedula && selectTipo) {
             inputCedula.addEventListener('input', function () {
-                // Limpieza de caracteres no numéricos
-                let valor = this.value.replace(/\D/g, '');
+                let valor = this.value;
+                const tipo = selectTipo.value;
 
-                // Límite visual de 10 caracteres
-                if (valor.length > 10) valor = valor.slice(0, 10);
-                this.value = valor;
+                if (tipo === 'CEDULA') {
+                    // MODO ECUADOR: Solo números, máximo 10
+                    valor = valor.replace(/\D/g, ''); 
+                    if (valor.length > 10) valor = valor.slice(0, 10);
+                    this.value = valor;
 
-                // ⚡ EL DETONADOR: Si son 10 dígitos, buscamos.
-                if (valor.length === 10) {
-                    this.style.borderColor = "#2196F3"; // Azul (Feedback visual)
-                    window.verificarCedula(idJugador);  // Llamada a tu función
-                    this.blur(); // Opcional: Cerrar teclado móvil
+                    // ⚡ EL DETONADOR: Si son 10 dígitos, buscamos automáticamente
+                    if (valor.length === 10) {
+                        this.style.borderColor = "#2196F3"; 
+                        window.verificarCedula(idJugador);  
+                        this.blur(); 
+                    } else {
+                        this.style.borderColor = "#ccc"; 
+                    }
                 } else {
-                    this.style.borderColor = "#ccc"; // Reset color
+                    // MODO EXTRANJERO: Letras y números, mayúsculas, máximo 20
+                    valor = valor.replace(/[^a-zA-Z0-9]/g, '').toUpperCase();
+                    if (valor.length > 20) valor = valor.slice(0, 20);
+                    this.value = valor;
+                    this.style.borderColor = "#ccc"; 
+                    // Nota: Aquí no hay detonador automático, el extranjero debe presionar "Buscar"
                 }
             });
         }
@@ -166,11 +222,15 @@ export async function verificarCedula(idJugador) {
     const cedula = cedulaInput.value.trim();
     const btnBuscar = cedulaInput.parentElement.querySelector('button');
 
-    if (cedula.length !== 10) {
-        mostrarToast("⚠️ La cédula debe tener 10 dígitos.");
+   const tipoDoc = document.getElementById(`tipo-doc-j${idJugador}`).value;
+    if (tipoDoc === 'CEDULA' && cedula.length !== 10) {
+        mostrarToast("⚠️ La cédula ecuatoriana debe tener 10 dígitos.");
         return;
     }
-
+    if (tipoDoc === 'PASAPORTE' && cedula.length < 5) {
+        mostrarToast("⚠️ El pasaporte debe tener al menos 5 caracteres.");
+        return;
+    }
     // 🔥 NUEVO: Verificar si OTRO input en la pantalla tiene la misma cédula AHORA MISMO
     const todosLosInputsCedula = document.querySelectorAll('.input-cedula');
     for (let input of todosLosInputsCedula) {
@@ -291,16 +351,21 @@ export function iniciarTablero() {
 
         // Validaciones Obligatorias (Cédula)
         if (cedulaVal === "") { mostrarToast(`⚠️ Jugador${i}: Ingrese cédula.`); return; }
-        if (!numDiezRegex.test(cedulaVal)) { mostrarToast(`⚠️ Jugador${i}: Cédula de 10 dígitos.`); return; }
-
-        // (Omito la parte de duplicados y búsqueda por brevedad, se mantiene igual)
+       const tipoDoc = document.getElementById(`tipo-doc-j${i}`).value;
+if (tipoDoc === 'CEDULA' && !numDiezRegex.test(cedulaVal)) { 
+    mostrarToast(`⚠️ Jugador${i}: Cédula ecuatoriana de 10 dígitos.`); 
+    return; 
+}
+if (tipoDoc === 'PASAPORTE' && cedulaVal.length < 5) { 
+    mostrarToast(`⚠️ Jugador${i}: Pasaporte no válido.`); 
+    return; 
+}
 
         // Si ya existe (nombre disabled), saltamos validación de campos privados
         if (inputNombre.disabled === true) {
             continue;
         }
-
-        // --- SI EL CÓDIGO LLEGA AQUÍ, ES UN JUGADOR NUEVO ---
+// --- SI EL CÓDIGO LLEGA AQUÍ, ES UN JUGADOR NUEVO ---
         hayNuevos = true;
 
         // Validaciones para Nuevos
@@ -309,24 +374,28 @@ export function iniciarTablero() {
             return;
         }
 
-        // 🔥 NUEVA VALIDACIÓN: VERIFICAR QUE TENGA AL MENOS UN ESPACIO (APELLIDO)
         if (!nombreVal.includes(" ")) {
             mostrarToast(`⚠️ Jugador ${i}: Debe ingresar al menos un nombre y un apellido.`);
-            inputNombre.focus(); // Llevamos el cursor al error
+            inputNombre.focus(); 
             return;
         }
 
         if (telefono === "") { mostrarToast(`⚠️ Falta Teléfono J${i}`); return; }
         if (!numDiezRegex.test(telefono)) { mostrarToast(`⚠️ J${i}: Celular 10 dígitos.`); return; }
 
-        
-    }
+        // 🔥 NUEVA VALIDACIÓN: CHECKBOX DE TÉRMINOS INDIVIDUAL
+        const checkboxTerminos = document.getElementById(`terminos-j${i}`);
+        if (!checkboxTerminos.checked) {
+            mostrarToast(`⚠️ Jugador ${i}: Debe aceptar los Términos y Condiciones para jugar.`);
+            // Añadimos un borde rojo temporal para que vea dónde le falta hacer clic
+            checkboxTerminos.parentElement.style.color = "#D32F2F"; 
+            setTimeout(() => checkboxTerminos.parentElement.style.color = "#444", 2000);
+            return;
+        }
+    } // Fin del for()
 
-    if (hayNuevos) {
-        mostrarModalTerminos(aceptarTerminosYContinuar);
-    } else {
-        aceptarTerminosYContinuar();
-    }
+    // 🔥 ELIMINAMOS EL MODAL. Si pasa todas las validaciones (obligatorias y checkbox), entra directo.
+    aceptarTerminosYContinuar();
 }
 
 // ==========================================
@@ -352,8 +421,16 @@ export async function aceptarTerminosYContinuar() {
         const genero = document.getElementById(`genero-j${i}`)?.value;
         const edad = document.getElementById(`edad-j${i}`)?.value;
         const ciudad = document.getElementById(`ciudad-j${i}`)?.value.trim().toUpperCase();
+        
+       const tipoDoc = document.getElementById(`tipo-doc-j${i}`)?.value;
+        let pais = "ECUADOR"; // Se asume Ecuador por defecto
+        
+        if (tipoDoc === "PASAPORTE") {
+            // Si es extranjero, leemos lo que escribió (o ponemos "NO ESPECIFICADO" si lo dejó en blanco)
+            const inputPais = document.getElementById(`pais-j${i}`)?.value.trim().toUpperCase();
+            pais = inputPais ? inputPais : "NO ESPECIFICADO"; 
+        }
 
-        // Creamos un INVENTARIO VACÍO
         let inventarioBase = {};
         if (typeof RECOMPENSAS_DATA !== 'undefined') {
             RECOMPENSAS_DATA.forEach(item => { inventarioBase[item.key] = 0; });
@@ -362,21 +439,18 @@ export async function aceptarTerminosYContinuar() {
         gameState.inventarioPartida[cedula] = inventarioBase;
 
         // Reset de jugador en RAM
-        gameState.jugadoresPartida.push({
-            id: i,
-            fichaId: i,
-            cedula: cedula,
-            nombre: nombre,
-            puntos: 0,
-            posicion: 0,
-
-            // 🔥 NUEVO: Guardamos los datos extra en el objeto jugador
-            telefono: telefono,
-            email: email,
-            genero: genero,
-            edad: edad,
-            ciudad: ciudad
-        });
+       gameState.jugadoresPartida.push({
+    id: i,
+    fichaId: i,
+    cedula: cedula,
+    nombre: nombre,
+    telefono: telefono,
+    email: email,
+    genero: genero,
+    edad: edad,
+    ciudad: ciudad,
+    pais: pais // 🔥 NUEVO
+});
     }
 
     if (btnJugar) {
@@ -440,7 +514,7 @@ export async function aceptarTerminosYContinuar() {
             const valGenero = document.getElementById(`genero-j${i}`).value;
             const valEdad = document.getElementById(`edad-j${i}`).value.trim();
             const valCiudad = document.getElementById(`ciudad-j${i}`).value.trim().toUpperCase();
-
+const valPais = document.getElementById(`pais-j${i}`).value.trim().toUpperCase();
             let datosPrivados = {
                 cedula: cedula,
                 registradoEn: fechaHoy,
@@ -448,13 +522,14 @@ export async function aceptarTerminosYContinuar() {
             };
 
             if (valTelefono) datosPrivados.telefono = valTelefono;
-            if (valEmail) datosPrivados.email = valEmail;
-            if (valGenero) datosPrivados.genero = valGenero;
-            if (valEdad) datosPrivados.edad = parseInt(valEdad);
-            if (valCiudad) datosPrivados.ciudad = valCiudad;
+if (valEmail) datosPrivados.email = valEmail;
+if (valGenero) datosPrivados.genero = valGenero;
+if (valEdad) datosPrivados.edad = parseInt(valEdad);
+if (valCiudad) datosPrivados.ciudad = valCiudad;
+if (valPais) datosPrivados.pais = valPais; // 🔥 NUEVO: Guardado en cuenta de usuario
 
-            batch.set(refPublica, datosPublicos, { merge: true });
-            batch.set(refPrivada, datosPrivados, { merge: true });
+batch.set(refPublica, datosPublicos, { merge: true });
+batch.set(refPrivada, datosPrivados, { merge: true });
         }
 
         await batch.commit();
@@ -773,24 +848,21 @@ export async function registrarHistorialPartida() {
         const ref = doc(db, "historial_partidas", docId);
 
         // Guardamos TODO lo que capturamos
-        const datosAdmin = {
-            partida_id: gameState.idPartidaActual,
-            cedula: jugador.cedula,
-            nombre: jugador.nombre,
-
-            // Datos extra (si no están, pone 'No registrado')
-            email: jugador.email || "No registrado",
-            telefono: jugador.telefono || "No registrado",
-            genero: jugador.genero || "No especificado",
-            edad: jugador.edad || null,
-            ciudad: jugador.ciudad || "No especificada",
-
-            // Configuración
-            modo: gameState.jugadoresRegistrados > 1 ? "GRUPAL" : "INDIVIDUAL",
-            fecha: serverTimestamp(),
-            estado: "INICIADO",
-            puntos_iniciales: 0
-        };
+       const datosAdmin = {
+    partida_id: gameState.idPartidaActual,
+    cedula: jugador.cedula,
+    nombre: jugador.nombre,
+    email: jugador.email || "No registrado",
+    telefono: jugador.telefono || "No registrado",
+    genero: jugador.genero || "No especificado",
+    edad: jugador.edad || null,
+    ciudad: jugador.ciudad || "No especificada",
+    pais: jugador.pais || "No especificado", // 🔥 NUEVO: Guardado en historial general
+    modo: gameState.jugadoresRegistrados > 1 ? "GRUPAL" : "INDIVIDUAL",
+    fecha: serverTimestamp(),
+    estado: "INICIADO",
+    puntos_iniciales: 0
+};
 
         promesas.push(setDoc(ref, datosAdmin));
     });

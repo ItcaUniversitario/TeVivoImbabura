@@ -3294,7 +3294,6 @@ function jugarMinijuegoBusqueda(casilla) {
 // =====================================================
 // LÓGICA DEL PERFIL DE EXPLORADOR (100% en game.js)
 // =====================================================
-
 window.mostrarPerfil = function () {
     console.log("👆 Abriendo el perfil...");
     const modal = document.getElementById('modal-perfil');
@@ -3303,14 +3302,16 @@ window.mostrarPerfil = function () {
         return;
     }
 
-    // Resetear a la vista de pedir cédula
+    // Resetear a la vista de pedir documento
     const vistaIngreso = document.getElementById('vista-ingreso-cedula');
     const vistaDatos = document.getElementById('vista-datos-perfil');
     const inputCedula = document.getElementById('input-cedula-perfil');
+    const selectTipo = document.getElementById('tipo-doc-perfil'); // 🔥 NUEVO: Referencia al selector
 
     if (vistaIngreso) vistaIngreso.style.display = 'block';
     if (vistaDatos) vistaDatos.style.display = 'none';
     if (inputCedula) inputCedula.value = '';
+    if (selectTipo) selectTipo.value = 'CEDULA'; // 🔥 NUEVO: Por defecto regresa a Cédula
 
     modal.classList.remove('modal-oculto');
 };
@@ -3322,54 +3323,81 @@ window.cerrarPerfil = function () {
         modal.classList.add('modal-oculto');
     }
 };
+
+// 🔥 NUEVA FUNCIÓN: Formatea el input del perfil en tiempo real (letras/números)
+window.validarInputPerfil = function(input) {
+    const selectTipo = document.getElementById('tipo-doc-perfil');
+    if (!selectTipo) return;
+    const tipo = selectTipo.value;
+
+    if (tipo === 'CEDULA') {
+        // Modo Ecuador: Solo números, máx 10
+        input.value = input.value.replace(/\D/g, '');
+        if (input.value.length > 10) input.value = input.value.slice(0, 10);
+    } else {
+        // Modo Extranjero: Letras y números en mayúsculas, máx 20
+        input.value = input.value.replace(/[^a-zA-Z0-9]/g, '').toUpperCase();
+        if (input.value.length > 20) input.value = input.value.slice(0, 20);
+    }
+};
+
 window.buscarPerfilPorCedula = async function () {
     const inputCedula = document.getElementById('input-cedula-perfil');
     const msgError = document.getElementById('error-cedula-perfil');
     const btnBuscar = document.querySelector('.btn-buscar-perfil');
+    const selectTipo = document.getElementById('tipo-doc-perfil'); // 🔥 NUEVO: Leer el tipo seleccionado
 
-    const cedula = inputCedula ? inputCedula.value.trim() : '';
+    const documento = inputCedula ? inputCedula.value.trim() : '';
+    const tipoDoc = selectTipo ? selectTipo.value : 'CEDULA'; // 🔥 NUEVO
 
     // 1. Limpiamos cualquier error previo antes de buscar
     msgError.style.display = 'none';
     msgError.innerText = '';
     inputCedula.classList.remove('input-error-borde');
 
-    // 2. Validación de campo vacío o corto
-    if (cedula === '') {
-        msgError.innerText = "⚠️ Por favor ingresa tu número de cédula.";
+    // 2. Validación de campo vacío
+    if (documento === '') {
+        msgError.innerText = `⚠️ Por favor ingresa tu número de ${tipoDoc === 'CEDULA' ? 'cédula' : 'pasaporte'}.`;
         msgError.style.display = 'block';
         inputCedula.classList.add('input-error-borde');
         return;
     }
 
-    if (cedula.length < 10) {
-        msgError.innerText = "⚠️ La cédula debe tener 10 números.";
+    // 🔥 3. NUEVA VALIDACIÓN ADAPTATIVA (Reemplaza al antiguo largo < 10)
+    if (tipoDoc === 'CEDULA' && documento.length !== 10) {
+        msgError.innerText = "⚠️ La cédula debe tener exactamente 10 números.";
         msgError.style.display = 'block';
         inputCedula.classList.add('input-error-borde');
         return;
     }
 
-    // 3. Estado de carga
+    if (tipoDoc === 'PASAPORTE' && documento.length < 5) {
+        msgError.innerText = "⚠️ El pasaporte debe tener al menos 5 caracteres.";
+        msgError.style.display = 'block';
+        inputCedula.classList.add('input-error-borde');
+        return;
+    }
+
+    // 4. Estado de carga
     btnBuscar.innerText = "Buscando...";
     btnBuscar.disabled = true;
 
     try {
-        const docRef = doc(db, "ranking_publico", cedula);
+        // Buscamos en la base usando el identificador alfanumérico unificado
+        const docRef = doc(db, "ranking_publico", documento);
         const docSnap = await getDoc(docRef);
 
-        // 🔥 EL ERROR QUE ME PEDISTE CAMBIAR (Si no existe en Firebase)
         if (!docSnap.exists()) {
-            msgError.innerText = "❌ No se encontro ningún perfil con esa cédula.";
+            msgError.innerText = `❌ No se encontró ningún perfil con ese ${tipoDoc === 'CEDULA' ? 'número de cédula' : 'pasaporte'}.`;
             msgError.style.display = 'block';
-            inputCedula.classList.add('input-error-borde'); // Pinta el borde rojo
+            inputCedula.classList.add('input-error-borde'); 
 
-            // Restauramos el botón
             btnBuscar.innerText = "Buscar Explorador";
             btnBuscar.disabled = false;
             return;
         }
 
-        // --- (A PARTIR DE AQUÍ SIGUE TU CÓDIGO NORMAL) ---
+        // --- (A PARTIR DE AQUÍ SE MANTIENE TU LÓGICA ORIGINAL) ---
         const datos = docSnap.data();
         const puntajeJugador = datos.puntuacion_total || 0;
         const nombreJugador = datos.nombre || "Explorador";
@@ -3400,7 +3428,6 @@ window.buscarPerfilPorCedula = async function () {
         document.getElementById('pts-nv3').innerHTML = formatearNivel(niveles.nivel_3, 3);
         document.getElementById('pts-nv4').innerHTML = formatearNivel(niveles.nivel_4, 4);
 
-        // Restauramos el botón por si cierran y vuelven a abrir
         btnBuscar.innerText = "Buscar Explorador";
         btnBuscar.disabled = false;
 
@@ -3409,16 +3436,12 @@ window.buscarPerfilPorCedula = async function () {
 
     } catch (error) {
         console.error("❌ Error al obtener el perfil de Firebase:", error);
-
-        // Error de conexión también lo mostramos bonito
         msgError.innerText = "❌ Hubo un error de conexión. Intenta nuevamente.";
         msgError.style.display = 'block';
-
         btnBuscar.innerText = "Buscar Explorador";
         btnBuscar.disabled = false;
     }
 };
-
 // =====================================================
 // FUNCIÓN PARA DAR DE BAJA LA CUENTA (BORRADO + ANONIMIZACIÓN)
 // =====================================================

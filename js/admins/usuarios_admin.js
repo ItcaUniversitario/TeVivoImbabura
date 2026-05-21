@@ -12,8 +12,8 @@ window.cargarRegistrosFusionados = async function() {
     const cuerpoTabla = document.getElementById('cuerpo-tabla');
     const totalLabel = document.getElementById('total-registros');
     
-    // Mensaje de carga inicial
-    if(cuerpoTabla) cuerpoTabla.innerHTML = '<tr><td colspan="10" style="text-align:center">🔄 Cruzando datos de usuarios de Te Vivo Imbabura...</td></tr>';
+    // 🔥 OPTIMIZACIÓN: Cambiado colspan a 11 por la nueva columna País
+    if(cuerpoTabla) cuerpoTabla.innerHTML = '<tr><td colspan="11" style="text-align:center">🔄 Cruzando datos de usuarios de Te Vivo Imbabura...</td></tr>';
 
     try {
         // Ejecutamos ambas consultas en paralelo para que cargue el doble de rápido
@@ -50,7 +50,7 @@ window.cargarRegistrosFusionados = async function() {
                     <td>${dataPriv.edad || '-'}</td>
                     <td>${dataPub.nombre || 'ANÓNIMO'}</td>
                     <td>${dataPriv.ciudad || '-'}</td>
-                    <td>${dataPriv.email || '-'}</td>
+                    <td><b>${dataPriv.pais || 'ECUADOR'}</b></td> <td>${dataPriv.email || '-'}</td>
                     <td>${dataPriv.genero || '-'}</td>
                     <td>${dataPriv.telefono || '-'}</td>
                     <td>${acepta}</td>
@@ -66,7 +66,8 @@ window.cargarRegistrosFusionados = async function() {
 
     } catch (error) {
         console.error("Error cargando registros:", error);
-        if(cuerpoTabla) cuerpoTabla.innerHTML = `<tr><td colspan="10" style="color:red; text-align:center">⛔ Error de lectura en Base de Datos</td></tr>`;
+        // 🔥 OPTIMIZACIÓN: Cambiado colspan a 11 aquí también
+        if(cuerpoTabla) cuerpoTabla.innerHTML = `<tr><td colspan="11" style="color:red; text-align:center">⛔ Error de lectura en Base de Datos</td></tr>`;
     }
 }
 
@@ -145,7 +146,7 @@ window.exportarExcel = function() {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url; 
-    a.download = `Usuarios_Te_Vivo_Imbabura_${new Date().toISOString().slice(0,10)}.xls`; // Le agregué la fecha al nombre del archivo
+    a.download = `Usuarios_Te_Vivo_Imbabura_${new Date().toISOString().slice(0,10)}.xls`; 
     a.click(); 
     URL.revokeObjectURL(url);
 }

@@ -66,7 +66,7 @@
                     <div class="cabecera-juego">
 
                         <h1 class="titulo-principal">
-                            VIVE EL <span class="resaltado">GEOPARQUE IMBABURA</span>
+                            VIVE EL GEOPARQUE</span>
                         </h1>
                         <p class="subtitulo-corto"> "Tierra de lagos y volcanes; intercultural, de artesanos, leyendas y
                             más...!
@@ -345,41 +345,7 @@
                 <div id="modalButtons" class="modal-footer-botones"></div>
             </div>
         </div>
-        <div id="modal-terminos" class="modal-superpuesto" style="display: none;">
-            <div class="contenido-modal">
-                <h2>Términos y Condiciones del Viajero</h2>
-                <div class="scroll-terminos">
-                    <p>Al hacer clic en "Aceptar y Jugar", usted confirma que ha leído y acepta los siguientes
-                        términos:
-                    </p>
-                    <ul>
-                        <li>Sus datos (cédula, nombre, email, etc.) serán registrados en nuestra base de datos para
-                            fines de participación y contacto de premios.</li>
-                        <li>Autoriza el uso de su nombre y puntuación en el marcador público.</li>
-                        <li>Acepta las reglas del juego y las decisiones de la administración.</li>
-                        <li>Se garantiza la confidencialidad de los datos personales sensibles, conforme a las
-                            políticas
-                            de la institución.</li>
-                    </ul>
-
-                    <p style="text-align: center; margin-top: 15px;">
-                        <a href="https://drive.google.com/file/d/1FOWdO75X8GoajU0BsB5IGJPoMfGL54j2/view?usp=drive_link"
-                            target="_blank"
-                            style="color: var(--color-principal); font-weight: bold; text-decoration: underline;">
-                            Leer documento completo de términos y condiciones
-                        </a>
-                    </p>
-                    <p style="font-weight: bold; margin-top: 15px;">La participación en el juego implica la
-                        aceptación
-                        total de estos términos.</p>
-                </div>
-                <div class="grupo-botones-modal">
-                    <button class="btn-imbabura secundario" id="btn-rechazar-terminos">Rechazar</button>
-                    <button class="btn-imbabura primario" id="btn-aceptar-terminos">Aceptar y Jugar</button>
-
-                </div>
-            </div>
-        </div>
+       
 
     </main>
     <div id="modal-victoria" class="modal-victoria-overlay" style="display: none;">
@@ -427,7 +393,7 @@
     </div>
 
 
-    <div id="modal-perfil" class="modal-oculto">
+   <div id="modal-perfil" class="modal-oculto">
         <div class="caja-modal-perfil">
 
             <button class="btn-cerrar-modal" onclick="cerrarPerfil()">✖</button>
@@ -435,11 +401,19 @@
             <h2 class="titulo-modal-perfil">Mi Perfil</h2>
 
             <div id="vista-ingreso-cedula">
-                <p>Ingresa tu número de cédula para buscar tu progreso en el Geoparque:</p>
+                <p>Ingresa tu documento de identidad para buscar tu progreso en el Geoparque:</p>
 
-                <input type="text" id="input-cedula-perfil" class="input-cedula" placeholder="Ej: 1001234567"
-                    autocomplete="off" inputmode="numeric" pattern="[0-9]*" maxlength="10"
-                    oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+                <select id="tipo-doc-perfil" class="input-cedula" style="width: 100%; margin-bottom: 10px; padding: 10px; border-radius: 8px; font-size: 1rem;" onchange="
+                    document.getElementById('input-cedula-perfil').value = '';
+                    document.getElementById('input-cedula-perfil').focus();
+                ">
+                    <option value="CEDULA">Cédula (Ecuador)</option>
+                    <option value="PASAPORTE">Pasaporte / ID Extranjero</option>
+                </select>
+
+                <input type="text" id="input-cedula-perfil" class="input-cedula" placeholder="Ingrese su documento"
+                    autocomplete="off" 
+                    oninput="window.validarInputPerfil(this)"
                     onkeydown="if(event.key === 'Enter') buscarPerfilPorCedula()">
 
                 <p id="error-cedula-perfil" class="mensaje-error-input" style="display: none;"></p>
