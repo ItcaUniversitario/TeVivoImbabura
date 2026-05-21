@@ -1,0 +1,26 @@
+/* =========================================
+   CRÉDITOS EN PANTALLA DE VICTORIA
+   ========================================= */
+.creditos-finales {
+    margin-top: 25px; /* Separa los créditos del botón de jugar de nuevo */
+    padding-top: 15px;
+    border-top: 1px dashed #ccc; /* Una línea sutil para dividir secciones */
+    text-align: center;
+    color: #666; /* Un gris medio para que no resalte más que los puntajes */
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+.creditos-finales p {
+    margin: 3px 0;
+}
+
+.creditos-finales strong {
+    color: var(--color-bosque-profundo, #2E7D32); /* Tu color verde para destacar tu nombre */
+    font-weight: 700;
+}
+
+.creditos-finales small {
+    font-size: 0.75rem;
+    color: #888;
+}

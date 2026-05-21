@@ -1894,9 +1894,22 @@ function aplicarRecompensa(recompensa) {
     if (!recompensa) return;
     const jugador = getJugadorActual();
 
+    // 🛡️ ESCUDO ANTI-NaN: Si los puntos se rompieron en el pasado, los rescatamos a 0
+    if (isNaN(jugador.puntos) || jugador.puntos === null || jugador.puntos === undefined) {
+        jugador.puntos = 0;
+    }
+
     // 1. PUNTOS: Se suman y se guardan en BD
-    if (recompensa.puntos) {
-        jugador.puntos += recompensa.puntos;
+    if (recompensa.puntos !== undefined && recompensa.puntos !== null) {
+        
+        // 🧹 LIMPIEZA: Extraemos solo los números y el signo menos, ignorando letras o espacios
+        let puntosNuevos = parseInt(String(recompensa.puntos).replace(/[^0-9-]/g, ''), 10);
+        
+        // Si por alguna razón la limpieza falla, sumamos 0 para no dañar el puntaje
+        if (isNaN(puntosNuevos)) puntosNuevos = 0;
+        
+        jugador.puntos += puntosNuevos;
+        
         // Guardamos en Firebase INMEDIATAMENTE
         guardarProgresoJugador(jugador);
     }
@@ -1909,15 +1922,13 @@ function aplicarRecompensa(recompensa) {
         // Guardamos Inventario en Firebase INMEDIATAMENTE
         guardarInventario(jugador.cedula);
 
-        // 🔥🔥🔥 AQUÍ AGREGAS LA LÍNEA MÁGICA 🔥🔥🔥
-        // Esto dispara la animación visual sin afectar la lógica de datos
+        // 🔥 Disparamos la animación visual
         lanzarAnimacionItem(recompensa.item);
     }
 
     // Actualizar visualmente la tabla lateral
     actualizarInterfazPartida();
 }
-
 function manejarRespuesta(data, seleccion) {
     const opts = document.getElementById('modalOptionsContainer');
     const btns = opts.querySelectorAll('button');
@@ -2371,7 +2382,6 @@ export function actualizarInterfazPartida() {
 /// ==========================================
 // EN ARCHIVO: js/game.js
 // ==========================================
-
 export function renderizarScorePartida() {
     const container = document.getElementById('score-partida-container');
     if (!container) return;
@@ -2380,13 +2390,20 @@ export function renderizarScorePartida() {
     const label = document.getElementById('label-nivel');
     if (label) label.innerText = `Ruta Nivel ${gameState.nivelSeleccionado}`;
 
-    // 🔥 1. IDENTIFICAR AL JUGADOR ACTIVO POR SU ID (NO POR ÍNDICE)
+    // 🔥 1. IDENTIFICAR AL JUGADOR ACTIVO POR SU ID
     const jugadorActivo = getJugadorActual();
 
     gameState.jugadoresPartida.forEach((j) => {
 
-        // --- Memoria de Puntos y Animaciones (Tu código anterior) ---
-        if (typeof j.puntosAnteriores === 'undefined') j.puntosAnteriores = j.puntos;
+        // 🛡️ ESCUDO ANTI-NaN VISUAL: Evita que se imprima "NaN Pts" en pantalla
+        if (isNaN(j.puntos) || j.puntos === null || j.puntos === undefined) {
+            j.puntos = 0;
+        }
+
+        // --- Memoria de Puntos y Animaciones ---
+        if (typeof j.puntosAnteriores === 'undefined' || isNaN(j.puntosAnteriores)) {
+            j.puntosAnteriores = j.puntos;
+        }
 
         let claseAnimacionPuntos = '';
         if (j.puntos !== j.puntosAnteriores) {
@@ -2400,7 +2417,7 @@ export function renderizarScorePartida() {
         }
         j.puntosAnteriores = j.puntos;
 
-        // --- Renderizado de Items (Tu código anterior) ---
+        // --- Renderizado de Items ---
         if (typeof j.inventarioAnterior === 'undefined') j.inventarioAnterior = {};
         const invActual = gameState.inventarioPartida[j.cedula] || {};
         let itemsHtml = '';
@@ -2429,8 +2446,6 @@ export function renderizarScorePartida() {
         const div = document.createElement('div');
         div.className = 'jugador-score-partida';
 
-        // 🔥 CORRECCIÓN AQUÍ: Comparamos Cédulas (IDs únicos), no índices.
-        // Esto asegura que si es el turno de "Juan", se marque "Juan" sin importar el orden.
         if (jugadorActivo && j.cedula === jugadorActivo.cedula) {
             div.classList.add('turno-activo');
         }
