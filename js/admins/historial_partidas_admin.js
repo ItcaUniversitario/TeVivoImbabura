@@ -5,9 +5,17 @@
 
 // 1. IMPORTACIONES
 import { db } from "../firebase.js"; 
-import { collection, query, getDocs, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-
-// Variable global para almacenar las partidas y poder filtrarlas sin volver a consultar a Firebase
+import { 
+    collection, 
+    query, 
+    getDocs, 
+    orderBy, 
+    limit, 
+    doc, 
+    deleteDoc, 
+    where,          // 🔥 ESTA ES LA QUE TE FALTA
+    writeBatch      // 🔥 ESTA ES LA QUE TE FALTA
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";// Variable global para almacenar las partidas y poder filtrarlas sin volver a consultar a Firebase
 let historialDataGlobal = []; 
 // --- FUNCIÓN 1: CARGAR DATOS DE FIREBASE (CON SKELETON LOADER) ---
 window.cargarHistorial = async function() {
@@ -358,4 +366,53 @@ window.exportarExcelHistorial = function() {
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
+};
+
+window.abrirModalBorrar = () => document.getElementById('modal-borrar-cedula').style.display = 'flex';
+window.cerrarModalBorrar = () => document.getElementById('modal-borrar-cedula').style.display = 'none';
+
+window.ejecutarBorradoMasivo = async function() {
+    const cedula = document.getElementById('input-borrar-cedula').value.trim();
+    const btn = document.getElementById('btn-ejecutar-borrado');
+    const msg = document.getElementById('msg-borrado');
+
+    if (!cedula) return alert("Ingresa una cédula");
+
+    btn.disabled = true;
+    msg.innerText = "⏳ Buscando y eliminando...";
+
+    try {
+        // 1. Buscar todas las partidas de esa cédula
+        const q = query(collection(db, "historial_partidas"), where("cedula", "==", cedula));
+        const snap = await getDocs(q);
+
+        if (snap.empty) {
+            msg.innerText = "❌ No se encontraron partidas para esta cédula.";
+            btn.disabled = false;
+            return;
+        }
+
+        // 2. Usar un batch para borrar todo eficientemente
+        const batch = writeBatch(db);
+        snap.forEach(documento => {
+            batch.delete(documento.ref);
+        });
+
+        await batch.commit();
+
+        msg.style.color = "green";
+        msg.innerText = `✅ Se eliminaron ${snap.size} partidas.`;
+        
+        // 3. Recargar la tabla automáticamente
+        setTimeout(() => {
+            window.cerrarModalBorrar();
+            window.cargarHistorial(); // Recarga la lista
+            btn.disabled = false;
+        }, 1500);
+
+    } catch (e) {
+        console.error(e);
+        msg.innerText = "❌ Error al borrar.";
+        btn.disabled = false;
+    }
 };

@@ -319,6 +319,7 @@
                             <button class="btn-imbabura secundario" onclick="cargarHistorial()">🔄 Actualizar
                                 Datos</button>
                             <button class="btn-excel" onclick="exportarExcelHistorial()">📥 Descargar Historial</button>
+                       <button class="btn-danger" onclick="abrirModalBorrar()">🗑️ Borrar Partidas por Cédula</button>
                         </div>
                     </div>
 
@@ -572,7 +573,18 @@
             </div>
         </main>
     </div>
-
+<div id="modal-borrar-cedula" class="modal-oculto">
+    <div class="contenido-modal">
+        <h3>⚠️ Borrar partidas</h3>
+        <p>Ingresa la cédula del usuario para eliminar <b>todo</b> su historial:</p>
+        <input type="text" id="input-borrar-cedula" placeholder="Ej: 100XXXXXXX" maxlength="10">
+        <div style="margin-top: 15px;">
+            <button onclick="ejecutarBorradoMasivo()" id="btn-ejecutar-borrado" class="btn-danger">Confirmar Borrado</button>
+            <button onclick="cerrarModalBorrar()">Cancelar</button>
+        </div>
+        <p id="msg-borrado" style="margin-top:10px; font-weight:bold;"></p>
+    </div>
+</div>
     <div id="modal-quiz" class="modal-overlay">
         <div class="modal-content">
             <div class="modal-header">
