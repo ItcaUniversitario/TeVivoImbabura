@@ -28,7 +28,7 @@ import { audioManager } from './audioManager.js';
 
 
 
-import { doc, getDoc, collection, query, where, getCountFromServer, deleteDoc, getDocs, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { doc, getDoc, collection, query, where, getCountFromServer, deleteDoc, getDocs, updateDoc,writeBatch } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 // 2. Importa 'db' desde tu archivo local
 import { db } from "./firebase.js";
@@ -3574,66 +3574,44 @@ window.cerrarConfirmacionBaja = function () {
         modalConfirmacion.classList.add('modal-oculto');
     }
 };
-// 3. Ejecuta la eliminación real en Firebase
 window.ejecutarBajaCuenta = async function () {
     const inputCedula = document.getElementById('input-cedula-perfil');
     const cedula = inputCedula.value.trim();
+    if (!cedula) return;
 
-    // Obtenemos AMBOS botones
-    const btnEjecutar = document.getElementById('btn-ejecutar-baja');
-    const btnCancelar = document.getElementById('btn-cancelar-baja');
-
-    // 🔒 BLOQUEAMOS TODO MIENTRAS CARGA
-    btnEjecutar.innerText = "Eliminando...";
-    btnEjecutar.disabled = true;
-    btnEjecutar.style.cursor = "not-allowed";
-
-    btnCancelar.disabled = true;
-    btnCancelar.style.opacity = "0.5"; // Lo hacemos ver apagado
-    btnCancelar.style.cursor = "not-allowed";
+    // 1. Iniciamos el BATCH (el "lote" de operaciones)
+    const batch = writeBatch(db);
 
     try {
-        // --- A. BORRADO FÍSICO ---
-        await deleteDoc(doc(db, "ranking_publico", cedula));
-        await deleteDoc(doc(db, "usuarios_privados", cedula));
+        // --- A. Marcar para borrado físico directo ---
+        const refRanking = doc(db, "ranking_publico", cedula);
+        const refPrivado = doc(db, "usuarios_privados", cedula);
+        
+        batch.delete(refRanking);
+        batch.delete(refPrivado);
 
-        // --- B. ANONIMIZACIÓN LÓGICA ---
+        // --- B. Buscar y marcar para borrado TODO el historial ---
         const historialRef = collection(db, "historial_partidas");
         const qHistorial = query(historialRef, where("cedula", "==", cedula));
         const historialSnapshot = await getDocs(qHistorial);
 
-        const promesasAnonimizacion = [];
+        // Añadimos cada partida encontrada al mismo "lote" de borrado
         historialSnapshot.forEach((documento) => {
-            const docUpdateRef = doc(db, "historial_partidas", documento.id);
-            promesasAnonimizacion.push(
-                updateDoc(docUpdateRef, {
-                    cedula: "usuario_eliminado",
-                    nombre: "Usuario Anónimo"
-                })
-            );
+            batch.delete(documento.ref);
         });
 
-        await Promise.all(promesasAnonimizacion);
+        // --- C. EJECUTAR TODO EL LOTE (Ocurre todo a la vez) ---
+        await batch.commit();
 
-        // --- C. LIMPIEZA Y REINICIO ---
+        // Limpieza local
         localStorage.clear();
         sessionStorage.clear();
 
-        mostrarToast("✅ Tu cuenta ha sido eliminada con éxito. ¡Vuelve pronto!");
+        mostrarToast("✅ Cuenta y todo el historial eliminados correctamente.");
         window.location.reload();
 
     } catch (error) {
-        console.error("❌ Error al intentar dar de baja la cuenta:", error);
-        mostrarToast("Hubo un problema de conexión. Intenta de nuevo más tarde.");
-
-        // 🔓 DESBLOQUEAMOS LOS BOTONES SI HUBO ERROR
-        btnEjecutar.innerText = "Sí, eliminar cuenta";
-        btnEjecutar.disabled = false;
-        btnEjecutar.style.cursor = "pointer";
-
-        btnCancelar.disabled = false;
-        btnCancelar.style.opacity = "1";
-        btnCancelar.style.cursor = "pointer";
+        console.error("❌ Error grave al borrar datos:", error);
+        mostrarToast("Error al procesar la eliminación. Revisa la consola.");
     }
-
 };
