@@ -111,7 +111,7 @@ opcionesMezcladas.forEach((opcionObj, indexRenderizado) => {
 html += `</div></div></div>`; // Cierre de los divs estructurales
 contenedor.innerHTML = html;
 }
-// 4. Responder (VERSIÓN ULTRA RÁPIDA ⚡ Y ALEATORIA 🔀)
+// 4. Responder (VERSIÓN ULTRA RÁPIDA ⚡, ALEATORIA 🔀 Y CON SONIDO 🎵)
 window.responderQuiz = function(indiceBotonClickeado, indiceRealBD) {
     const preguntaData = preguntasSeleccionadas[indicePreguntaActual];
     const botones = document.querySelectorAll('.btn-quiz-opcion');
@@ -139,7 +139,7 @@ window.responderQuiz = function(indiceBotonClickeado, indiceRealBD) {
         registrarRespuestaIndividual(nombreCampoBD, jugador.cedula, datoParaGuardar);
     });
 
-    // --- FEEDBACK VISUAL ---
+    // --- FEEDBACK VISUAL Y SONORO ---
     if (esCorrecta) {
         botones[indiceBotonClickeado].classList.add('correcta');
         aciertos++;
@@ -147,13 +147,24 @@ window.responderQuiz = function(indiceBotonClickeado, indiceRealBD) {
             scoreDisplay.innerText = aciertos;
             scoreDisplay.parentElement.classList.add('anim-score');
         }
+        
+        // 🎵 NUEVO: Reproducir sonido de éxito
+        if (typeof window.playSound === 'function') {
+            window.playSound('success');
+        }
+        
     } else {
         botones[indiceBotonClickeado].classList.add('incorrecta');
         
-        // 🔥 NUEVO: Mostrar la correcta SOLO en el POST-QUIZ (quiz final)
+        // Mostrar la correcta SOLO en el POST-QUIZ (quiz final)
         if (tipoQuizActual !== 'inicio') {
             const botonCorrecto = Array.from(botones).find(btn => btn.getAttribute('onclick').includes(`, ${preguntaData.correcta})`));
             if(botonCorrecto) botonCorrecto.classList.add('correcta');
+        }
+        
+        // 🎵 NUEVO: Reproducir sonido de error
+        if (typeof window.playSound === 'function') {
+            window.playSound('error');
         }
     }
 

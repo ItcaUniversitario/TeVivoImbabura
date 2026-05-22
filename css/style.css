@@ -3223,3 +3223,18 @@ footer p {
 
 
 
+/* =========================================
+   FONDO ANIMADO EXCLUSIVO PARA VIDEO FINAL
+   ========================================= */
+#gameModal.fondo-gif-final {
+    /* El !important asegura que sobreescriba el fondo marrón normal del modal */
+    background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), 
+                url('../assets/imagenes/gif/gif_victoria.gif') center/cover repeat !important;
+    
+    animation: fadeInCine 1s ease-in-out;
+}
+
+@keyframes fadeInCine {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}

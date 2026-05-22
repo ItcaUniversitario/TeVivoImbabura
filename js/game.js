@@ -1681,7 +1681,7 @@ export function mostrarModalCasilla(casillaIndex) {
             }
             break;
 
-        case 'fin':
+      case 'fin':
             console.log("🏁 Meta alcanzada. Reproduciendo video final obligatoriamente.");
 
             modalTitle.textContent = casillaData.titulo;
@@ -1689,14 +1689,19 @@ export function mostrarModalCasilla(casillaIndex) {
             // 1. Limpiamos la descripción para que solo se vea el video
             modalDesc.innerHTML = "";
 
-            // 🔥 NUEVO: COBRAR EL "BONO DE VICTORIA" (Los 1000 puntos)
-            // Esta línea asegura que el que llega, suma los puntos antes de que el juego termine.
+            // 🔥 COBRAR EL "BONO DE VICTORIA" (Los 1000 puntos)
             aplicarRecompensa(casillaData.recompensa);
+
+            // 🔥 NUEVO: LE PONEMOS LA CLASE DEL GIF SOLO A ESTE MODAL
+            modal.classList.add('fondo-gif-final');
 
             // 2. LLAMAMOS AL VIDEO FINAL
             manejarVideoIntro(() => {
 
                 console.log("✅ Video final visto. Pasando a Resultados.");
+
+                // 🔥 NUEVO: LE QUITAMOS LA CLASE PARA NO ENSUCIAR FUTUROS JUEGOS
+                modal.classList.remove('fondo-gif-final');
 
                 // A. Cerramos el modal del video
                 ocultarModal();
