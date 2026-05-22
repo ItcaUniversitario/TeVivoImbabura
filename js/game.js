@@ -669,7 +669,7 @@ export function mostrarModalCasilla(casillaIndex) {
             const jugadorActual = getJugadorActual();
             let respondido = false; // Candado para evitar doble clic y saltos de turno
 
-          // 🧠 2. OBTENER PREGUNTA ALEATORIA (SIN REPETIR)
+            // 🧠 2. OBTENER PREGUNTA ALEATORIA (SIN REPETIR)
             const nivelActual = gameState.nivelSeleccionado || 1;
             let preguntasDisponibles = [];
 
@@ -717,8 +717,8 @@ export function mostrarModalCasilla(casillaIndex) {
             optsContainer.style.display = 'block';
             optsContainer.innerHTML = '';
             btnContainer.innerHTML = '';
-// 🔘 4. CREAR BOTONES DE OPCIONES (CON MEZCLA ALEATORIA 🔀)
-            
+            // 🔘 4. CREAR BOTONES DE OPCIONES (CON MEZCLA ALEATORIA 🔀)
+
             // 🔥 NUEVO: Mezclamos las opciones recordando su índice original (Igual que en el quiz)
             let opcionesMezcladas = preguntaActual.opciones.map((texto, indiceOriginal) => {
                 return { texto: texto, indiceOriginal: indiceOriginal };
@@ -736,7 +736,7 @@ export function mostrarModalCasilla(casillaIndex) {
                 `;
 
                 btnOpt.onclick = () => {
-                    if (respondido) return; 
+                    if (respondido) return;
                     respondido = true;
 
                     // Bloquear visualmente todos los botones
@@ -754,10 +754,10 @@ export function mostrarModalCasilla(casillaIndex) {
                         if (typeof audioManager !== 'undefined' && audioManager.playSFX) audioManager.playSFX('assets/audio/success.mp3');
 
                         jugadorActual.bloqueado_tren = false;
-                        
+
                         // Lógica de pasos: si llegó exacto (0), le damos 1 para que no se quede quieto
-                        jugadorActual.pasosPendientes = (jugadorActual.pasosPendientes && jugadorActual.pasosPendientes > 0) 
-                            ? jugadorActual.pasosPendientes 
+                        jugadorActual.pasosPendientes = (jugadorActual.pasosPendientes && jugadorActual.pasosPendientes > 0)
+                            ? jugadorActual.pasosPendientes
                             : 1;
 
                         // 🔥 LÓGICA DEL MENSAJE DINÁMICO
@@ -830,10 +830,10 @@ export function mostrarModalCasilla(casillaIndex) {
 
                         setTimeout(() => {
                             if (typeof mostrarToast === 'function') mostrarToast("¡Buen viaje!", "success");
-                            
+
                             // 🔥 Eliminamos el boleto visualmente para que no se quede pegado
                             if (overlayBoleto) overlayBoleto.remove();
-                            
+
                             optsContainer.innerHTML = '';
                             modalDesc.innerHTML = '';
 
@@ -1681,36 +1681,114 @@ export function mostrarModalCasilla(casillaIndex) {
             }
             break;
 
-      case 'fin':
-            console.log("🏁 Meta alcanzada. Reproduciendo video final obligatoriamente.");
+        case 'fin': { // 🔥 AÑADIMOS ESTA LLAVE PARA CREAR UN BLOQUE INDEPENDIENTE
+            console.log("🏁 Un jugador ha llegado a la meta.");
 
-            modalTitle.textContent = casillaData.titulo;
+            const jugadorActual = getJugadorActual();
 
-            // 1. Limpiamos la descripción para que solo se vea el video
-            modalDesc.innerHTML = "";
+            // 1. Congelar al jugador (ya no jugará más turnos)
+            jugadorActual.haTerminado = true;
 
-            // 🔥 COBRAR EL "BONO DE VICTORIA" (Los 1000 puntos)
-            aplicarRecompensa(casillaData.recompensa);
+            // 2. Crear la memoria de llegadas si no existe
+            if (!gameState.ordenLlegada) gameState.ordenLlegada = [];
 
-            // 🔥 NUEVO: LE PONEMOS LA CLASE DEL GIF SOLO A ESTE MODAL
-            modal.classList.add('fondo-gif-final');
+            // 3. Registrar en qué posición llegó (evitando duplicados)
+            if (!gameState.ordenLlegada.includes(jugadorActual.cedula)) {
+                gameState.ordenLlegada.push(jugadorActual.cedula);
+            }
 
-            // 2. LLAMAMOS AL VIDEO FINAL
-            manejarVideoIntro(() => {
+            const posicion = gameState.ordenLlegada.indexOf(jugadorActual.cedula) + 1;
 
-                console.log("✅ Video final visto. Pasando a Resultados.");
+            // 4. Calcular los puntos
 
-                // 🔥 NUEVO: LE QUITAMOS LA CLASE PARA NO ENSUCIAR FUTUROS JUEGOS
-                modal.classList.remove('fondo-gif-final');
+            let textoPosicion = "";
 
-                // A. Cerramos el modal del video
-                ocultarModal();
+            // 2. Aplicar el bono de llegada (Asegúrate de que este valor sea 20)
+            const puntosBono = 20;
+            jugadorActual.puntos += puntosBono;
 
-                // B. Iniciamos la pantalla de puntuaciones
-                terminarPartida();
+            // 🔥 CAMBIO CRÍTICO: Llamamos a la función y luego forzamos una actualización
+            aplicarRecompensa({
+                puntos: puntosBono,
+                item: null,
+                esBonoMeta: true // 🔥 Marcamos este campo
+            });
 
-            }, 'fin');
+           if (typeof guardarProgresoJugador === 'function') {
+        guardarProgresoJugador(jugadorActual).then(() => {
+            console.log("✅ Puntos de meta guardados en DB exitosamente.");
+        }).catch(err => {
+            console.error("❌ Error al guardar en DB:", err);
+        });
+    }
+            // Forzamos actualización visual del HUD
+            if (typeof actualizarInterfazPartida === 'function') {
+                actualizarInterfazPartida();
+            }
+
+            // 3. Lógica de llegada (lo que ya teníamos)
+            if (!gameState.ordenLlegada) gameState.ordenLlegada = [];
+            if (!gameState.ordenLlegada.includes(jugadorActual.cedula)) {
+                gameState.ordenLlegada.push(jugadorActual.cedula);
+            }
+
+            const terminaronTodos = gameState.jugadoresPartida.every(j => j.haTerminado);
+
+            // Limpiamos la ventana modal para darle nuestro propio estilo
+            optsContainer.innerHTML = '';
+            btnContainer.innerHTML = '';
+            if (modalImg) modalImg.style.display = 'none';
+
+            if (terminaronTodos) {
+                // ==========================================
+                // 🎬 EL ÚLTIMO JUGADOR LLEGÓ: VIDEO FINAL
+                // ==========================================
+                modalTitle.textContent = `¡TODOS HAN LLEGADO!`;
+                modalDesc.innerHTML = `
+                    <div style="text-align: center; margin-bottom: 15px;">
+                        <h2 style="color: #D84315; font-size: 1.8rem; margin: 0;">${jugadorActual.nombre.split(" ")[0]} completó la ruta</h2>
+                        <p style="font-size: 1.2rem; color: #444; margin-top: 10px;">¡Todos los exploradores están a salvo en la meta! Veamos cómo termina esta aventura.</p>
+                    </div>
+                `;
+
+                modal.classList.add('fondo-gif-final');
+
+                manejarVideoIntro(() => {
+                    console.log("✅ Video final visto. Pasando a Resultados.");
+                    modal.classList.remove('fondo-gif-final');
+                    ocultarModal();
+                    terminarPartida();
+                }, 'fin');
+
+            } else {
+                // ==========================================
+                // ⏳ FALTAN JUGADORES: MENSAJE CENTRADO Y GIGANTE
+                // ==========================================
+                modalTitle.textContent = textoPosicion;
+
+                modalDesc.innerHTML = `
+                    <div style="text-align: center; padding: 15px 0;">
+                        <h2 style="color: #2E7D32; font-size: 2.2rem; margin: 0; text-transform: uppercase;">
+                            ¡BIEN HECHO, ${jugadorActual.nombre.split(" ")[0]}!
+                        </h2>
+                        
+                        <h3 style="color: #E65100; font-size: 1.5rem; margin: 10px 0;">+${puntosBono} Puntos</h3>
+                        
+                        <div style="background: #FFF3E0; border: 2px dashed #FFB74D; border-radius: 10px; padding: 15px; margin-top: 20px;">
+                            <p style="font-size: 1.2rem; color: #E65100; font-weight: bold; margin: 0;">
+                                ⏳ Por favor, espera a que los demás jugadores lleguen a la meta.
+                            </p>
+                        </div>
+                    </div>
+                `;
+
+                // Botón grande para cerrar y pasar el turno al siguiente
+                btnContainer.innerHTML = `<button class="btn-imbabura" style="font-size: 1.2rem; padding: 12px 30px; width: 100%;" onclick="ocultarModal()">Entendido</button>`;
+
+                if (window.playSound) window.playSound('success');
+            }
             break;
+        } // 🔥 CERRAMOS EL BLOQUE INDEPENDIENTE AQUÍ
 
         default:
             modalTitle.textContent = casillaData.titulo;
@@ -1735,13 +1813,13 @@ export function colocarTrenesEnEspera() {
     // Tienen que ser idénticas al "Punto 0" de cada ruta animada
     const posicionesTrenes = [
         // 🔥 TRAMO 1: Exactamente el Punto 0 de tu primera ruta
-        { id: 'tren_inicio', left: '73.45%', top: '24.03%', gif: 'tren_derecha.gif' }, 
-        
+        { id: 'tren_inicio', left: '73.45%', top: '24.03%', gif: 'tren_derecha.gif' },
+
         // 🔥 TRAMO 2: Exactamente el Punto 0 de tu segunda ruta
-        { id: 'tren_medio',  left: '84.10%', top: '58.47%', gif: 'tren_izquierda.gif' },   
-        
+        { id: 'tren_medio', left: '84.10%', top: '58.47%', gif: 'tren_izquierda.gif' },
+
         // 🔥 TRAMO 3: Exactamente el Punto 0 de tu tercera ruta
-        { id: 'tren_fin',    left: '53.69%', top: '55.20%', gif: 'tren_izquierda.gif' }  
+        { id: 'tren_fin', left: '53.69%', top: '55.20%', gif: 'tren_izquierda.gif' }
     ];
 
     posicionesTrenes.forEach(tren => {
@@ -1752,23 +1830,23 @@ export function colocarTrenesEnEspera() {
         const trenImg = document.createElement('img');
         trenImg.id = `tren-espera-${tren.id}`;
         trenImg.className = 'tren-estacionado';
-        
+
         // 🔥 Ojo a la ruta (usamos tu ruta con /nivel4/)
-        trenImg.src = `assets/imagenes/gif/nivel4/${tren.gif}`; 
-        
+        trenImg.src = `assets/imagenes/gif/nivel4/${tren.gif}`;
+
         // 5. Estilos para posicionarlo libremente sobre el mapa
         trenImg.style.position = 'absolute';
-        trenImg.style.width = '60px';  
-        trenImg.style.height = '60px'; 
+        trenImg.style.width = '60px';
+        trenImg.style.height = '60px';
         trenImg.style.objectFit = 'contain';
-        
+
         // Posición X y Y
         trenImg.style.left = tren.left;
         trenImg.style.top = tren.top;
-        
+
         // ✨ MAGIA: Esto obliga a que el centro de la imagen sea la coordenada exacta
-       trenImg.style.transform = 'translate(-50%, -85%)';
-        
+        trenImg.style.transform = 'translate(-50%, -85%)';
+
         trenImg.style.zIndex = '5'; // Debajo de los jugadores, sobre el mapa
         trenImg.style.pointerEvents = 'none';
 
@@ -1899,24 +1977,27 @@ function aplicarRecompensa(recompensa) {
     if (!recompensa) return;
     const jugador = getJugadorActual();
 
+    console.log("DEBUG: Puntos antes de sumar:", jugador.puntos);
+
     // 🛡️ ESCUDO ANTI-NaN: Si los puntos se rompieron en el pasado, los rescatamos a 0
     if (isNaN(jugador.puntos) || jugador.puntos === null || jugador.puntos === undefined) {
         jugador.puntos = 0;
     }
 
     // 1. PUNTOS: Se suman y se guardan en BD
+    // Suma los puntos
     if (recompensa.puntos !== undefined && recompensa.puntos !== null) {
-        
-        // 🧹 LIMPIEZA: Extraemos solo los números y el signo menos, ignorando letras o espacios
         let puntosNuevos = parseInt(String(recompensa.puntos).replace(/[^0-9-]/g, ''), 10);
-        
-        // Si por alguna razón la limpieza falla, sumamos 0 para no dañar el puntaje
-        if (isNaN(puntosNuevos)) puntosNuevos = 0;
-        
-        jugador.puntos += puntosNuevos;
-        
-        // Guardamos en Firebase INMEDIATAMENTE
+        if (!isNaN(puntosNuevos)) {
+            jugador.puntos += puntosNuevos;
+            console.log(`✅ Puntos sumados. Total nuevo: ${jugador.puntos}`); // 🔥 DEBUG: Mira esto en la consola
+        }
         guardarProgresoJugador(jugador);
+
+
+        // --- IMPORTANTE ---
+        // Asegura que esto se llame para refrescar la barra lateral
+        actualizarInterfazPartida();
     }
 
     // 2. ÍTEMS: Se suman y se guardan en BD
@@ -2651,7 +2732,8 @@ export function mostrarModalVictoria() {
             listaItemsHTML = `<div class="item-subfila vacio">Sin items recolectados</div>`;
         }
 
-        const puntosMeta = esGanador ? 500 : 0;
+
+        const puntosMeta = 20; // Tu bono fijo
         let puntosRuta = jugador.puntos - totalPuntosItems - puntosMeta;
 
         const cardHTML = `
@@ -2663,28 +2745,30 @@ export function mostrarModalVictoria() {
                     </div>
                 </div>
 
-                <div class="vic-info-detallada">
-                    <h3>${jugador.nombre}</h3>
-                    
-                    <div class="tabla-desglose">
-                        <div class="grupo-items">
-                            <div class="titulo-grupo">🎒 Inventario de recompensas recolectadas:</div>
-                            ${listaItemsHTML}
-                            <div class="subtotal-grupo">Subtotal Items: <strong>+${totalPuntosItems}</strong></div>
-                        </div>
+               <div class="vic-info-detallada">
+    <h3>${jugador.nombre}</h3>
+    
+    <div class="tabla-desglose">
+        <div class="grupo-items">
+            <div class="titulo-grupo">🎒 Inventario de recompensas:</div>
+            ${listaItemsHTML}
+            <div class="subtotal-grupo">Subtotal Items: <strong>+${totalPuntosItems}</strong></div>
+        </div>
 
-                        <div class="fila-resumen">
-                            <span class="lbl">👣 Ruta Recorrida:</span>
-                            <span class="val">+${puntosRuta}</span>
-                        </div>
+        <div class="fila-resumen">
+            <span class="lbl">👣 Ruta Recorrida:</span>
+            <span class="val">+${puntosRuta}</span>
+        </div>
 
-                        ${esGanador ? `
-                        <div class="fila-resumen meta">
-                            <span class="lbl">🏁 Bono Meta:</span>
-                            <span class="val">+${puntosMeta}</span>
-                        </div>` : ''}
-                    </div>
-                </div>
+        <div class="fila-resumen meta" style="border-top: 1px solid #ccc; margin-top: 5px; padding-top: 5px;">
+            <span class="lbl" style="font-weight: bold; color: #2E7D32;">🏁 Bono por llegar a meta:</span>
+            <span class="val" style="font-weight: bold; color: #2E7D32;">+20</span>
+        </div>
+    </div>
+    
+   
+</div>
+
                 
                 <div class="vic-total-container">
                     <small>TOTAL</small>
@@ -3345,7 +3429,7 @@ window.cerrarPerfil = function () {
 };
 
 // 🔥 NUEVA FUNCIÓN: Formatea el input del perfil en tiempo real (letras/números)
-window.validarInputPerfil = function(input) {
+window.validarInputPerfil = function (input) {
     const selectTipo = document.getElementById('tipo-doc-perfil');
     if (!selectTipo) return;
     const tipo = selectTipo.value;
@@ -3410,7 +3494,7 @@ window.buscarPerfilPorCedula = async function () {
         if (!docSnap.exists()) {
             msgError.innerText = `❌ No se encontró ningún perfil con ese ${tipoDoc === 'CEDULA' ? 'número de cédula' : 'pasaporte'}.`;
             msgError.style.display = 'block';
-            inputCedula.classList.add('input-error-borde'); 
+            inputCedula.classList.add('input-error-borde');
 
             btnBuscar.innerText = "Buscar Explorador";
             btnBuscar.disabled = false;

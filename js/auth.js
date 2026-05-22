@@ -649,6 +649,7 @@ export async function cargarRankingGlobal() {
 }
 
 // Guarda posición exacta y PUNTOS en tiempo real
+// Guarda posición exacta y PUNTOS en tiempo real
 export async function guardarProgresoJugador(jugador) {
     try {
         const docRef = doc(db, "ranking_publico", jugador.cedula);
@@ -657,14 +658,17 @@ export async function guardarProgresoJugador(jugador) {
             progreso_actual: {
                 nivel: gameState.nivelSeleccionado,
                 posicion: jugador.posicion,
-                puntos_temporales: jugador.puntos,
-                fichaId: jugador.fichaId
+                puntos_temporales: jugador.puntos, // Asegúrate que esto sea el total (incluidos los 20)
+                fichaId: jugador.fichaId,
+                haTerminado: jugador.haTerminado || false // 🔥 AGREGADO: Esto es clave para saber que llegó a meta
             },
             ultima_conexion: new Date().toISOString()
         }, { merge: true });
 
+        console.log(`✅ Progreso guardado para ${jugador.nombre}: ${jugador.puntos} pts`);
+
     } catch (e) {
-        console.error("Error guardando posición", e);
+        console.error("❌ Error guardando posición en Firebase:", e);
     }
 }
 
