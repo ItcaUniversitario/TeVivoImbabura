@@ -3546,15 +3546,15 @@ window.buscarPerfilPorCedula = async function () {
         btnBuscar.disabled = false;
     }
 };
-// =====================================================
-// FUNCIÓN PARA DAR DE BAJA LA CUENTA (BORRADO + ANONIMIZACIÓN)
-// =====================================================
-// =====================================================
-// FLUJO DE ELIMINACIÓN DE CUENTA (CON MODAL BONITO)
-// =====================================================
-
-// 1. Solo abre el modal de advertencia
 window.confirmarDarDeBaja = function () {
+    // 1. Validar que la vista de perfil esté activa (o cualquier otra validación robusta)
+    const modalPerfil = document.getElementById('modal-perfil');
+    if (!modalPerfil || modalPerfil.classList.contains('modal-oculto')) {
+        // Si el perfil no está visible, ignoramos el clic (protección anti-bugs)
+        console.warn("Se intentó abrir la baja de cuenta desde fuera del perfil.");
+        return; 
+    }
+
     const inputCedula = document.getElementById('input-cedula-perfil');
     if (!inputCedula || inputCedula.value.trim() === '') {
         mostrarToast("⚠️ No se encontró la cédula para dar de baja.");
